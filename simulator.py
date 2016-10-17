@@ -21,14 +21,8 @@ class Simulator():
 		numNonMutants=numNodes-1
 		iterations=0
 		while numMutants!=0 and numNonMutants!=0:
-			#Pick node at random, proportional to fitness
-			#Pick random neighbour of node
-			#If different, copy first node mutant status to second node
-
-			#Selects a node at random with the chance of choosing a mutant being proportional to fitness.
-			#This is probably really inefficient
 			t=numMutants*fitness+numNonMutants
-			nodeChoice=random.uniform(0,t)	#TODO: This may or may not include 1.0 depending on how the floating point rounding is handled, may want to change to sometihng that definitely works 100%
+			nodeChoice=random.uniform(0,t)
 
 			n=-1
 			while nodeChoice>0:
@@ -70,6 +64,6 @@ class Simulator():
 				else:
 					fixated+=1
 			print(fixated,extinct,totalIter/trials)
-			print(fixated/extinct+fixated)
+			print(fixated/(extinct+fixated))
 		else:
 			print("Failed to run sim: No graph loaded")
