@@ -28,8 +28,19 @@ class Simulator():
 					#Pick random neighbour of node
 					#If different, copy first node mutant status to second node
 
-					#atm just selecting at random, change this to take fitness into account asap
-					nodeReproducing=random.randint(0,numNodes-1)
+					#Selects a node at random with the chance of choosing a mutant being proportional to fitness.
+					#This is probably really inefficient
+					t=numMutants*fitness+numNonMutants
+					nodeChoice=random.uniform(0,t)	#TODO: This may or may not include 1.0 depending on how the floating point rounding is handled, may want to change to sometihng that definitely works 100%
+
+					n=-1
+					while nodeChoice>0:
+						n+=1
+						if simGraph.node[n]['mutant']==True:
+							nodeChoice-=fitness
+						else:
+							nodeChoice-=1
+					nodeReproducing=n
 
 					#If the reproducing node has at least one neighbour, choose one at random (uniform probability)
 					if len(simGraph.neighbors(nodeReproducing))>0:
