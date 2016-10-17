@@ -3,12 +3,11 @@ import networkx as nx
 
 print("Initialized")
 
-G=nx.DiGraph()
-for i in range(100):
-	G.add_edge(0,i)
-	G.add_edge(i,0)
+G=nx.Graph()
+for i in range(49):
+	G.add_edge(i,i+1)
 for i in range(len(G.node)):
 	G.node[i]['mutant']=False
 graphSim=Simulator()
 graphSim.loadGraphStructure(G)
-graphSim.runSim(50,1.2)
+graphSim.runSim(10000,1.2)
