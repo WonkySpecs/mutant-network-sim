@@ -12,10 +12,13 @@ class Simulator():
 		if self.graphStructure==None:
 			print("Warning: loadGraphStructure called with None as argument, current graph in Simulator is None")
 
-	def runTrial(self,fitness):
+	def runTrial(self,fitness,mStart=-1):
 		simGraph=nx.DiGraph(self.graphStructure)
 		numNodes=len(simGraph.node)
-		mutantStart=random.randint(0,numNodes-1)
+		if mStart==-1:
+			mutantStart=random.randint(0,numNodes-1)
+		else:
+			mutantStart=mStart
 		simGraph.node[mutantStart]['mutant']=True
 		numMutants=1
 		numNonMutants=numNodes-1
