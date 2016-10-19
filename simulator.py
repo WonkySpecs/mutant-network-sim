@@ -1,5 +1,6 @@
 import networkx as nx
 import random
+import time
 
 class Simulator():
 	def __init__(self,graph=None):
@@ -13,6 +14,7 @@ class Simulator():
 			print("Warning: loadGraphStructure called with None as argument, current graph in Simulator is None")
 
 	def runTrial(self,fitness,mStart=-1):
+		sTime=time.time()
 		simGraph=nx.DiGraph(self.graphStructure)
 		numNodes=len(simGraph.node)
 		if mStart==-1:
@@ -49,6 +51,7 @@ class Simulator():
 					numMutants-=1
 					numNonMutants+=1
 			iterations+=1
+		print(str(iterations) + " iterations in " + str(time.time()-sTime))
 		return iterations,numMutants,numNonMutants
 
 
@@ -60,7 +63,8 @@ class Simulator():
 			for i in range(trials):
 				#Reset graph to base state
 				trial=self.runTrial(fitness)
-				print(i)
+				if i%(trials/10)==0:
+					print(i)
 				totalIter+=trial[0]
 				if trial[1]==0:
 					extinct+=1

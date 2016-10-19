@@ -17,4 +17,5 @@ startTime=time.time()
 graphSim=Simulator()
 graphSim.loadGraphStructure(G)
 graphSim.runSim(numTrials,1.2)
-print(str(numTrials)+ " trials ran in " + str(time.time()-startTime))
+totTime=time.time()-startTime
+print(str(numTrials)+ " trials ran in " + str(totTime) + ", average trial was " + str(totTime/numTrials))
