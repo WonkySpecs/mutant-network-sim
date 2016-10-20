@@ -5,7 +5,6 @@ import time
 class Simulator():
 	def __init__(self,graph=None):
 		print("Simulator instance created")
-		print(self)
 		self.graphStructure=graph
 
 	def loadGraphStructure(self, graph):
@@ -61,7 +60,6 @@ class Simulator():
 		totalIter=0
 		if self.graphStructure!=None:
 			for i in range(trials):
-				#Reset graph to base state
 				trial=self.runTrial(fitness)
 				if i%(trials/10)==0:
 					print(i)
