@@ -4,8 +4,8 @@ import time
 
 print("Initialized")
 G=nx.Graph()
-nodes=50
-numTrials=100
+nodes=200
+numTrials=1000
 for i in range(nodes-1):
 	G.add_edge(i,i+1)
 G.add_edge(0,nodes-1)

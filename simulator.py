@@ -12,9 +12,11 @@ class Simulator():
 		if self.graphStructure==None:
 			print("Warning: loadGraphStructure called with None as argument, current graph in Simulator is None")
 
+	#Basic implementation for running moran process on the graph stored in self.graphStructure
+	#Scales very poorly on graphs with a large number of ndoes as the algorithm can select 'useless' nodes to reproduce that will not change the state of the graph.
 	def runTrial(self,fitness,mStart=-1):
 		sTime=time.time()
-		simGraph=nx.DiGraph(self.graphStructure)
+		simGraph=nx.Graph(self.graphStructure)
 		numNodes=len(simGraph.node)
 		if mStart==-1:
 			mutantStart=random.randint(0,numNodes-1)
@@ -53,6 +55,70 @@ class Simulator():
 		print(str(iterations) + " iterations in " + str(time.time()-sTime))
 		return iterations,numMutants,numNonMutants
 
+	#To enable simulation on large graphs, we must convert to a different (equivalent) algorithm.
+	#This version only considers the 'useful' possibilities for selection of the reproducing node - this includes all mutant nodes and their direct neighbours.
+
+	#MAY MERGE THIS WITH THE ORIGINAL AS AN OPTION, A LOT OF CODE REPLICATION HERE
+	def runTrialV2(self,fitness,mStart=-1):
+		simGraph=nx.Graph(self.graphStructure)
+		numNodes=len(simGraph.node)
+		if mStart==-1:
+			mutantStart=random.randint(0,numNodes-1)
+		else:
+			mutantStart=mStart
+		simGraph.node[mutantStart]['mutant']=True
+		numMutants=1
+		numNonMutants=numNodes-1
+		iterations=0
+
+		#The slight change to the method of selecting the node to reproduce (only from the active set) is the only real change from above, may want to merge together
+		activeNodes=[i for i in simGraph.neighbors(mutantStart)]
+		activeNodes.append(mutantStart)
+		while numMutants!=0 and numNonMutants!=0:
+			activeMutants=0
+			activeNonMutants=0
+			for n in activeNodes:
+				if simGraph.node[n]['mutant']:
+					activeMutants+=1
+				else:
+					activeNonMutants+=1
+			if activeNonMutants+activeMutants!=len(activeNodes):
+				print("during simulation activeMutants+activeNonMutants was not equal to total number of active nodes: FIX THIS")
+				#Handle this properly later
+				sys.exit()
+			t=(activeMutants*fitness)+activeNonMutants
+			nodeChoice=random.uniform(0,t)
+			n=-1
+			while nodeChoice>0:
+				n+=1
+				if simGraph.node[activeNodes[n]]['mutant']:
+					nodeChoice-=fitness
+				else:
+					nodeChoice-=1
+			nodeReproducing=activeNodes[n]
+
+			if len(simGraph.neighbors(nodeReproducing))>0:
+				nodeDying=random.sample(simGraph.neighbors(nodeReproducing),1)[0]
+
+			#print(mutantStart,nodeReproducing,nodeDying)
+
+			if simGraph.node[nodeReproducing]['mutant']!=simGraph.node[nodeDying]['mutant']:
+				simGraph.node[nodeDying]['mutant']=simGraph.node[nodeReproducing]['mutant']
+				if simGraph.node[nodeReproducing]['mutant']==True:
+					numMutants+=1
+					numNonMutants-=1
+
+					for n in simGraph.neighbors(nodeDying):
+						if n not in activeNodes:
+							activeNodes.append(n)
+				else:
+					numMutants-=1
+					numNonMutants+=1
+					#REMOVE ANY NEIGHBOURS OIF THE DEAD NODE THAT ARE NO LONGER INTERESTING
+			simGraph.node[nodeDying]['mutant']=simGraph.node[nodeReproducing]['mutant']
+
+			iterations+=1
+		return iterations,numMutants,numNonMutants
 
 	def runSim(self, trials,fitness=1.1):
 		fixated=0
@@ -60,7 +126,7 @@ class Simulator():
 		totalIter=0
 		if self.graphStructure!=None:
 			for i in range(trials):
-				trial=self.runTrial(fitness)
+				trial=self.runTrialV2(fitness)
 				if i%(trials/10)==0:
 					print(i)
 				totalIter+=trial[0]
