@@ -136,8 +136,6 @@ class Simulator():
 								activeNodes.remove(i)
 								activeNonMutants-=1
 
-			simGraph.node[nodeDying]['mutant']=simGraph.node[nodeReproducing]['mutant']
-
 			iterations+=1
 		return iterations,numMutants,numNonMutants
 
