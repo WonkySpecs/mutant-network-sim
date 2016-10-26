@@ -113,7 +113,6 @@ class Simulator():
 					numMutants+=1
 					numNonMutants-=1
 					activeNonMutants-=1
-
 					for n in simGraph.neighbors(nodeDying):
 						if n not in activeNodes:
 							activeNodes.append(n)
