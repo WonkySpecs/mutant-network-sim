@@ -75,6 +75,7 @@ class Simulator():
 		activeNodes=[i for i in simGraph.neighbors(mutantStart)]
 		activeNodes.append(mutantStart)
 		activeNonMutants=len(simGraph.neighbors(mutantStart))
+
 		while numMutants!=0 and numNonMutants!=0:
 			# print("ACTIVE NODES:" + str(activeNodes))
 			# print('mutants: {}, nonmutants:{}, activeNonMutants{}\n'.format(numMutants,numNonMutants,activeNonMutants))
@@ -94,8 +95,10 @@ class Simulator():
 					nodeChoice-=1
 			nodeReproducing=activeNodes[n]
 
-			if len(simGraph.neighbors(nodeReproducing))>0:
-				nodeDying=random.sample(simGraph.neighbors(nodeReproducing),1)[0]
+			possibleDyingNodes=simGraph.neighbors(nodeReproducing)
+
+			if len(possibleDyingNodes)>0:
+				nodeDying=possibleDyingNodes[random.randint(0,len(possibleDyingNodes)-1)]
 			else:
 				#Handle this properly at some point
 				print("This graph contains an unconnected node, ceasing execution")
