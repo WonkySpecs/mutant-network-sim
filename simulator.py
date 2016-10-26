@@ -99,6 +99,10 @@ class Simulator():
 
 			if len(simGraph.neighbors(nodeReproducing))>0:
 				nodeDying=random.sample(simGraph.neighbors(nodeReproducing),1)[0]
+			else:
+				#Handle this properly at some point
+				print("This graph contains an unconnected node, ceasing execution")
+				sys.exit()
 
 			#print(mutantStart,nodeReproducing,nodeDying)
 

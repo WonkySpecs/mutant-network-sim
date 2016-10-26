@@ -4,11 +4,17 @@ import time
 
 print("Initialized")
 G=nx.Graph()
-nodes=200
-numTrials=1000
-for i in range(nodes-1):
-	G.add_edge(i,i+1)
-G.add_edge(0,nodes-1)
+nodes=100
+numTrials=2000
+
+#Cycle
+# for i in range(nodes-1):
+# 	G.add_edge(i,i+1)
+# G.add_edge(0,nodes-1)
+
+#Clique
+G=nx.complete_graph(nodes)
+
 for i in range(len(G.node)):
 	G.node[i]['mutant']=False
 startTime=time.time()
