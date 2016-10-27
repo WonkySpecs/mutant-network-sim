@@ -12,11 +12,23 @@ class Simulator():
 		if self.graphStructure==None:
 			print("Warning: loadGraphStructure called with None as argument, current graph in Simulator is None")
 
+	def resetGraphStructure(self):
+		if self.graphStructure==None:
+			print("Tried to resetGraphStructure with no graph loaded, exiting")
+			return -1
+		else:
+			g=self.graphStructure
+
+			for i in range(len(g.node)):
+				g.node[i]['mutant']=False
+			return 1
+
 	#Basic implementation for running moran process on the graph stored in self.graphStructure
 	#Scales very poorly on graphs with a large number of ndoes as the algorithm can select 'useless' nodes to reproduce that will not change the state of the graph.
 	def runTrial(self,fitness,mStart=-1):
 		sTime=time.time()
-		simGraph=nx.Graph(self.graphStructure)
+		self.resetGraphStructure()
+		simGraph=self.graphStructure#nx.Graph(self.graphStructure)
 		numNodes=len(simGraph.node)
 		if mStart==-1:
 			mutantStart=random.randint(0,numNodes-1)
@@ -60,7 +72,11 @@ class Simulator():
 
 	#MAY MERGE THIS WITH THE ORIGINAL AS AN OPTION, A LOT OF CODE REPLICATION HERE
 	def runTrialV2(self,fitness,mStart=-1):
-		simGraph=nx.Graph(self.graphStructure)
+		sTime=time.time()
+		#simGraph=nx.Graph(self.graphStructure)
+		self.resetGraphStructure()
+		simGraph=self.graphStructure
+		print("creating graph took " + str(time.time()-sTime))
 		numNodes=len(simGraph.node)
 		if mStart==-1:
 			mutantStart=random.randint(0,numNodes-1)
@@ -75,6 +91,8 @@ class Simulator():
 		activeNodes=[i for i in simGraph.neighbors(mutantStart)]
 		activeNodes.append(mutantStart)
 		activeNonMutants=len(simGraph.neighbors(mutantStart))
+
+		print("Set up for trial took " + str(time.time()-sTime))
 
 		while numMutants!=0 and numNonMutants!=0:
 			# print("ACTIVE NODES:" + str(activeNodes))
@@ -136,6 +154,7 @@ class Simulator():
 								activeNonMutants-=1
 
 			iterations+=1
+		print("Final mutants: {}, calculated {} iterations in {}s".format(numMutants,iterations,time.time()-sTime))
 		return iterations,numMutants,numNonMutants
 
 	def runSim(self, trials,fitness=1.1):
