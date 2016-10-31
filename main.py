@@ -3,14 +3,15 @@ import networkx as nx
 import time
 
 print("Initialized")
-G=nx.Graph()
-nodes=100
-numTrials=30
+
+nodes=50
+numTrials=1500
 
 #Cycle
-for i in range(nodes-1):
-	G.add_edge(i,i+1)
-G.add_edge(0,nodes-1)
+# G=nx.Graph()
+# for i in range(nodes-1):
+# 	G.add_edge(i,i+1)
+# G.add_edge(0,nodes-1)
 
 #Clique
 #G=nx.complete_graph(nodes)
@@ -28,8 +29,8 @@ if nodes%2==0:
 		for c2 in range(c+1,nodes//2):
 			G.add_edge(c,c2)
 	for n in range(nodes//2):
-		G.add_edge(c,n+nodes//2)
-
+		G.add_edge(n,n+nodes//2)
+print(G.edges())
 
 for i in range(len(G.node)):
 	G.node[i]['mutant']=False
