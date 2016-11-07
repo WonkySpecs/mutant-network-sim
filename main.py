@@ -9,10 +9,10 @@ nodes=200
 numTrials=1000
 
 #Cycle
-# G=nx.Graph()
-# for i in range(nodes-1):
-# 	G.add_edge(i,i+1)
-# G.add_edge(0,nodes-1)
+G=nx.Graph()
+for i in range(nodes-1):
+	G.add_edge(i,i+1)
+G.add_edge(0,nodes-1)
 
 #Clique
 #G=nx.complete_graph(nodes)
@@ -36,17 +36,17 @@ numTrials=1000
 # 	sys.exit()
 
 #Clique wheel
-n = nodes//2
-G = nx.complete_graph(n)
-if nodes%2==0:
-	for m in range(n):
-		G.add_edge(m, m + n)
-	for w in range(n - 1):
-		G.add_edge(w+n ,w+n+1)
-	G.add_edge(n, nodes - 1)
-else:
-	print("nodes must be even for a clique wheel graph")
-	sys.exit()
+# n = nodes//2
+# G = nx.complete_graph(n)
+# if nodes%2==0:
+# 	for m in range(n):
+# 		G.add_edge(m, m + n)
+# 	for w in range(n - 1):
+# 		G.add_edge(w+n ,w+n+1)
+# 	G.add_edge(n, nodes - 1)
+# else:
+# 	print("nodes must be even for a clique wheel graph")
+# 	sys.exit()
 
 for i in range(len(G.node)):
 	G.node[i]['mutant']=False

@@ -1,6 +1,7 @@
 import networkx as nx
 import random
 import time
+import sys
 
 
 class Simulator():
@@ -93,25 +94,18 @@ class Simulator():
 		iterations = 0
 
 		#The slight change to the method of selecting the node to reproduce (only from the active set) is the only real change from above, may want to merge together
-		activeNodes = [i for i in simGraph.neighbors(mutantStart)]
-		activeNodes.append(mutantStart)
-		activeNonMutants = len(simGraph.neighbors(mutantStart))
+		activeMutants = [mStart]
+		activeNonMutants = [i for i in simGraph.neighbors(mutantStart)]
 
 		while numMutants!=0 and numNonMutants!=0:
-			if activeNonMutants+numMutants!=len(activeNodes):
-				print("during simulation activeMutants+activeNonMutants was not equal to total number of active nodes: FIX THIS")
-				#Handle this properly later
-				sys.exit()
-			t = (numMutants*fitness)+activeNonMutants
-			nodeChoice = random.uniform(0, t)
-			n = -1
-			while nodeChoice>0:
-				n += 1
-				if simGraph.node[activeNodes[n]]['mutant']:
-					nodeChoice -= fitness
-				else:
-					nodeChoice -= 1
-			nodeReproducing = activeNodes[n]
+			#c is total fitness of active ndoes
+			c = random.uniform(0, (len(activeMutants)*fitness)+len(activeNonMutants))
+
+			#Each mmutant/non-mutant is as likely as any other, so we just pick one set or the other then pick at random from that set
+			if c > len(activeNonMutants):
+				nodeReproducing = activeMutants[random.randint(0, len(activeMutants) - 1)]
+			else:
+				nodeReproducing = activeNonMutants[random.randint(0, len(activeNonMutants) - 1)]
 
 			possibleDyingNodes = simGraph.neighbors(nodeReproducing)
 
@@ -125,18 +119,20 @@ class Simulator():
 			if simGraph.node[nodeReproducing]['mutant']!=simGraph.node[nodeDying]['mutant']:
 				simGraph.node[nodeDying]['mutant']=simGraph.node[nodeReproducing]['mutant']
 				if simGraph.node[nodeReproducing]['mutant']==True:
-					#The new mutant must have been an activenonmutant before it died, so we add one to numMutants and subtract one from the other 2 numbers
+					#The new mutant must have been an activenonmutant before it died, so we move it from activeNonMutants to activeMutants
 					numMutants += 1
 					numNonMutants -= 1
-					activeNonMutants -= 1
+					activeNonMutants.remove(nodeDying)
+					activeMutants.append(nodeDying)
 					for n in simGraph.neighbors(nodeDying):
-						if n not in activeNodes:
-							activeNodes.append(n)
-							activeNonMutants += 1
+						if not simGraph.node[n]['mutant'] and n not in activeNonMutants:
+							activeNonMutants.append(n)
 				else:
 					numMutants -= 1
 					numNonMutants += 1
-					activeNonMutants += 1
+
+					activeMutants.remove(nodeDying)
+					activeNonMutants.append(nodeDying)
 
 					#For each of the neighbours of the former mutant node, we check if any of their neighbours are now mutants- if not, remove from activeNodes
 					#This process is technically O(n^2) but constants should be small, only possible problem could arise from highly connected graph (clique in particular, where this function is useless [all nodes are active] but will take lots of time)
@@ -148,8 +144,7 @@ class Simulator():
 									noLongerActive = False
 									break
 							if noLongerActive:
-								activeNodes.remove(i)
-								activeNonMutants -= 1
+								activeNonMutants.remove(i)
 
 			iterations += 1
 		print("Final mutants: {}, calculated {} iterations in {}s".format(numMutants, iterations, time.time()-sTime))
