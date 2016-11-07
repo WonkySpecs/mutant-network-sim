@@ -156,13 +156,13 @@ class Simulator():
 		return iterations, numMutants, numNonMutants
 
 
-	def runSim(self, trials, fitness = 1.1):
+	def runSim(self, trials, fitness = 1.1, mStart = -1):
 		fixated = 0
 		extinct = 0
 		totalIter = 0
 		if self.graphStructure!=None:
 			for i in range(trials):
-				trial = self.runTrialV2(fitness)
+				trial = self.runTrialV2(fitness, mStart)
 				if i%(trials/10)==0:
 					print(i)
 				totalIter += trial[0]

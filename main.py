@@ -5,7 +5,7 @@ import sys
 
 print("Initialized")
 
-nodes=10
+nodes=200
 numTrials=1000
 
 #Cycle
@@ -24,24 +24,21 @@ numTrials=1000
 # 		G.add_edge(i,j)
 
 #Urchin
-G=nx.Graph()
-if nodes%2==0:
-	for c in range(nodes//2-1):
-		for c2 in range(c+1,nodes//2):
-			G.add_edge(c,c2)
-	for n in range(nodes//2):
-		G.add_edge(n,n+nodes//2)
-else:
-	print("nodes must be even for an Urchin graph")
-	sys.exit()
+# G=nx.Graph()
+# if nodes%2==0:
+# 	for c in range(nodes//2-1):
+# 		for c2 in range(c+1,nodes//2):
+# 			G.add_edge(c,c2)
+# 	for n in range(nodes//2):
+# 		G.add_edge(n,n+nodes//2)
+# else:
+# 	print("nodes must be even for an Urchin graph")
+# 	sys.exit()
 
 #Clique wheel
-G = nx.Graph()
 n = nodes//2
+G = nx.complete_graph(n)
 if nodes%2==0:
-	for c in range(n-1):
-		for c2 in range(c+1, n):
-			G.add_edge(c, c2)
 	for m in range(n):
 		G.add_edge(m, m + n)
 	for w in range(n - 1):
@@ -56,6 +53,6 @@ for i in range(len(G.node)):
 startTime=time.time()
 graphSim=Simulator()
 graphSim.loadGraphStructure(G)
-graphSim.runSim(numTrials,2)
+graphSim.runSim(numTrials,4, 1)
 totTime=time.time()-startTime
 print(str(numTrials)+ " trials ran in " + str(totTime) + ", average trial was " + str(totTime/numTrials))
