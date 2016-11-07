@@ -1,6 +1,7 @@
 from simulator import Simulator
 import networkx as nx
 import time
+import sys
 
 print("Initialized")
 
@@ -30,7 +31,25 @@ if nodes%2==0:
 			G.add_edge(c,c2)
 	for n in range(nodes//2):
 		G.add_edge(n,n+nodes//2)
-print(G.edges())
+else:
+	print("nodes must be even for an Urchin graph")
+	sys.exit()
+
+#Clique wheel
+G = nx.Graph()
+n = nodes//2
+if nodes%2==0:
+	for c in range(n-1):
+		for c2 in range(c+1, n):
+			G.add_edge(c, c2)
+	for m in range(n):
+		G.add_edge(m, m + n)
+	for w in range(n - 1):
+		G.add_edge(w+n ,w+n+1)
+	G.add_edge(n, nodes - 1)
+else:
+	print("nodes must be even for a clique wheel graph")
+	sys.exit()
 
 for i in range(len(G.node)):
 	G.node[i]['mutant']=False
