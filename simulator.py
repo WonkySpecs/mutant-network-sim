@@ -13,6 +13,7 @@ class Simulator():
 		if self.graphStructure == None:
 			print("Warning: loadGraphStructure called with None as argument, current graph in Simulator is None")
 
+	#At the moment, just sets 'mutant' to False for all nodes. Can extend in the future
 	def resetGraphStructure(self):
 		if self.graphStructure == None:
 			print("Tried to resetGraphStructure with no graph loaded, exiting")
@@ -24,13 +25,14 @@ class Simulator():
 				g.node[i]['mutant'] = False
 			return 1
 
-
 	#Basic implementation for running moran process on the graph stored in self.graphStructure
-	#Scales very poorly on graphs with a large number of ndoes as the algorithm can select 'useless' nodes to reproduce that will not change the state of the graph.
+	#Scales very poorly on graphs with a large number of ndoes as the algorithm often select 'useless' nodes to reproduce that will not change the state of the graph.
 	def runTrial(self, fitness, mStart = -1):
+
+		#Initialization
 		sTime = time.time()
 		self.resetGraphStructure()
-		simGraph = self.graphStructure#nx.Graph(self.graphStructure)
+		simGraph = self.graphStructure #nx.Graph(self.graphStructure)
 		numNodes = len(simGraph.node)
 		if mStart == -1:
 			mutantStart = random.randint(0, numNodes-1)
@@ -40,6 +42,8 @@ class Simulator():
 		numMutants = 1
 		numNonMutants = numNodes-1
 		iterations = 0
+
+		#Until mutant has fixated or gone extinct, choose a node, choose a neighbour and reproduce
 		while numMutants!=0 and numNonMutants!=0:
 			t = numMutants*fitness+numNonMutants
 			nodeChoice = random.uniform(0, t)
@@ -74,11 +78,10 @@ class Simulator():
 
 	#MAY MERGE THIS WITH THE ORIGINAL AS AN OPTION, A LOT OF CODE REPLICATION HERE
 	def runTrialV2(self, fitness, mStart = -1):
+		#Initialization
 		sTime = time.time()
-		#simGraph = nx.Graph(self.graphStructure)
 		self.resetGraphStructure()
-		simGraph = self.graphStructure
-		print("creating graph took " + str(time.time()-sTime))
+		simGraph = self.graphStructure #nx.Graph(self.graphStructure)
 		numNodes = len(simGraph.node)
 		if mStart ==-1:
 			mutantStart = random.randint(0, numNodes-1)
@@ -94,12 +97,7 @@ class Simulator():
 		activeNodes.append(mutantStart)
 		activeNonMutants = len(simGraph.neighbors(mutantStart))
 
-		print("Set up for trial took " + str(time.time()-sTime))
-
 		while numMutants!=0 and numNonMutants!=0:
-			# print("ACTIVE NODES:" + str(activeNodes))
-			# print('mutants: {}, nonmutants:{}, activeNonMutants{}\n'.format(numMutants, numNonMutants, activeNonMutants))
-
 			if activeNonMutants+numMutants!=len(activeNodes):
 				print("during simulation activeMutants+activeNonMutants was not equal to total number of active nodes: FIX THIS")
 				#Handle this properly later
@@ -123,8 +121,6 @@ class Simulator():
 				#Handle this properly at some point
 				print("This graph contains an unconnected node, ceasing execution")
 				sys.exit()
-
-			#print(mutantStart, nodeReproducing, nodeDying)
 
 			if simGraph.node[nodeReproducing]['mutant']!=simGraph.node[nodeDying]['mutant']:
 				simGraph.node[nodeDying]['mutant']=simGraph.node[nodeReproducing]['mutant']

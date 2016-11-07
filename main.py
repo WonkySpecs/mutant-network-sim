@@ -4,8 +4,8 @@ import time
 
 print("Initialized")
 
-nodes=50
-numTrials=1500
+nodes=10
+numTrials=1000
 
 #Cycle
 # G=nx.Graph()
