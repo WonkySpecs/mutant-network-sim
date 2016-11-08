@@ -29,7 +29,6 @@ class Simulator():
 	#Basic implementation for running moran process on the graph stored in self.graphStructure
 	#Scales very poorly on graphs with a large number of ndoes as the algorithm often select 'useless' nodes to reproduce that will not change the state of the graph.
 	def runTrial(self, fitness, mStart = -1):
-
 		#Initialization
 		sTime = time.time()
 		self.resetGraphStructure()
@@ -71,7 +70,7 @@ class Simulator():
 					numMutants -= 1
 					numNonMutants += 1
 			iterations += 1
-		print(str(iterations) + " iterations in " + str(time.time()-sTime))
+		print("Final mutants: {}, calculated {} iterations in {}s".format(numMutants, iterations, time.time()-sTime))
 		return iterations, numMutants, numNonMutants
 
 	#To enable simulation on large graphs, we must convert to a different (equivalent) algorithm.
@@ -84,7 +83,7 @@ class Simulator():
 		self.resetGraphStructure()
 		simGraph = self.graphStructure #nx.Graph(self.graphStructure)
 		numNodes = len(simGraph.node)
-		if mStart ==-1:
+		if mStart == -1:
 			mutantStart = random.randint(0, numNodes-1)
 		else:
 			mutantStart = mStart
@@ -94,7 +93,7 @@ class Simulator():
 		iterations = 0
 
 		#The slight change to the method of selecting the node to reproduce (only from the active set) is the only real change from above, may want to merge together
-		activeMutants = [mStart]
+		activeMutants = [mutantStart]
 		activeNonMutants = [i for i in simGraph.neighbors(mutantStart)]
 
 		while numMutants!=0 and numNonMutants!=0:
