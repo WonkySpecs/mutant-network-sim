@@ -122,10 +122,26 @@ class Simulator():
 					numMutants += 1
 					numNonMutants -= 1
 					activeNonMutants.remove(nodeDying)
-					activeMutants.append(nodeDying)
+
+					#Check if new mutant has any non mutant neighbours - if so, isActive is true, otherwise not
+					isActive = False
 					for n in simGraph.neighbors(nodeDying):
-						if not simGraph.node[n]['mutant'] and n not in activeNonMutants:
-							activeNonMutants.append(n)
+						#If any non mutant neighbours of the new mutant were not active, they are now
+						if not simGraph.node[n]['mutant']:
+							isActive = True
+							if n not in activeNonMutants:
+								activeNonMutants.append(n)
+						#If any mutant neighbour of the new mutant no longer has any non mutant neighbours it is no longer active
+						else:
+							stillActive = False
+							for nn in simGraph.neighbors(n):
+								if not simGraph.node[nn]['mutant']:
+									stillActive = True
+									break
+							if not stillActive:
+								activeMutants.remove(n)
+					if isActive:
+						activeMutants.append(nodeDying)
 				else:
 					numMutants -= 1
 					numNonMutants += 1
@@ -133,8 +149,6 @@ class Simulator():
 					activeMutants.remove(nodeDying)
 					activeNonMutants.append(nodeDying)
 
-					#For each of the neighbours of the former mutant node, we check if any of their neighbours are now mutants- if not, remove from activeNodes
-					#This process is technically O(n^2) but constants should be small, only possible problem could arise from highly connected graph (clique in particular, where this function is useless [all nodes are active] but will take lots of time)
 					for i in simGraph.neighbors(nodeDying):
 						if not simGraph.node[i]['mutant']:
 							noLongerActive = True
@@ -144,6 +158,9 @@ class Simulator():
 									break
 							if noLongerActive:
 								activeNonMutants.remove(i)
+						else:
+							if i not in activeMutants:
+								activeMutants.append(i)
 
 			iterations += 1
 		print("Final mutants: {}, calculated {} iterations in {}s".format(numMutants, iterations, time.time()-sTime))
