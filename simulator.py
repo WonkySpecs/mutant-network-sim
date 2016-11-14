@@ -182,6 +182,6 @@ class Simulator():
 				else:
 					fixated += 1
 			print(fixated, extinct, totalIter/trials)
-			print(fixated/(extinct+fixated))
+			print(float(fixated)/(extinct+fixated))
 		else:
 			print("Failed to run sim: No graph loaded")
