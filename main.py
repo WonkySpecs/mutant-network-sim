@@ -5,7 +5,7 @@ import sys
 
 print("Initialized")
 
-nodes=5000
+nodes=500
 numTrials=1000
 graphType = "cycle"
 
@@ -45,13 +45,31 @@ elif graphType == "clique-wheel":
 		print("nodes must be even for a clique wheel graph")
 		sys.exit()
 
-
-
 for i in range(len(G.node)):
 	G.node[i]['mutant']=False
-startTime=time.time()
-graphSim=Simulator()
+
+
+#startTime=time.time()
+graphSim=Simulator(False)
 graphSim.loadGraphStructure(G)
-graphSim.runSim(numTrials, 5, -1)
-totTime=time.time()-startTime
-print(str(numTrials)+ " trials ran in " + str(totTime) + ", average trial was " + str(totTime/numTrials))
+
+metaNumTrials = 500
+totalDiff = 0
+maxDiff = 0
+minDiff = 1
+r = 5.0
+for i in range(metaNumTrials):
+	expectedF = 1-1/r
+	fixated, extinct, iterations = graphSim.runSim(numTrials, r, -1)
+	actualF = float(fixated)/numTrials
+	diff = abs(actualF - expectedF)
+	if diff > maxDiff:
+		maxDiff = diff
+	if diff < minDiff:
+		minDiff = diff
+	totalDiff += diff
+	print(i)
+averageDiff = float(totalDiff)/metaNumTrials
+print("Average diff = {}, maxDiff = {}, minDiff = {}".format(averageDiff, maxDiff, minDiff))
+# totTime=time.time()-startTime
+# print(str(numTrials)+ " trials ran in " + str(totTime) + ", average trial was " + str(totTime/numTrials))

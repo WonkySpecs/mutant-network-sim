@@ -5,9 +5,10 @@ import sys
 
 
 class Simulator():
-	def __init__(self, graph = None):
+	def __init__(self, printOutput = True, graph = None):
 		print("Simulator instance created")
 		self.graphStructure = graph
+		self.printingOutput = printOutput
 
 	def loadGraphStructure(self, graph):
 		self.graphStructure = graph
@@ -70,7 +71,8 @@ class Simulator():
 					numMutants -= 1
 					numNonMutants += 1
 			iterations += 1
-		print("Final mutants: {}, calculated {} iterations in {}s".format(numMutants, iterations, time.time()-sTime))
+		if self.printingOutput:
+			print("Final mutants: {}, calculated {} iterations in {}s".format(numMutants, iterations, time.time()-sTime))
 		return iterations, numMutants, numNonMutants
 
 	#To enable simulation on large graphs, we must convert to a different (equivalent) algorithm.
@@ -163,7 +165,8 @@ class Simulator():
 								activeMutants.append(i)
 
 			iterations += 1
-		print("Final mutants: {}, calculated {} iterations in {}s".format(numMutants, iterations, time.time()-sTime))
+		if self.printingOutput:
+			print("Final mutants: {}, calculated {} iterations in {}s".format(numMutants, iterations, time.time()-sTime))
 		return iterations, numMutants, numNonMutants
 
 
@@ -175,13 +178,15 @@ class Simulator():
 			for i in range(trials):
 				trial = self.runTrialV2(fitness, mStart)
 				if i%(trials/10)==0:
-					print(i)
+					if self.printingOutput:
+						print(i)
 				totalIter += trial[0]
 				if trial[1]==0:
 					extinct += 1
 				else:
 					fixated += 1
-			print(fixated, extinct, totalIter/trials)
-			print(float(fixated)/(extinct+fixated))
+			# print(fixated, extinct, totalIter/trials)
+			# print(float(fixated)/(extinct+fixated))
+			return fixated, extinct, totalIter
 		else:
 			print("Failed to run sim: No graph loaded")
