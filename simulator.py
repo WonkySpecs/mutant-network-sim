@@ -89,7 +89,7 @@ class Simulator():
 			mutantStart = random.randint(0, numNodes-1)
 		else:
 			mutantStart = mStart
-		simGraph.node[mutantStart]['mutant']=True
+		simGraph.node[mutantStart]['mutant'] = True
 		numMutants = 1
 		numNonMutants = numNodes-1
 		iterations = 0

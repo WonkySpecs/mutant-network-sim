@@ -50,7 +50,7 @@ def buildGraph(graphType, nodes):
 		G.node[i]['mutant'] = False
 	return G
 
-nodes=50
+nodes=500
 numTrials=100
 graphType = "wheel_graph"
 
