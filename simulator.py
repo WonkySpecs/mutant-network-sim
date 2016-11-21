@@ -169,6 +169,123 @@ class Simulator():
 			print("Final mutants: {}, calculated {} iterations in {}s".format(numMutants, iterations, time.time()-sTime))
 		return iterations, numMutants, numNonMutants
 
+	def runTrialV3(self, fitness, mStart = -1):
+		sTime = time.time()
+		self.resetGraphStructure()
+		simGraph = self.graphStructure #nx.Graph(self.graphStructure)
+		numNodes = len(simGraph.node)
+		if mStart == -1:
+			mutantStart = random.randint(0, numNodes-1)
+		else:
+			mutantStart = mStart
+		simGraph.node[mutantStart]['mutant']=True
+		numMutants = 1
+		numNonMutants = numNodes-1
+		iterations = 0
+
+		#Precalculating this as it takes little memory but a lookup is a lot faster than having to recalculate large bits of this every iteration
+		nodeStrength = [float(1)/len(simGraph.edges(n)) for n in simGraph.node]
+
+		#activeEdges tracks all the edges between mutants and non mutants
+		#To begin, this is all the edges to the initial mutant
+		activeEdges = simGraph.edges(mStart)
+
+		#Until mutant has fixated or gone extinct, choose a node, choose a neighbour and reproduce
+		while numMutants!=0 and numNonMutants!=0:
+			#The chance of selecting any given edge, (u,v), in the graph is (fitness of u/sum of all fitnesses) * (1/deg(u))
+			totalWeight = 0
+
+			for (u,v) in activeEdges:
+				#There will always be one mutant and one non mutant as this is the definition of an acitve edge
+				if simGraph.node[u]['mutant']:
+					totalWeight += nodeStrength[u]*fitness + nodeStrength[v]
+					
+				else:
+					totalWeight += nodeStrength[u] + nodeStrength[v]*fitness
+
+			c = random.uniform(0, totalWeight)
+
+			#Really hate this, huge code replication
+			#Start from top of list (cuts maximum number of edge check in half)
+			if c<totalWeight/float(2):
+				edgeChoice = -1
+				while c>0:
+					edgeChoice +=1
+					u = activeEdges[edgeChoice][0]
+					v = activeEdges[edgeChoice][1]
+
+					if simGraph.node[u]['mutant']:
+						c -= nodeStrength[u]*fitness + nodeStrength[v]
+					else:
+						c -= nodeStrength[u] + nodeStrength[v]*fitness
+
+					n = random.uniform(0,fitness+1)
+
+					if n<1:
+						#Choose non mutant
+						if simGraph.node[u]['mutant']:
+							nodeReproducing = v
+							nodeDying = u
+						else:
+							nodeReproducing = u
+							nodeDying = v
+					else:
+						#Choose mutant
+						if simGraph.node[u]['mutant']:
+							nodeReproducing = u
+							nodeDying = v
+						else:
+							nodeReproducing = v
+							nodeDying = u
+			#Start from bottom of list
+			else:
+				edgeChoice = len(activeEdges)
+				while c>totalWeight/2.0:
+					edgeChoice -=1
+					u = activeEdges[edgeChoice][0]
+					v = activeEdges[edgeChoice][1]
+
+					if simGraph.node[u]['mutant']:
+						c -= nodeStrength[u]*fitness + nodeStrength[v]
+					else:
+						c -= nodeStrength[u] + nodeStrength[v]*fitness
+
+					n = random.uniform(0,fitness+1)
+
+					if n<1:
+						#Choose non mutant
+						if simGraph.node[u]['mutant']:
+							nodeReproducing = v
+							nodeDying = u
+						else:
+							nodeReproducing = u
+							nodeDying = v
+					else:
+						#Choose mutant
+						if simGraph.node[u]['mutant']:
+							nodeReproducing = u
+							nodeDying = v
+						else:
+							nodeReproducing = v
+							nodeDying = u
+			simGraph.node[nodeDying]['mutant'] = simGraph.node[nodeReproducing]['mutant']
+
+			if simGraph.node[nodeReproducing]['mutant']:
+				numMutants += 1
+				numNonMutants -= 1
+			else: 
+				numMutants -= 1
+				numNonMutants += 1
+
+			#For the node that changed, status of all edges will toggle - if active now nonactive and vice versa
+			for e in simGraph.edges(nodeDying):
+				if e in activeEdges:
+					activeEdges.remove(e)
+				else:
+					activeEdges.append(e)
+
+			iterations +=1
+		return iterations, numMutants, numNonMutants
 
 	def runSim(self, trials, fitness = 1.1, mStart = -1):
 		fixated = 0

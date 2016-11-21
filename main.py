@@ -50,35 +50,40 @@ def buildGraph(graphType, nodes):
 		G.node[i]['mutant'] = False
 	return G
 
-nodes=500
-numTrials=100
-graphType = "wheel_graph"
+nodes=100
+numTrials=4000
+graphType = "complete"
 
 G = nx.Graph(buildGraph(graphType, nodes))
 
 #startTime=time.time()
-graphSim=Simulator(False)
+graphSim=Simulator(True)
 graphSim.loadGraphStructure(G)
 
-metaNumTrials = 500
-totalDiff = 0
-fixation = 0
-maxDiff = 0
-minDiff = 1
-r = 1.1
-for i in range(metaNumTrials):
-	expectedF = 1 - 1/r
-	fixated, extinct, iterations = graphSim.runSim(numTrials, r, 0)
-	fixation += fixated
-	actualF = float(fixated)/numTrials
-	diff = abs(actualF - expectedF)
-	if diff > maxDiff:
-		maxDiff = diff
-	if diff < minDiff:
-		minDiff = diff
-	totalDiff += diff
-	print(i)
-averageDiff = float(totalDiff)/metaNumTrials
-print("Average diff = {}, maxDiff = {}, minDiff = {}, total fixation rate was {}".format(averageDiff, maxDiff, minDiff, float(fixation)/(metaNumTrials*numTrials)))	
+fixated, extinct, iterations = graphSim.runSim(numTrials, 5, 0)
+
+print("{} fixated, {} extinct, {} fixation".format(fixated, extinct, fixated/(fixated+extinct)))
+
+#For running many batches of trials
+# metaNumTrials = 500
+# totalDiff = 0
+# fixation = 0
+# maxDiff = 0
+# minDiff = 1
+# r = 1.1
+# for i in range(metaNumTrials):
+# 	expectedF = 1 - 1/r
+# 	fixated, extinct, iterations = graphSim.runSim(numTrials, r, 0)
+# 	fixation += fixated
+# 	actualF = float(fixated)/numTrials
+# 	diff = abs(actualF - expectedF)
+# 	if diff > maxDiff:
+# 		maxDiff = diff
+# 	if diff < minDiff:
+# 		minDiff = diff
+# 	totalDiff += diff
+# 	print(i)
+# averageDiff = float(totalDiff)/metaNumTrials
+# print("Average diff = {}, maxDiff = {}, minDiff = {}, total fixation rate was {}".format(averageDiff, maxDiff, minDiff, float(fixation)/(metaNumTrials*numTrials)))
 # totTime=time.time()-startTime
 # print(str(numTrials)+ " trials ran in " + str(totTime) + ", average trial was " + str(totTime/numTrials))

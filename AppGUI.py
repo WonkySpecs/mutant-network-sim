@@ -15,7 +15,6 @@ class SimSettingWindow:
 
 		self.graphSelectFrame = tk.Frame(self.master)
 		self.graphSelectFrame.grid(column = 0, row = 0)
-
 		self.graphListboxScrollbar = tk.ttk.Scrollbar(self.graphSelectFrame)
 		self.graphListboxScrollbar.grid(column = 1, row = 0, sticky = tk.N + tk.S)
 		self.graphListbox = tk.Listbox(self.graphSelectFrame, yscrollcommand = self.graphListboxScrollbar.set, selectmode = tk.SINGLE)
@@ -25,11 +24,12 @@ class SimSettingWindow:
 
 		self.graphSettingFrame = tk.ttk.LabelFrame(self.master)
 		self.graphSettingFrame.grid(column = 1, row = 0, sticky = tk.N + tk.E + tk.S + tk.W)
-
 		self.nodeNumLabel = tk.Label(self.graphSettingFrame, text = "Number of nodes:")
 		self.nodeNumLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 0)
 		self.nodeNumEntry = tk.Entry(self.graphSettingFrame)
 		self.nodeNumEntry.grid(in_ = self.graphSettingFrame, column = 1, row = 0)
+		self.label2 = tk.Label(self.graphSettingFrame, text = "Something else:")
+		self.label2.grid(in_ = self.graphSettingFrame, column = 0, row = 1)
 		self.entry2 = tk.Entry(self.graphSettingFrame)
 		self.entry2.grid(in_ = self.graphSettingFrame, column = 1, row = 1)
 
