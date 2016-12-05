@@ -51,18 +51,19 @@ def buildGraph(graphType, nodes):
 	return G
 
 nodes=100
-numTrials=4000
-graphType = "complete"
+numTrials=1000
+graphType = "urchin"
 
 G = nx.Graph(buildGraph(graphType, nodes))
 
-#startTime=time.time()
 graphSim=Simulator(True)
 graphSim.loadGraphStructure(G)
 
-fixated, extinct, iterations = graphSim.runSim(numTrials, 5, 0)
 
-print("{} fixated, {} extinct, {} fixation".format(fixated, extinct, fixated/(fixated+extinct)))
+startTime=time.time()
+fixated, extinct, iterations = graphSim.runSim(numTrials, 6, nodes - 1)
+
+print("{} fixated, {} extinct, {} fixation\nTook {} seconds".format(fixated, extinct, fixated/(fixated+extinct), time.time() - startTime))
 
 #For running many batches of trials
 # metaNumTrials = 500

@@ -170,6 +170,9 @@ class Simulator():
 		return iterations, numMutants, numNonMutants
 
 	def runTrialV3(self, fitness, mStart = -1):
+		''' Theorertically optimal way to run sim is to only pick useful edges - this function implements that.
+			Turns out selecting a mutant becomes hard, so there isnt really any time saving (and it seems to be slower)
+			on top of all that I've implemented it incorrectly and results are not valid '''
 		sTime = time.time()
 		self.resetGraphStructure()
 		simGraph = self.graphStructure #nx.Graph(self.graphStructure)
@@ -188,7 +191,7 @@ class Simulator():
 
 		#activeEdges tracks all the edges between mutants and non mutants
 		#To begin, this is all the edges to the initial mutant
-		activeEdges = simGraph.edges(mStart)
+		activeEdges = simGraph.edges(mutantStart)
 
 		#Until mutant has fixated or gone extinct, choose a node, choose a neighbour and reproduce
 		while numMutants!=0 and numNonMutants!=0:
@@ -278,13 +281,17 @@ class Simulator():
 				numNonMutants += 1
 
 			#For the node that changed, status of all edges will toggle - if active now nonactive and vice versa
-			for e in simGraph.edges(nodeDying):
-				if e in activeEdges:
-					activeEdges.remove(e)
+			for (u,v) in simGraph.edges(nodeDying):
+				if (u,v) in activeEdges:
+					activeEdges.remove((u,v))
+				elif (v,u) in activeEdges:
+					activeEdges.remove((v,u))
 				else:
-					activeEdges.append(e)
+					activeEdges.append((u,v))
 
 			iterations +=1
+		if self.printingOutput:
+			print("Final mutants: {}, calculated {} iterations in {}s".format(numMutants, iterations, time.time()-sTime))
 		return iterations, numMutants, numNonMutants
 
 	def runSim(self, trials, fitness = 1.1, mStart = -1):
