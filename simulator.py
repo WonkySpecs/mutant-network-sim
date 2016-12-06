@@ -93,6 +93,7 @@ class Simulator():
 		numMutants = 1
 		numNonMutants = numNodes-1
 		iterations = 0
+		uselessIterations = 0
 
 		#The slight change to the method of selecting the node to reproduce (only from the active set) is the only real change from above, may want to merge together
 		activeMutants = [mutantStart]
@@ -163,10 +164,11 @@ class Simulator():
 						else:
 							if i not in activeMutants:
 								activeMutants.append(i)
-
+			else:
+				uselessIterations += 1
 			iterations += 1
 		if self.printingOutput:
-			print("Final mutants: {}, calculated {} iterations in {}s".format(numMutants, iterations, time.time()-sTime))
+			print("Final mutants: {}, calculated {} iterations in {}s. {} useluess iterations".format(numMutants, iterations, time.time()-sTime, uselessIterations))
 		return iterations, numMutants, numNonMutants
 
 	def runTrialV3(self, fitness, mStart = -1):
@@ -294,7 +296,7 @@ class Simulator():
 			print("Final mutants: {}, calculated {} iterations in {}s".format(numMutants, iterations, time.time()-sTime))
 		return iterations, numMutants, numNonMutants
 
-	def runSim(self, trials, fitness = 1.1, mStart = -1):
+	def runSim(self, trials, fitness = 2, mStart = -1):
 		fixated = 0
 		extinct = 0
 		totalIter = 0
@@ -309,8 +311,6 @@ class Simulator():
 					extinct += 1
 				else:
 					fixated += 1
-			# print(fixated, extinct, totalIter/trials)
-			# print(float(fixated)/(extinct+fixated))
 			return fixated, extinct, totalIter
 		else:
 			print("Failed to run sim: No graph loaded")

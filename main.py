@@ -1,7 +1,9 @@
 from simulator import Simulator
 import networkx as nx
+import matplotlib
 import time
 import sys
+import random
 
 print("Initialized")
 
@@ -19,7 +21,16 @@ def buildGraph(graphType, nodes):
 			for i in range(nodes-1):
 				G.add_edge(i,i+1)
 			G.add_edge(0,nodes-1)
-
+		elif graphType == "chord-cycle":
+			for i in range(nodes-1):
+				G.add_edge(i,i+1)
+			G.add_edge(0,nodes-1)
+			print(G.edges())
+			for n in range(nodes - 1):
+				for n2 in range(n+1, nodes):
+					if random.random()>0.7:
+						G.add_edge(n,n2)
+			print(G.edges())
 		elif graphType == "urchin":
 			G = nx.Graph()
 			n = nodes//2
@@ -50,20 +61,21 @@ def buildGraph(graphType, nodes):
 		G.node[i]['mutant'] = False
 	return G
 
-nodes=100
-numTrials=1000
-graphType = "urchin"
+nodes=10
+numTrials=2000
+graphType = "chord-cycle"
 
 G = nx.Graph(buildGraph(graphType, nodes))
+print(G.edges())
+nx.draw(G)
 
-graphSim=Simulator(True)
-graphSim.loadGraphStructure(G)
-
-
-startTime=time.time()
-fixated, extinct, iterations = graphSim.runSim(numTrials, 6, nodes - 1)
-
-print("{} fixated, {} extinct, {} fixation\nTook {} seconds".format(fixated, extinct, fixated/(fixated+extinct), time.time() - startTime))
+#graphSim=Simulator(True)
+#graphSim.loadGraphStructure(G)
+#
+#startTime=time.time()
+#fixated, extinct, iterations = graphSim.runSim(numTrials, 5, - 1)
+#
+#print("{} fixated, {} extinct, {} fixation\nTook {} seconds".format(fixated, extinct, fixated/(fixated+extinct), time.time() - startTime))
 
 #For running many batches of trials
 # metaNumTrials = 500
