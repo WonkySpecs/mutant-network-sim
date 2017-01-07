@@ -1,6 +1,6 @@
 from simulator import Simulator
 import networkx as nx
-import matplotlib
+import matplotlib.pyplot as plt
 import time
 import sys
 import random
@@ -28,7 +28,7 @@ def buildGraph(graphType, nodes):
 			print(G.edges())
 			for n in range(nodes - 1):
 				for n2 in range(n+1, nodes):
-					if random.random()>0.7:
+					if random.random()>0.9:
 						G.add_edge(n,n2)
 			print(G.edges())
 		elif graphType == "urchin":
@@ -61,21 +61,22 @@ def buildGraph(graphType, nodes):
 		G.node[i]['mutant'] = False
 	return G
 
-nodes=10
+nodes=500
 numTrials=2000
 graphType = "chord-cycle"
 
 G = nx.Graph(buildGraph(graphType, nodes))
-print(G.edges())
-nx.draw(G)
+# nx.draw(G)
+# plt.draw()
+# plt.show()
+graphSim=Simulator(True)
+graphSim.loadGraphStructure(G)
 
-#graphSim=Simulator(True)
-#graphSim.loadGraphStructure(G)
-#
-#startTime=time.time()
-#fixated, extinct, iterations = graphSim.runSim(numTrials, 5, - 1)
-#
-#print("{} fixated, {} extinct, {} fixation\nTook {} seconds".format(fixated, extinct, fixated/(fixated+extinct), time.time() - startTime))
+startTime=time.time()
+fixated, extinct, iterations = graphSim.runSim(numTrials, 5, - 1)
+
+print("{} fixated, {} extinct, {} fixation\nTook {} seconds".format(fixated, extinct, fixated/(fixated+extinct), time.time() - startTime))
+print(len(G.edges()))
 
 #For running many batches of trials
 # metaNumTrials = 500

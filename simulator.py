@@ -305,7 +305,9 @@ class Simulator():
 				trial = self.runTrialV2(fitness, mStart)
 				if i%(trials/10)==0:
 					if self.printingOutput:
+						print("----------------------------------------------------------\n")
 						print(i)
+						print("\n----------------------------------------------------------")
 				totalIter += trial[0]
 				if trial[1]==0:
 					extinct += 1
