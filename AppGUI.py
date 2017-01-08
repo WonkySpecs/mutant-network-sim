@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 
+#Map of graphType -> graphClass. Each class has a distinct set of input parameters.
 graphTypeClassMap = {
 					"cycle":"simple",
 					"path":"simple",
@@ -11,6 +12,12 @@ graphTypeClassMap = {
 					 }
 
 class SimSettingWindow:
+	'''	The GUI class for setting up a simulation. Allows user to select graph type and paramaters as well as trial parameters
+		Validates inputs then passes inputs to main.py to handle running simulation and providing output
+
+		All widgets are created during initialization then hidden and shown as appropriate - as there are not very many of them it is unnecessary to destroy and recreate them.
+		The populate methods handle which widgets are visible'''
+
 	def __init__(self, master):
 		self.master = master
 
@@ -30,11 +37,9 @@ class SimSettingWindow:
 		self.createWidgets()
 
 		self.populateGraphSelectFrame()
-
 		self.populateGraphSettingFrame()		
-		self.populateGraphSelectListbox()
-		
 		self.populateSimSettingFrame()
+		self.populateGraphSelectListbox()
 
 	#Create all widgets
 	def createWidgets(self):
@@ -59,7 +64,7 @@ class SimSettingWindow:
 		#---------------- simSettingFrame widgets  ------------------
 		self.numTrialLabel = tk.Label(self.simSettingFrame, text = "Number of trials:")
 		self.numTrialEntry = tk.ttk.Entry(self.simSettingFrame)
-		self.startSimButton = tk.ttk.Button(self.simSettingFrame, text = "Start Simulation", command = self.runSim)
+		self.startSimButton = tk.ttk.Button(self.simSettingFrame, text = "Start Simulation", command = self.validateInputAndRunSim)
 
 	def hideAllWidgetsInFrame(self, frame):
 		for child in frame.winfo_children():
@@ -110,8 +115,12 @@ class SimSettingWindow:
 	def graphSettingSetup(self, event):
 		self.populateGraphSettingFrame()
 
-	def runSim(self):
-		print(self.numTrialEntry.get())
+	def validateInputAndRunSim(self):
+		try:
+			numTrials = int(self.numTrialEntry.get())
+			print(numTrials)
+		except ValueError:
+			print("Number of trials must be an integer")
 		
 root = tk.Tk()
 root.resizable(width = False, height = False)
