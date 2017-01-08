@@ -1,24 +1,30 @@
 import tkinter as tk
 from tkinter import ttk
 
-class AppGUI:
-	def __init__(self, master):
-		self.master = master
-		self.frame = tk.Frame(self.master, width = 640, height = 480, relief = tk.SUNKEN, bd = 30)
-		self.frame.pack()
+graphTypeClassMap = {
+					"cycle":"simple",
+					"path":"simple",
+					"urchin":"simple",
+					"clique-wheel":"simple",
+					"complete":"simple",
+					"random":"random"
+					 }
 
 class SimSettingWindow:
 	def __init__(self, master):
 		self.master = master
 
+		self.master.grid_columnconfigure(1, minsize = 250)
+		self.master.grid_columnconfigure(2, minsize = 250)
+
 		#Set up frames
 		self.graphSelectFrame = tk.Frame(self.master)
 		self.graphSelectFrame.grid(column = 0, row = 0)
 
-		self.graphSettingFrame = tk.ttk.LabelFrame(self.master)
+		self.graphSettingFrame = tk.Frame(self.master)
 		self.graphSettingFrame.grid(column = 1, row = 0, sticky = tk.N + tk.E + tk.S + tk.W)
 
-		self.simSettingFrame = tk.ttk.LabelFrame(self.master)
+		self.simSettingFrame = tk.Frame(self.master)
 		self.simSettingFrame.grid(column = 2, row = 0, sticky = tk.N + tk.E + tk.S + tk.W)
 
 		self.createWidgets()
@@ -35,13 +41,14 @@ class SimSettingWindow:
 		#---------------- graphSettingFrame widgets------------------
 		self.emptyLabel = tk.Label(self.graphSettingFrame, text = "Select a graph type")
 
+		self.titleLabel = tk.Label(self.graphSettingFrame, text = "", justify = 'left')
+
 		self.nodeNumLabel = tk.Label(self.graphSettingFrame, text = "Number of nodes:")
-		self.nodeNumEntry = tk.Entry(self.graphSettingFrame)
+		self.nodeNumEntry = tk.ttk.Entry(self.graphSettingFrame)
 
 		self.label2 = tk.Label(self.graphSettingFrame, text = "Something else:")
 
-		self.entry2 = tk.Entry(self.graphSettingFrame)
-		#self.entry2.bind("a",self.qwe)
+		self.entry2 = tk.ttk.Entry(self.graphSettingFrame)
 
 		#---------------- graphSelectFrame widgets ------------------
 		self.graphSelectScrollbar = tk.ttk.Scrollbar(self.graphSelectFrame)
@@ -51,6 +58,8 @@ class SimSettingWindow:
 
 		#---------------- simSettingFrame widgets  ------------------
 		self.numTrialLabel = tk.Label(self.simSettingFrame, text = "Number of trials:")
+		self.numTrialEntry = tk.ttk.Entry(self.simSettingFrame)
+		self.startSimButton = tk.ttk.Button(self.simSettingFrame, text = "Start Simulation", command = self.runSim)
 
 	def hideAllWidgetsInFrame(self, frame):
 		for child in frame.winfo_children():
@@ -59,38 +68,52 @@ class SimSettingWindow:
 	def populateGraphSelectFrame(self):
 		self.hideAllWidgetsInFrame(self.graphSelectFrame)
 		self.graphSelectScrollbar.grid(column = 1, row = 0, sticky = tk.N + tk.S)
-		self.graphSelectListbox.grid(column = 0, row = 0, sticky = tk.W, padx = 3, pady = 1)
+		self.graphSelectListbox.grid(column = 0, row = 0, sticky = tk.W + tk.N + tk.S, padx = 3, pady = 1)
 
 	def populateGraphSelectListbox(self):
 		if self.graphSelectListbox is not None:
-			for item in ["one", "two", "three", "four",5,6,7,8,"cycle"]:
+			for item in graphTypeClassMap.keys():#["Cycle", "Path", "Urchin", "Clique-wheel", "Complete", "Random"]:
 			    self.graphSelectListbox.insert(tk.END, item)
 		else:
 			print("Tried to populate graphListbox before it exists in SimSettingWindow")
 
 	def populateGraphSettingFrame(self):
 		self.hideAllWidgetsInFrame(self.graphSettingFrame)
-		graphType = self.graphSelectListbox.curselection()
-		print(graphType)
-		if graphType:
-			print(self.graphSelectListbox.get(graphType))
-			self.nodeNumLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 0)
-			self.nodeNumEntry.grid(in_ = self.graphSettingFrame, column = 1, row = 0)
-			self.label2.grid(in_ = self.graphSettingFrame, column = 0, row = 1)
-			self.entry2.grid(in_ = self.graphSettingFrame, column = 1, row = 1)
+		selectIndexTuple = self.graphSelectListbox.curselection()
+		if selectIndexTuple:
+			graphType = self.graphSelectListbox.get(selectIndexTuple).lower()
+			graphClass = graphTypeClassMap.get(graphType,'NotInMap')
+
+			self.titleLabel["text"] = self.graphSelectListbox.get(selectIndexTuple)
+			self.titleLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 0)
+
+			if graphClass == "simple":
+				self.nodeNumLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 1)
+				self.nodeNumEntry.grid(in_ = self.graphSettingFrame, column = 1, row = 1)
+
+			else:
+				self.nodeNumLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 1)
+				self.nodeNumEntry.grid(in_ = self.graphSettingFrame, column = 1, row = 1)
+				self.label2.grid(in_ = self.graphSettingFrame, column = 0, row = 2)
+				self.entry2.grid(in_ = self.graphSettingFrame, column = 1, row = 2)
 		else:
-			print("No graph type")
 			self.emptyLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 0)
 			
 
 	def populateSimSettingFrame(self):
 		self.hideAllWidgetsInFrame(self.simSettingFrame)
-		self.numTrialLabel.grid(in_ = self.simSettingFrame, column = 2, row = 0)
+		self.numTrialLabel.grid(in_ = self.simSettingFrame, column = 0, row = 0)
+		self.numTrialEntry.grid(in_ = self.simSettingFrame, column = 1, row = 0)
+		self.startSimButton.grid(in_ = self.simSettingFrame, column = 0)
 
+	#This is mostly to ignore the event for now, bit awkward
 	def graphSettingSetup(self, event):
-		print(event.x, event.y)
 		self.populateGraphSettingFrame()
+
+	def runSim(self):
+		print(self.numTrialEntry.get())
 		
 root = tk.Tk()
+root.resizable(width = False, height = False)
 window = SimSettingWindow(root)
 root.mainloop()
