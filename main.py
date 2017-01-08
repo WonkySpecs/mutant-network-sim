@@ -61,6 +61,21 @@ def buildGraph(graphType, nodes):
 		G.node[i]['mutant'] = False
 	return G
 
+def setupAndRunSimulation(trialParams, graphParams, outputParams, metaTrial = False):
+	numTrials = trialParams['numTrials']
+	r = trialParams['fitness']
+	mStart = trialParams['startNode']
+
+	nodes = graphParams['nodes']
+	graphType = graphParams['graphType']
+	G = nx.Graph(buildGraph(graphType, nodes))
+
+	graphSim=Simulator(False)
+	graphSim.loadGraphStructure(G)
+	
+	fixated, extinct, iterations = graphSim.runSim(numTrials, r, mStart)
+	print("{} fixated, {} extinct, {} fixation\n".format(fixated, extinct, fixated/(fixated+extinct)))
+
 if __name__ == "__main__":
 	nodes=100
 	numTrials=2000
