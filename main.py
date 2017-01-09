@@ -70,7 +70,12 @@ def setupAndRunSimulation(trialParams, graphParams, outputParams, metaTrial = Fa
 	graphType = graphParams['graphType']
 	G = nx.Graph(buildGraph(graphType, nodes))
 
-	graphSim=Simulator(False)
+	if outputParams['outputType'] == 'simple':
+		printOutput = True
+	else:
+		printOutput = False
+
+	graphSim=Simulator(printOutput)
 	graphSim.loadGraphStructure(G)
 	print("Running simulation...")
 	fixated, extinct, iterations = graphSim.runSim(numTrials, r, mStart)

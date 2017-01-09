@@ -297,11 +297,9 @@ class Simulator():
 		if self.graphStructure!=None:
 			for i in range(trials):
 				trial = self.runTrialV2(fitness, mStart)
-				if i%(trials/10)==0:
+				if i%(trials/100)==0:
 					if self.printingOutput:
-						print("----------------------------------------------------------\n")
-						print(i)
-						print("\n----------------------------------------------------------")
+						print("{}% done".format(i*100/trials))
 				totalIter += trial[0]
 				if trial[1]==0:
 					extinct += 1

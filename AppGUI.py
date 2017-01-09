@@ -148,7 +148,7 @@ class SimSettingWindow:
 		#Validate sim settings
 		try:
 			numTrials = int(self.numTrialEntry.get())
-			fitness = int(self.mutantFitnessEntry.get())
+			fitness = float(self.mutantFitnessEntry.get())
 			mStart = int(self.mutantStartNodeEntry.get())
 		except:
 			print("Error with sim settings")
@@ -158,7 +158,9 @@ class SimSettingWindow:
 						'fitness'	: fitness ,
 						'startNode' : mStart
 						}
-		outputParams = {}
+		outputParams = {
+						'outputType':'simple'
+						}
 
 		print(graphParams)
 		print(trialParams)
