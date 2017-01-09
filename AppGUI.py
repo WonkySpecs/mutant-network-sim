@@ -180,10 +180,7 @@ class SimSettingWindow:
 		outputParams = {
 						'outputType':'simple'
 						}
-
-		print(graphParams)
-		print(trialParams)
-
+						
 		main.setupAndRunSimulation(trialParams, graphParams, outputParams)
 
 		
