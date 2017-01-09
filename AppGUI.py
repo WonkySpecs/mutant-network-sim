@@ -127,7 +127,7 @@ class SimSettingWindow:
 		self.mutantFitnessEntry.grid(in_ = self.simSettingFrame, column = 1, row = 1)
 		self.mutantStartNodeLabel.grid(in_ = self.simSettingFrame, column = 0, row = 2)
 		self.mutantStartNodeEntry.grid(in_ = self.simSettingFrame, column = 1, row = 2)
-		self.startSimButton.grid(in_ = self.simSettingFrame, column = 0)
+		self.startSimButton.grid(in_ = self.simSettingFrame, column = 0, columnspan = 2)
 
 	#This is mostly to ignore the event for now, bit awkward
 	def graphSettingSetup(self, event):
@@ -140,6 +140,11 @@ class SimSettingWindow:
 		except ValueError:
 			print("Error with graph settings")
 			return
+
+		if numNodes < 2:
+			print("Must have at least 2 nodes")
+			return
+
 		graphParams = {
 						'graphType' : self.selectedGraphType ,
 						'nodes'		: numNodes
@@ -151,8 +156,22 @@ class SimSettingWindow:
 			fitness = float(self.mutantFitnessEntry.get())
 			mStart = int(self.mutantStartNodeEntry.get())
 		except:
+			#Should split these up probably
 			print("Error with sim settings")
 			return
+		if numTrials < 1:
+			print("Must have at least 1 trial")
+			return
+		if fitness <= 0:
+			print("fitness cannot be zero or negative")
+			return
+		if mStart < -1:
+			print("Mutant start node must be positive or -1 for random")
+			return
+		if mStart > numNodes - 1:
+			print("Mutant start node must be lower than number of nodes - 1")
+			return
+
 		trialParams = {
 						'numTrials' : numTrials ,
 						'fitness'	: fitness ,
