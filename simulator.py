@@ -71,8 +71,6 @@ class Simulator():
 					numMutants -= 1
 					numNonMutants += 1
 			iterations += 1
-		if self.printingOutput:
-			print("Final mutants: {}, calculated {} iterations in {}s".format(numMutants, iterations, time.time()-sTime))
 		return iterations, numMutants, numNonMutants
 
 	#To enable simulation on large graphs, we must convert to a different (equivalent) algorithm.
@@ -167,8 +165,6 @@ class Simulator():
 			else:
 				uselessIterations += 1
 			iterations += 1
-		if self.printingOutput:
-			print("Final mutants: {}, calculated {} iterations in {}s. {} useluess iterations".format(numMutants, iterations, time.time()-sTime, uselessIterations))
 		return iterations, numMutants, numNonMutants
 
 	def runTrialV3(self, fitness, mStart = -1):
@@ -292,8 +288,6 @@ class Simulator():
 					activeEdges.append((u,v))
 
 			iterations +=1
-		if self.printingOutput:
-			print("Final mutants: {}, calculated {} iterations in {}s".format(numMutants, iterations, time.time()-sTime))
 		return iterations, numMutants, numNonMutants
 
 	def runSim(self, trials, fitness = 2, mStart = -1):

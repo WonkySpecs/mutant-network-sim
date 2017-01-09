@@ -51,6 +51,7 @@ class SimSettingWindow:
 
 		self.numNodesLabel = tk.Label(self.graphSettingFrame, text = "Number of nodes:")
 		self.numNodesEntry = tk.ttk.Entry(self.graphSettingFrame)
+		self.numNodesEntry.insert(tk.END, '100')
 
 		self.label2 = tk.Label(self.graphSettingFrame, text = "Something else:")
 
@@ -65,6 +66,16 @@ class SimSettingWindow:
 		#---------------- simSettingFrame widgets  ------------------
 		self.numTrialLabel = tk.Label(self.simSettingFrame, text = "Number of trials:")
 		self.numTrialEntry = tk.ttk.Entry(self.simSettingFrame)
+		self.numTrialEntry.insert(tk.END, '1000')
+
+		self.mutantFitnessLabel = tk.Label(self.simSettingFrame, text = "Mutant relative fitness:")
+		self.mutantFitnessEntry = tk.ttk.Entry(self.simSettingFrame)
+		self.mutantFitnessEntry.insert(tk.END, '2')
+
+		self.mutantStartNodeLabel = tk.Label(self.simSettingFrame, text = "Mutant start node:")
+		self.mutantStartNodeEntry = tk.ttk.Entry(self.simSettingFrame)
+		self.mutantStartNodeEntry.insert(tk.END, '-1')
+
 		self.startSimButton = tk.ttk.Button(self.simSettingFrame, text = "Start Simulation", command = self.validateInputAndRunSim)
 
 	def hideAllWidgetsInFrame(self, frame):
@@ -112,6 +123,10 @@ class SimSettingWindow:
 		self.hideAllWidgetsInFrame(self.simSettingFrame)
 		self.numTrialLabel.grid(in_ = self.simSettingFrame, column = 0, row = 0)
 		self.numTrialEntry.grid(in_ = self.simSettingFrame, column = 1, row = 0)
+		self.mutantFitnessLabel.grid(in_ = self.simSettingFrame, column = 0, row = 1)
+		self.mutantFitnessEntry.grid(in_ = self.simSettingFrame, column = 1, row = 1)
+		self.mutantStartNodeLabel.grid(in_ = self.simSettingFrame, column = 0, row = 2)
+		self.mutantStartNodeEntry.grid(in_ = self.simSettingFrame, column = 1, row = 2)
 		self.startSimButton.grid(in_ = self.simSettingFrame, column = 0)
 
 	#This is mostly to ignore the event for now, bit awkward
@@ -119,8 +134,6 @@ class SimSettingWindow:
 		self.populateGraphSettingFrame()
 
 	def validateInputAndRunSim(self):
-		print(self.selectedGraphType)
-		print(self.selectedGraphClass)
 		#Validate graph settings
 		try:
 			numNodes = int(self.numNodesEntry.get())
@@ -135,15 +148,20 @@ class SimSettingWindow:
 		#Validate sim settings
 		try:
 			numTrials = int(self.numTrialEntry.get())
+			fitness = int(self.mutantFitnessEntry.get())
+			mStart = int(self.mutantStartNodeEntry.get())
 		except:
 			print("Error with sim settings")
 			return
 		trialParams = {
 						'numTrials' : numTrials ,
-						'fitness'	: 5 ,
-						'startNode' : -1
+						'fitness'	: fitness ,
+						'startNode' : mStart
 						}
 		outputParams = {}
+
+		print(graphParams)
+		print(trialParams)
 
 		main.setupAndRunSimulation(trialParams, graphParams, outputParams)
 
