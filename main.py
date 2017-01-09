@@ -72,7 +72,7 @@ def setupAndRunSimulation(trialParams, graphParams, outputParams, metaTrial = Fa
 
 	graphSim=Simulator(False)
 	graphSim.loadGraphStructure(G)
-	
+	print("Running simulation...")
 	fixated, extinct, iterations = graphSim.runSim(numTrials, r, mStart)
 	print("{} fixated, {} extinct, {} fixation\n".format(fixated, extinct, fixated/(fixated+extinct)))
 

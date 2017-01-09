@@ -1,4 +1,5 @@
 import tkinter as tk
+import main
 from tkinter import ttk
 
 #Map of graphType -> graphClass. Each class has a distinct set of input parameters.
@@ -48,8 +49,8 @@ class SimSettingWindow:
 
 		self.titleLabel = tk.Label(self.graphSettingFrame, text = "", justify = 'left')
 
-		self.nodeNumLabel = tk.Label(self.graphSettingFrame, text = "Number of nodes:")
-		self.nodeNumEntry = tk.ttk.Entry(self.graphSettingFrame)
+		self.numNodesLabel = tk.Label(self.graphSettingFrame, text = "Number of nodes:")
+		self.numNodesEntry = tk.ttk.Entry(self.graphSettingFrame)
 
 		self.label2 = tk.Label(self.graphSettingFrame, text = "Something else:")
 
@@ -77,7 +78,7 @@ class SimSettingWindow:
 
 	def populateGraphSelectListbox(self):
 		if self.graphSelectListbox is not None:
-			for item in graphTypeClassMap.keys():#["Cycle", "Path", "Urchin", "Clique-wheel", "Complete", "Random"]:
+			for item in graphTypeClassMap.keys():
 			    self.graphSelectListbox.insert(tk.END, item)
 		else:
 			print("Tried to populate graphListbox before it exists in SimSettingWindow")
@@ -88,17 +89,19 @@ class SimSettingWindow:
 		if selectIndexTuple:
 			graphType = self.graphSelectListbox.get(selectIndexTuple).lower()
 			graphClass = graphTypeClassMap.get(graphType,'NotInMap')
+			self.selectedGraphType = graphType
+			self.selectedGraphClass = graphClass
 
 			self.titleLabel["text"] = self.graphSelectListbox.get(selectIndexTuple)
 			self.titleLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 0)
 
 			if graphClass == "simple":
-				self.nodeNumLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 1)
-				self.nodeNumEntry.grid(in_ = self.graphSettingFrame, column = 1, row = 1)
+				self.numNodesLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 1)
+				self.numNodesEntry.grid(in_ = self.graphSettingFrame, column = 1, row = 1)
 
 			else:
-				self.nodeNumLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 1)
-				self.nodeNumEntry.grid(in_ = self.graphSettingFrame, column = 1, row = 1)
+				self.numNodesLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 1)
+				self.numNodesEntry.grid(in_ = self.graphSettingFrame, column = 1, row = 1)
 				self.label2.grid(in_ = self.graphSettingFrame, column = 0, row = 2)
 				self.entry2.grid(in_ = self.graphSettingFrame, column = 1, row = 2)
 		else:
@@ -116,11 +119,34 @@ class SimSettingWindow:
 		self.populateGraphSettingFrame()
 
 	def validateInputAndRunSim(self):
+		print(self.selectedGraphType)
+		print(self.selectedGraphClass)
+		#Validate graph settings
+		try:
+			numNodes = int(self.numNodesEntry.get())
+		except ValueError:
+			print("Error with graph settings")
+			return
+		graphParams = {
+						'graphType' : self.selectedGraphType ,
+						'nodes'		: numNodes
+						}
+
+		#Validate sim settings
 		try:
 			numTrials = int(self.numTrialEntry.get())
-			print(numTrials)
-		except ValueError:
-			print("Number of trials must be an integer")
+		except:
+			print("Error with sim settings")
+			return
+		trialParams = {
+						'numTrials' : numTrials ,
+						'fitness'	: 5 ,
+						'startNode' : -1
+						}
+		outputParams = {}
+
+		main.setupAndRunSimulation(trialParams, graphParams, outputParams)
+
 		
 root = tk.Tk()
 root.resizable(width = False, height = False)
