@@ -165,11 +165,8 @@ class SimSettingWindow:
 		if fitness <= 0:
 			print("fitness cannot be zero or negative")
 			return
-		if mStart < -1:
-			print("Mutant start node must be positive or -1 for random")
-			return
-		if mStart > numNodes - 1:
-			print("Mutant start node must be lower than number of nodes - 1")
+		if mStart < -1 or mStart > numNodes - 1:
+			print("Mutant start node must be between 0 and number of nodes - 1, or -1 for random")
 			return
 
 		trialParams = {
@@ -180,7 +177,7 @@ class SimSettingWindow:
 		outputParams = {
 						'outputType':'simple'
 						}
-						
+
 		main.setupAndRunSimulation(trialParams, graphParams, outputParams)
 
 		
