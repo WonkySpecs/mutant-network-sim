@@ -12,7 +12,7 @@ graphTypeClassMap = {
 					"random":"random"
 					 }
 
-simTypes = ["Naive", "Active nodes", "Active edges"]
+simTypes = ["naive", "active-nodes", "active-edges"]
 
 class SimSettingWindow:
 	'''	The GUI class for setting up a simulation. Allows user to select graph type and paramaters as well as trial parameters
@@ -187,7 +187,8 @@ class SimSettingWindow:
 		trialParams = {
 						'numTrials' : numTrials ,
 						'fitness'	: fitness ,
-						'startNode' : mStart
+						'startNode' : mStart ,
+						'simType'	: self.simTypeSelected.get()
 						}
 		outputParams = {
 						'outputType':'simple'

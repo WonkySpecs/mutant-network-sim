@@ -67,6 +67,8 @@ def setupAndRunSimulation(trialParams, graphParams, outputParams, metaTrial = Fa
 	numTrials = trialParams['numTrials']
 	r = trialParams['fitness']
 	mStart = trialParams['startNode']
+	simType = trialParams['simType']
+	print(simType)
 
 	nodes = graphParams['nodes']
 	graphType = graphParams['graphType']

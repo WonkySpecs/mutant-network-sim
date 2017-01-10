@@ -308,13 +308,21 @@ class Simulator():
 			iterations +=1
 		return iterations, numMutants, numNonMutants
 
-	def runSim(self, trials, fitness = 2, mStart = -1):
+	def runSim(self, trials, fitness = 2, mStart = -1, simType = 'naive'):
 		fixated = 0
 		extinct = 0
 		totalIter = 0
 		if self.graphStructure!=None:
 			for i in range(trials):
-				trial = self.runTrialV2(fitness, mStart)
+				if simType == 'naive':
+					trial = self.runTrial(fitness, mStart)
+				elif simType == 'active-nodes':
+					trial = self.runTrialV2(fitness, mStart)
+				elif simType == 'active-edges':
+					trial = self.runTrialV3(fitness, mStart)
+				else:
+					print("Invalid simType passed to simulator.runSim")
+
 				if i%(trials/100)==0:
 					if self.printingOutput:
 						print("{}% done".format(i*100/trials))
