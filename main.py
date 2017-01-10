@@ -87,7 +87,7 @@ def setupAndRunSimulation(trialParams, graphParams, outputParams, metaTrial = Fa
 
 if __name__ == "__main__":
 	nodes = 100
-	numTrials = 2000
+	numTrials = 1000
 	graphType = "complete"
 
 	G = nx.Graph(buildGraph(graphType, nodes))

@@ -44,10 +44,23 @@ class Simulator():
 		numNonMutants = numNodes-1
 		iterations = 0
 
+		mutants = [mutantStart]
+		nonMutants = [i for i in range(numNodes) if i != mutantStart]
+
 		#Until mutant has fixated or gone extinct, choose a node, choose a neighbour and reproduce
 		while numMutants!=0 and numNonMutants!=0:
+
+			#All mutants are as likely to be picked as each toher, and the same for non-mutants
+			#So we pick which category we want the node to come from, then pick at random from that category
 			t = (numMutants * fitness) + numNonMutants
 			nodeChoice = random.uniform(0, t)
+
+			if nodeChoice > numNonMutants:
+				#Pick a mutant
+				nodeReproducing = mutants[random.randint(0,len(mutants) - 1)]
+			else:
+				#Pick a non-mutant
+				nodeReproducing = nonMutants[random.randint(0,len(nonMutants) - 1)]
 
 			n = -1
 			while nodeChoice>0:
@@ -67,9 +80,14 @@ class Simulator():
 				if simGraph.node[nodeReproducing]['mutant']==True:
 					numMutants += 1
 					numNonMutants -= 1
+					nonMutants.remove(nodeDying)
+					mutants.append(nodeDying)
 				else:
 					numMutants -= 1
 					numNonMutants += 1
+					mutants.remove(nodeDying)
+					nonMutants.append(nodeDying)
+
 			iterations += 1
 		return iterations, numMutants, numNonMutants
 
