@@ -46,7 +46,7 @@ class Simulator():
 
 		#Until mutant has fixated or gone extinct, choose a node, choose a neighbour and reproduce
 		while numMutants!=0 and numNonMutants!=0:
-			t = numMutants*fitness+numNonMutants
+			t = (numMutants * fitness) + numNonMutants
 			nodeChoice = random.uniform(0, t)
 
 			n = -1
@@ -98,10 +98,10 @@ class Simulator():
 		activeNonMutants = [i for i in simGraph.neighbors(mutantStart)]
 
 		while numMutants!=0 and numNonMutants!=0:
-			#c is total fitness of active ndoes
-			c = random.uniform(0, (len(activeMutants)*fitness)+len(activeNonMutants))
+			#c is a random float from 0 - total fitness of all active nodes
+			c = random.uniform(0, (len(activeMutants) * fitness) + len(activeNonMutants))
 
-			#Each mmutant/non-mutant is as likely as any other, so we just pick one set or the other then pick at random from that set
+			#Each mutant/non-mutant is as likely as any other, so we just pick one set or the other then pick at random from that set
 			if c > len(activeNonMutants):
 				nodeReproducing = activeMutants[random.randint(0, len(activeMutants) - 1)]
 			else:
