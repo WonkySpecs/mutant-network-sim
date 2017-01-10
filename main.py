@@ -7,7 +7,7 @@ import random
 
 print("Initialized")
 
-def buildGraph(graphType, nodes, randomType = None):
+def buildGraph(graphType, nodes, otherParams = None):
 	G = nx.Graph()
 
 	if graphType == "complete":
@@ -52,6 +52,19 @@ def buildGraph(graphType, nodes, randomType = None):
 		else:
 			print("nodes must be even for a clique wheel graph")
 			return
+	elif graphType == "random":
+		try:
+			randomType = otherParams['randomType']
+			p = otherParams['p']
+		except:
+			print("Not all parameters necessary for a random graph were passed to main.buildGraph")
+			return
+
+		if randomType == "erdos-renyi":
+			G = fast_gnp_random_graph(nodes, p)
+	else:
+		print("Invalid graphType passed to main.buildGraph")
+		return
 
 	for i in range(len(G.node)):
 		G.node[i]['mutant'] = False
@@ -65,7 +78,10 @@ def setupAndRunSimulation(trialParams, graphParams, outputParams, metaTrial = Fa
 
 	nodes = graphParams['nodes']
 	graphType = graphParams['graphType']
-	G = nx.Graph(buildGraph(graphType, nodes))
+	if graphParams['otherParams']:
+		G = nx.Graph(buildGraph(graphType, nodes, graphParams['otherParams']))
+	else:
+		G = nx.Graph(buildGraph(graphType, nodes))
 
 	if outputParams['outputType'] == 'simple':
 		printOutput = True

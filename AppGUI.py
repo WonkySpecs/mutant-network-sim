@@ -14,6 +14,8 @@ graphTypeClassMap = {
 
 simTypes = ["naive", "active-nodes", "active-edges"]
 
+randomGraphAlgorithms = ["erdos-renyi"]
+
 class SimSettingWindow:
 	'''	The GUI class for setting up a simulation. Allows user to select graph type and paramaters as well as trial parameters
 		Validates inputs then passes inputs to main.py to handle running simulation and providing output
@@ -55,9 +57,10 @@ class SimSettingWindow:
 		self.numNodesEntry = tk.ttk.Entry(self.graphSettingFrame)
 		self.numNodesEntry.insert(tk.END, '100')
 
-		self.label2 = tk.Label(self.graphSettingFrame, text = "Something else:")
+		self.randomGraphAlgorithmLabel = tk.Label(self.graphSettingFrame, text = "Construction Algorithm:")
 
-		self.entry2 = tk.ttk.Entry(self.graphSettingFrame)
+		self.randomGraphAlgorithm = tk.StringVar(self.master)
+		self.randomGraphAlgorithmOptionMenu = tk.ttk.OptionMenu(self.graphSettingFrame, self.randomGraphAlgorithm, randomGraphAlgorithms[0], *randomGraphAlgorithms)
 
 		#---------------- graphSelectFrame widgets ------------------
 		self.graphSelectScrollbar = tk.ttk.Scrollbar(self.graphSelectFrame)
@@ -119,8 +122,8 @@ class SimSettingWindow:
 			else:
 				self.numNodesLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 1)
 				self.numNodesEntry.grid(in_ = self.graphSettingFrame, column = 1, row = 1)
-				self.label2.grid(in_ = self.graphSettingFrame, column = 0, row = 2)
-				self.entry2.grid(in_ = self.graphSettingFrame, column = 1, row = 2)
+				self.randomGraphAlgorithmLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 2)
+				self.randomGraphAlgorithmOptionMenu.grid(in_ = self.graphSettingFrame, column = 1, row = 2)
 		else:
 			self.emptyLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 0)
 			
@@ -150,19 +153,31 @@ class SimSettingWindow:
 		if not hasattr(self, 'selectedGraphType'):
 			print("Must select a graph type")
 			return
+
 		try:
 			numNodes = int(self.numNodesEntry.get())
 		except ValueError:
-			print("Error with graph settings")
+			print("Number of nodes must be an integer >=2")
 			return
 
 		if numNodes < 2:
 			print("Must have at least 2 nodes")
 			return
 
+		#If graphType is defined, graphClass must be as well
+		if self.selectedGraphClass == "simple":
+			otherParams = {}
+		elif self.selectedGraphClass == "random":
+			otherParams = {}
+		else:
+			print("Invalid graphClass whilst running AppGUI.validateInputAndRunSim")
+			return
+
+
 		graphParams = {
 						'graphType' : self.selectedGraphType ,
-						'nodes'		: numNodes
+						'nodes'		: numNodes ,
+						'otherParams'	: {}
 						}
 
 		#Validate sim settings
