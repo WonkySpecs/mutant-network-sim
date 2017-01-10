@@ -61,7 +61,11 @@ def buildGraph(graphType, nodes, otherParams = None):
 			return
 
 		if randomType == "erdos-renyi":
-			G = fast_gnp_random_graph(nodes, p)
+			G = nx.fast_gnp_random_graph(nodes, p)
+			while not nx.is_connected(G):
+				G = nx.fast_gnp_random_graph(nodes, p)
+			print(G.edges())
+			return G
 	else:
 		print("Invalid graphType passed to main.buildGraph")
 		return

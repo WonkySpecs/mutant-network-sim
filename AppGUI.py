@@ -58,9 +58,12 @@ class SimSettingWindow:
 		self.numNodesEntry.insert(tk.END, '100')
 
 		self.randomGraphAlgorithmLabel = tk.Label(self.graphSettingFrame, text = "Construction Algorithm:")
+		self.randomGraphAlgorithmSelected = tk.StringVar(self.master)
+		self.randomGraphAlgorithmOptionMenu = tk.ttk.OptionMenu(self.graphSettingFrame, self.randomGraphAlgorithmSelected, randomGraphAlgorithms[0], *randomGraphAlgorithms)
 
-		self.randomGraphAlgorithm = tk.StringVar(self.master)
-		self.randomGraphAlgorithmOptionMenu = tk.ttk.OptionMenu(self.graphSettingFrame, self.randomGraphAlgorithm, randomGraphAlgorithms[0], *randomGraphAlgorithms)
+		self.randomGraphPLabel = tk.Label(self.graphSettingFrame, text = "Connection probability:")
+		self.randomGraphPEntry = tk.ttk.Entry(self.graphSettingFrame)
+		self.randomGraphPEntry.insert(tk.END, '0.4')
 
 		#---------------- graphSelectFrame widgets ------------------
 		self.graphSelectScrollbar = tk.ttk.Scrollbar(self.graphSelectFrame)
@@ -124,6 +127,8 @@ class SimSettingWindow:
 				self.numNodesEntry.grid(in_ = self.graphSettingFrame, column = 1, row = 1)
 				self.randomGraphAlgorithmLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 2)
 				self.randomGraphAlgorithmOptionMenu.grid(in_ = self.graphSettingFrame, column = 1, row = 2)
+				self.randomGraphPLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 3)
+				self.randomGraphPEntry.grid(in_ = self.graphSettingFrame, column = 1, row = 3)
 		else:
 			self.emptyLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 0)
 			
@@ -168,7 +173,18 @@ class SimSettingWindow:
 		if self.selectedGraphClass == "simple":
 			otherParams = {}
 		elif self.selectedGraphClass == "random":
-			otherParams = {}
+			try:
+				p = float(self.randomGraphPEntry.get())
+			except:
+				print("Probability, p, must be 0<p<=1")
+				return
+			if p<=0 or p>1:
+				print("Probability, p, must be 0<p<=1")
+				return
+
+			otherParams = { 'p'				: p ,
+							'randomType'	: self.randomGraphAlgorithmSelected.get()
+							}
 		else:
 			print("Invalid graphClass whilst running AppGUI.validateInputAndRunSim")
 			return
@@ -177,7 +193,7 @@ class SimSettingWindow:
 		graphParams = {
 						'graphType' : self.selectedGraphType ,
 						'nodes'		: numNodes ,
-						'otherParams'	: {}
+						'otherParams'	: otherParams
 						}
 
 		#Validate sim settings
