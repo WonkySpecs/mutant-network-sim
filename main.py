@@ -86,8 +86,8 @@ def setupAndRunSimulation(trialParams, graphParams, outputParams, metaTrial = Fa
 	print("{} fixated, {} extinct, {} fixation\n".format(fixated, extinct, fixated/(fixated+extinct)))
 
 if __name__ == "__main__":
-	nodes = 100
-	numTrials = 1000
+	nodes = 600
+	numTrials = 500
 	graphType = "complete"
 
 	G = nx.Graph(buildGraph(graphType, nodes))
@@ -98,7 +98,7 @@ if __name__ == "__main__":
 	graphSim.loadGraphStructure(G)
 
 	startTime=time.time()
-	fixated, extinct, iterations = graphSim.runSim(numTrials, 5, - 1)
+	fixated, extinct, iterations = graphSim.runSim(numTrials, 5, 70)
 
 	print("{} fixated, {} extinct, {} fixation\nTook {} seconds".format(fixated, extinct, fixated/(fixated+extinct), time.time() - startTime))
 

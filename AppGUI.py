@@ -12,6 +12,8 @@ graphTypeClassMap = {
 					"random":"random"
 					 }
 
+simTypes = ["Naive", "Active nodes", "Active edges"]
+
 class SimSettingWindow:
 	'''	The GUI class for setting up a simulation. Allows user to select graph type and paramaters as well as trial parameters
 		Validates inputs then passes inputs to main.py to handle running simulation and providing output
@@ -76,6 +78,10 @@ class SimSettingWindow:
 		self.mutantStartNodeEntry = tk.ttk.Entry(self.simSettingFrame)
 		self.mutantStartNodeEntry.insert(tk.END, '-1')
 
+		self.simTypeSelected = tk.StringVar(self.master)
+		self.simulationTypeLabel = tk.Label(self.simSettingFrame, text = "Simulation type:")
+		self.simulationTypeOptionMenu = tk.ttk.OptionMenu(self.simSettingFrame, self.simTypeSelected, simTypes[0], *simTypes)
+
 		self.startSimButton = tk.ttk.Button(self.simSettingFrame, text = "Start Simulation", command = self.validateInputAndRunSim)
 
 	def hideAllWidgetsInFrame(self, frame):
@@ -121,12 +127,18 @@ class SimSettingWindow:
 
 	def populateSimSettingFrame(self):
 		self.hideAllWidgetsInFrame(self.simSettingFrame)
-		self.numTrialLabel.grid(in_ = self.simSettingFrame, column = 0, row = 0)
+		self.numTrialLabel.grid(in_ = self.simSettingFrame, column = 0, row = 0, sticky = tk.W)
 		self.numTrialEntry.grid(in_ = self.simSettingFrame, column = 1, row = 0)
-		self.mutantFitnessLabel.grid(in_ = self.simSettingFrame, column = 0, row = 1)
+
+		self.mutantFitnessLabel.grid(in_ = self.simSettingFrame, column = 0, row = 1, sticky = tk.W)
 		self.mutantFitnessEntry.grid(in_ = self.simSettingFrame, column = 1, row = 1)
-		self.mutantStartNodeLabel.grid(in_ = self.simSettingFrame, column = 0, row = 2)
+
+		self.mutantStartNodeLabel.grid(in_ = self.simSettingFrame, column = 0, row = 2, sticky = tk.W)
 		self.mutantStartNodeEntry.grid(in_ = self.simSettingFrame, column = 1, row = 2)
+
+		self.simulationTypeLabel.grid(in_ = self.simSettingFrame, column = 0, row = 3, sticky = tk.W)
+		self.simulationTypeOptionMenu.grid(in_ = self.simSettingFrame, column = 1, row = 3, sticky = tk.W)
+
 		self.startSimButton.grid(in_ = self.simSettingFrame, column = 0, columnspan = 2)
 
 	#This is mostly to ignore the event for now, bit awkward
@@ -135,6 +147,9 @@ class SimSettingWindow:
 
 	def validateInputAndRunSim(self):
 		#Validate graph settings
+		if not hasattr(self, 'selectedGraphType'):
+			print("Must select a graph type")
+			return
 		try:
 			numNodes = int(self.numNodesEntry.get())
 		except ValueError:
