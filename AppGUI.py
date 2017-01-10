@@ -4,16 +4,16 @@ from tkinter import ttk
 
 #Map of graphType -> graphClass. Each class has a distinct set of input parameters.
 graphTypeClassMap = {
-					"cycle":"simple",
-					"path":"simple",
-					"urchin":"simple",
-					"clique-wheel":"simple",
-					"complete":"simple",
-					"random":"random"
-					 }
+						"cycle"			:"simple" ,
+						"path"			:"simple" ,
+						"urchin"		:"simple" ,
+						"clique-wheel"	:"simple" ,
+						"complete"		:"simple" ,
+						"random"		:"random"
+						}
 
+#Lists of options for optionMenus
 simTypes = ["naive", "active-nodes", "active-edges"]
-
 randomGraphAlgorithms = ["erdos-renyi"]
 
 class SimSettingWindow:
@@ -63,12 +63,12 @@ class SimSettingWindow:
 
 		self.randomGraphPLabel = tk.Label(self.graphSettingFrame, text = "Connection probability:")
 		self.randomGraphPEntry = tk.ttk.Entry(self.graphSettingFrame)
-		self.randomGraphPEntry.insert(tk.END, '0.4')
+		self.randomGraphPEntry.insert(tk.END, '0.2')
 
 		#---------------- graphSelectFrame widgets ------------------
 		self.graphSelectScrollbar = tk.ttk.Scrollbar(self.graphSelectFrame)
 		self.graphSelectListbox = tk.Listbox(self.graphSelectFrame, yscrollcommand = self.graphSelectScrollbar.set, selectmode = tk.SINGLE)
-		self.graphSelectListbox.bind("<<ListboxSelect>>",self.graphSettingSetup)
+		self.graphSelectListbox.bind("<<ListboxSelect>>", self.graphSettingSetup)
 		self.graphSelectScrollbar.config(command=self.graphSelectListbox.yview)
 
 		#---------------- simSettingFrame widgets  ------------------
@@ -154,7 +154,10 @@ class SimSettingWindow:
 		self.populateGraphSettingFrame()
 
 	def validateInputAndRunSim(self):
-		#Validate graph settings
+		''' Method called when run simulation button is clicked.
+			Validates the entries for both graphSettings and simSettings then passes dictionaries of the options to setupAndRunSimulation'''
+
+		#	-----------		Validate graph settings 	--------------
 		if not hasattr(self, 'selectedGraphType'):
 			print("Must select a graph type")
 			return
@@ -183,26 +186,27 @@ class SimSettingWindow:
 				return
 
 			otherParams = { 'p'				: p ,
+							#Because random graphclass is selected and randomGraphAlgorithmSelected is linked to an option menu,
+							#it must be set to a valid option so needs no validation
 							'randomType'	: self.randomGraphAlgorithmSelected.get()
 							}
 		else:
 			print("Invalid graphClass whilst running AppGUI.validateInputAndRunSim")
 			return
 
-
 		graphParams = {
-						'graphType' : self.selectedGraphType ,
-						'nodes'		: numNodes ,
+						'graphType' 	: self.selectedGraphType ,
+						'nodes'			: numNodes ,
 						'otherParams'	: otherParams
 						}
 
-		#Validate sim settings
+		#	-----------		Validate simulation settings 	--------------
 		try:
 			numTrials = int(self.numTrialEntry.get())
 			fitness = float(self.mutantFitnessEntry.get())
 			mStart = int(self.mutantStartNodeEntry.get())
 		except:
-			#Should split these up probably
+			#Should probably split these up 
 			print("Error with sim settings")
 			return
 		if numTrials < 1:
@@ -219,6 +223,7 @@ class SimSettingWindow:
 						'numTrials' : numTrials ,
 						'fitness'	: fitness ,
 						'startNode' : mStart ,
+						#No validation needed, same as randomGraphAlgorithmSelected above
 						'simType'	: self.simTypeSelected.get()
 						}
 		outputParams = {
