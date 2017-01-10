@@ -297,13 +297,13 @@ class Simulator():
 				numNonMutants += 1
 
 			#For the node that changed, status of all edges will toggle - if active now nonactive and vice versa
-			for (u,v) in simGraph.edges(nodeDying):
-				if (u,v) in activeEdges:
-					activeEdges.remove((u,v))
-				elif (v,u) in activeEdges:
-					activeEdges.remove((v,u))
+			for (u, v) in simGraph.edges(nodeDying):
+				if (u, v) in activeEdges:
+					activeEdges.remove((u, v))
+				elif (v, u) in activeEdges:
+					activeEdges.remove((v, u))
 				else:
-					activeEdges.append((u,v))
+					activeEdges.append((u, v))
 
 			iterations +=1
 		return iterations, numMutants, numNonMutants
@@ -312,18 +312,22 @@ class Simulator():
 		fixated = 0
 		extinct = 0
 		totalIter = 0
-		if self.graphStructure!=None:
-			for i in range(trials):
-				if simType == 'naive':
-					trial = self.runTrial(fitness, mStart)
-				elif simType == 'active-nodes':
-					trial = self.runTrialV2(fitness, mStart)
-				elif simType == 'active-edges':
-					trial = self.runTrialV3(fitness, mStart)
-				else:
-					print("Invalid simType passed to simulator.runSim")
 
-				if i%(trials/100)==0:
+		if simType == 'naive':
+			simFunction = self.runTrial
+		elif simType == 'active-nodes':
+			simFunction = self.runTrialV2
+		elif simType == 'active-edges':
+			simFunction = self.runTrialV3
+		else:
+			print("Invalid simType passed to simulator.runSim")
+			return
+
+		if self.graphStructure != None:
+			for i in range(trials):
+				trial = simFunction(fitness, mStart)
+
+				if i % (trials/100) == 0:
 					if self.printingOutput:
 						print("{}% done".format(i*100/trials))
 				totalIter += trial[0]
