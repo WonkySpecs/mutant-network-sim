@@ -88,6 +88,10 @@ class SimSettingWindow:
 		self.simulationTypeLabel = tk.Label(self.simSettingFrame, text = "Simulation type:")
 		self.simulationTypeOptionMenu = tk.ttk.OptionMenu(self.simSettingFrame, self.simTypeSelected, simTypes[0], *simTypes)
 
+		self.numTrialBatchesLabel = tk.Label(self.simSettingFrame, text = "Trial batches:")
+		self.numTrialBatchesEntry = tk.ttk.Entry(self.simSettingFrame)
+		self.numTrialBatchesEntry.insert(tk.END, '1')
+
 		self.startSimButton = tk.ttk.Button(self.simSettingFrame, text = "Start Simulation", command = self.validateInputAndRunSim)
 
 	def hideAllWidgetsInFrame(self, frame):
@@ -147,6 +151,9 @@ class SimSettingWindow:
 		self.simulationTypeLabel.grid(in_ = self.simSettingFrame, column = 0, row = 3, sticky = tk.W)
 		self.simulationTypeOptionMenu.grid(in_ = self.simSettingFrame, column = 1, row = 3, sticky = tk.W)
 
+		self.numTrialBatchesLabel.grid(in_ = self.simSettingFrame, column = 0, row = 4, sticky = tk.W)
+		self.numTrialBatchesEntry.grid(in_ = self.simSettingFrame, column = 1, row = 4)
+
 		self.startSimButton.grid(in_ = self.simSettingFrame, column = 0, columnspan = 2)
 
 	#This is mostly to ignore the event for now, bit awkward
@@ -205,6 +212,7 @@ class SimSettingWindow:
 			numTrials = int(self.numTrialEntry.get())
 			fitness = float(self.mutantFitnessEntry.get())
 			mStart = int(self.mutantStartNodeEntry.get())
+			batches = int(self.numTrialBatchesEntry.get())
 		except:
 			#Should probably split these up 
 			print("Error with sim settings")
@@ -218,13 +226,17 @@ class SimSettingWindow:
 		if mStart < -1 or mStart > numNodes - 1:
 			print("Mutant start node must be between 0 and number of nodes - 1, or -1 for random")
 			return
+		if batches <= 0:
+			print("Batches must be positive")
+			return
 
 		trialParams = {
 						'numTrials' : numTrials ,
 						'fitness'	: fitness ,
 						'startNode' : mStart ,
 						#No validation needed, same as randomGraphAlgorithmSelected above
-						'simType'	: self.simTypeSelected.get()
+						'simType'	: self.simTypeSelected.get() ,
+						'batches'	: batches
 						}
 		outputParams = {
 						'outputType':'simple'

@@ -79,6 +79,7 @@ def setupAndRunSimulation(trialParams, graphParams, outputParams, metaTrial = Fa
 	r = trialParams['fitness']
 	mStart = trialParams['startNode']
 	simType = trialParams['simType']
+	numBatches = trialParams['batches']
 
 	nodes = graphParams['nodes']
 	graphType = graphParams['graphType']
@@ -97,8 +98,15 @@ def setupAndRunSimulation(trialParams, graphParams, outputParams, metaTrial = Fa
 	print("Running simulation for:")
 	print(graphParams)
 	print(trialParams)
-	fixated, extinct, iterations = graphSim.runSim(numTrials, r, mStart)
-	print("{} fixated, {} extinct, {} fixation\n".format(fixated, extinct, fixated/(fixated+extinct)))
+
+	totalFixation = 0
+	for i in range(numBatches):
+		print("--- SIMULATION {} ---\n".format(i + 1))
+		fixated, extinct, iterations = graphSim.runSim(numTrials, r, mStart)
+		print("{} fixated, {} extinct, {} fixation\n".format(fixated, extinct, fixated / (fixated + extinct)))
+		totalFixation += fixated / (fixated + extinct)
+
+	print("Average fixation over {} batches of {} trials was {}%".format(numBatches, numTrials, totalFixation * 100 / numBatches))
 
 if __name__ == "__main__":
 	nodes = 600
