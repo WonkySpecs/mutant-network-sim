@@ -98,8 +98,7 @@ def setupAndRunSimulation(trialParams, graphParams, outputParams, metaTrial = Fa
 	print("Running simulation for:")
 	print(graphParams)
 	print(trialParams)
-	print(G.edges())
-
+	
 	totalFixation = 0
 	for i in range(numBatches):
 		print("--- SIMULATION {} ---\n".format(i + 1))
