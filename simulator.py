@@ -162,20 +162,29 @@ class Simulator():
 					numNonMutants += 1
 
 					activeMutants.remove(nodeDying)
-					activeNonMutants.append(nodeDying)
+					simGraph.node[nodeDying]['active'] = False
 
 					for i in simGraph.neighbors(nodeDying):
+						#All non-mutant neighbours used to be active - Check if they still are by checking whether they still have at least one non-mutant neighbour
+						#This could be n^2 in the worst case, not sure how to improve
 						if not simGraph.node[i]['mutant']:
-							noLongerActive = True
+							simGraph.node[i]['active'] = False
+
 							for j in simGraph.neighbors(i):
 								if simGraph.node[j]['mutant']:
-									noLongerActive = False
+									simGraph.node[i]['active'] = True
 									break
-							if noLongerActive:
+							if not simGraph.node[i]['active']:
 								activeNonMutants.remove(i)
+						#Any mutant neighbours of the new non-mutant must now be active - set them to be so if they aren;t already
 						else:
-							if i not in activeMutants:
+							simGraph.node[nodeDying]['active'] = True
+
+							if not simGraph.node[i]['active']:
+								simGraph.node[i]['active'] = True
 								activeMutants.append(i)
+					if simGraph.node[nodeDying]['active']:
+						activeNonMutants.append(nodeDying)
 			else:
 				uselessIterations += 1
 			iterations += 1
