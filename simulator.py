@@ -31,9 +31,8 @@ class Simulator():
 	#Scales very poorly on graphs with a large number of ndoes as the algorithm often select 'useless' nodes to reproduce that will not change the state of the graph.
 	def runTrial(self, fitness, mStart = -1):
 		#Initialization
-		sTime = time.time()
 		self.resetGraphStructure()
-		simGraph = self.graphStructure #nx.Graph(self.graphStructure)
+		simGraph = self.graphStructure
 		numNodes = len(simGraph.node)
 		if mStart == -1:
 			mutantStart = random.randint(0, numNodes-1)
@@ -49,7 +48,7 @@ class Simulator():
 
 		#Until mutant has fixated or gone extinct, choose a node, choose a neighbour and reproduce
 		while numMutants!=0 and numNonMutants!=0:
-
+			print(mutants)
 			#All mutants are as likely to be picked as each toher, and the same for non-mutants
 			#So we pick which category we want the node to come from, then pick at random from that category
 			t = (numMutants * fitness) + numNonMutants
@@ -97,9 +96,8 @@ class Simulator():
 	#MAY MERGE THIS WITH THE ORIGINAL AS AN OPTION, A LOT OF CODE REPLICATION HERE
 	def runTrialV2(self, fitness, mStart = -1):
 		#Initialization
-		sTime = time.time()
 		self.resetGraphStructure()
-		simGraph = self.graphStructure #nx.Graph(self.graphStructure)
+		simGraph = self.graphStructure
 		numNodes = len(simGraph.node)
 		if mStart == -1:
 			mutantStart = random.randint(0, numNodes-1)
@@ -116,6 +114,7 @@ class Simulator():
 		activeNonMutants = [i for i in simGraph.neighbors(mutantStart)]
 
 		while numMutants!=0 and numNonMutants!=0:
+			print(activeMutants)
 			#c is a random float from 0 - total fitness of all active nodes
 			c = random.uniform(0, (len(activeMutants) * fitness) + len(activeNonMutants))
 
@@ -189,9 +188,8 @@ class Simulator():
 		''' Theorertically optimal way to run sim is to only pick useful edges - this function implements that.
 			Turns out selecting a mutant becomes hard, so there isnt really any time saving (and it seems to be slower)
 			on top of all that I've implemented it incorrectly and results are not valid '''
-		sTime = time.time()
 		self.resetGraphStructure()
-		simGraph = self.graphStructure #nx.Graph(self.graphStructure)
+		simGraph = self.graphStructure
 		numNodes = len(simGraph.node)
 		if mStart == -1:
 			mutantStart = random.randint(0, numNodes-1)
@@ -324,17 +322,22 @@ class Simulator():
 			return
 
 		if self.graphStructure != None:
+			sTime = time.time()
+			avTime = 0
 			for i in range(trials):
+				tTime = time.time()
 				trial = simFunction(fitness, mStart)
 
 				if i % (trials/100) == 0:
 					if self.printingOutput:
-						print("{}% done".format(i*100/trials))
+						print("{}% done".format(i * 100 / trials))
 				totalIter += trial[0]
 				if trial[1]==0:
 					extinct += 1
 				else:
 					fixated += 1
+				avTime += time.time() - tTime
+			print("TOOK {} SECONDS TOTAL\nAVERAGE TRIAL {} SECONDS".format((time.time() - sTime), avTime / trials))
 			return fixated, extinct, totalIter
 		else:
 			print("Failed to run sim: No graph loaded")

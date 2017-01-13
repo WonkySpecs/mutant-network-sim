@@ -98,12 +98,13 @@ def setupAndRunSimulation(trialParams, graphParams, outputParams, metaTrial = Fa
 	print("Running simulation for:")
 	print(graphParams)
 	print(trialParams)
+	print(G.edges())
 
 	totalFixation = 0
 	for i in range(numBatches):
 		print("--- SIMULATION {} ---\n".format(i + 1))
-		fixated, extinct, iterations = graphSim.runSim(numTrials, r, mStart)
-		print("{} fixated, {} extinct, {} fixation\n".format(fixated, extinct, fixated / (fixated + extinct)))
+		fixated, extinct, iterations = graphSim.runSim(numTrials, r, mStart, simType)
+		print("{} fixated, {} extinct, {} fixation, {} average iterations\n".format(fixated, extinct, fixated / (fixated + extinct), iterations / (fixated + extinct)))
 		totalFixation += fixated / (fixated + extinct)
 
 	print("Average fixation over {} batches of {} trials was {}%".format(numBatches, numTrials, totalFixation * 100 / numBatches))
