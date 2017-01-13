@@ -145,7 +145,7 @@ class Simulator():
 							if not simGraph.node[n]['active']:
 								simGraph.node[n]['active'] = True
 								activeNonMutants.append(n)
-						#If any mutant neighbour of the new mutant no longer has any non mutant neighbours it is no longer active
+						#Check whether mutant neighbour is still active
 						else:
 							stillActive = False
 							for nn in simGraph.neighbors(n):
