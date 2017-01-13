@@ -153,7 +153,8 @@ class Simulator():
 									stillActive = True
 									break
 							if not stillActive:
-								activeMutants.remove(n)
+								activeMutants.remove(nn)
+								simGraph.node[nn]['active'] = False
 					if simGraph.node[n]['active']:
 						activeMutants.append(nodeDying)
 				else:
