@@ -25,6 +25,7 @@ class Simulator():
 
 			for i in range(len(g.node)):
 				g.node[i]['mutant'] = False
+				g.node[i]['active'] = True
 			return 1
 
 	#Basic implementation for running moran process on the graph stored in self.graphStructure
@@ -103,14 +104,17 @@ class Simulator():
 		else:
 			mutantStart = mStart
 		simGraph.node[mutantStart]['mutant'] = True
+		simGraph.node[mutantStart]['active'] = True
 		numMutants = 1
 		numNonMutants = numNodes-1
 		iterations = 0
 		uselessIterations = 0
 
 		#The slight change to the method of selecting the node to reproduce (only from the active set) is the only real change from above, may want to merge together
-		activeMutants = [mutantStart]
+		activeMutants = [mStart]
 		activeNonMutants = [i for i in simGraph.neighbors(mutantStart)]
+		for n in simGraph.neighbors(mutantStart):
+			simGraph.node[n]['active'] = True
 
 		while numMutants != 0 and numNonMutants != 0:
 			#c is a random float from 0 - total fitness of all active nodes
@@ -134,12 +138,13 @@ class Simulator():
 					activeNonMutants.remove(nodeDying)
 
 					#Check if new mutant has any non mutant neighbours - if so, isActive is true, otherwise not
-					isActive = False
+					simGraph.node[n]['active'] = False
 					for n in simGraph.neighbors(nodeDying):
 						#If any non mutant neighbours of the new mutant were not active, they are now
 						if not simGraph.node[n]['mutant']:
-							isActive = True
-							if n not in activeNonMutants:
+							simGraph.node[n]['active'] = True
+							if not simGraph.node[n]['active']:
+								simGraph.node[n]['active'] = True
 								activeNonMutants.append(n)
 						#If any mutant neighbour of the new mutant no longer has any non mutant neighbours it is no longer active
 						else:
@@ -150,7 +155,7 @@ class Simulator():
 									break
 							if not stillActive:
 								activeMutants.remove(n)
-					if isActive:
+					if simGraph.node[n]['active']:
 						activeMutants.append(nodeDying)
 				else:
 					numMutants -= 1
