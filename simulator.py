@@ -125,13 +125,7 @@ class Simulator():
 				nodeReproducing = activeNonMutants[random.randint(0, len(activeNonMutants) - 1)]
 
 			possibleDyingNodes = simGraph.neighbors(nodeReproducing)
-
-			if len(possibleDyingNodes)>0:
-				nodeDying = possibleDyingNodes[random.randint(0, len(possibleDyingNodes)-1)]
-			else:
-				#Handle this properly at some point
-				print("This graph contains an unconnected node, ceasing execution")
-				sys.exit()
+			nodeDying = possibleDyingNodes[random.randint(0, len(possibleDyingNodes)-1)]
 
 			if simGraph.node[nodeReproducing]['mutant']!=simGraph.node[nodeDying]['mutant']:
 				simGraph.node[nodeDying]['mutant']=simGraph.node[nodeReproducing]['mutant']
