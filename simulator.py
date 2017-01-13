@@ -47,8 +47,7 @@ class Simulator():
 		nonMutants = [i for i in range(numNodes) if i != mutantStart]
 
 		#Until mutant has fixated or gone extinct, choose a node, choose a neighbour and reproduce
-		while numMutants!=0 and numNonMutants!=0:
-			print(mutants)
+		while numMutants != 0 and numNonMutants != 0:
 			#All mutants are as likely to be picked as each toher, and the same for non-mutants
 			#So we pick which category we want the node to come from, then pick at random from that category
 			t = (numMutants * fitness) + numNonMutants
@@ -62,7 +61,7 @@ class Simulator():
 				nodeReproducing = nonMutants[random.randint(0,len(nonMutants) - 1)]
 
 			n = -1
-			while nodeChoice>0:
+			while nodeChoice > 0:
 				n += 1
 				if simGraph.node[n]['mutant']==True:
 					nodeChoice -= fitness
@@ -74,9 +73,9 @@ class Simulator():
 			if len(simGraph.neighbors(nodeReproducing))>0:
 				nodeDying = random.sample(simGraph.neighbors(nodeReproducing), 1)[0]
 			
-			if simGraph.node[nodeReproducing]['mutant']!=simGraph.node[nodeDying]['mutant']:
-				simGraph.node[nodeDying]['mutant']=simGraph.node[nodeReproducing]['mutant']
-				if simGraph.node[nodeReproducing]['mutant']==True:
+			if simGraph.node[nodeReproducing]['mutant'] != simGraph.node[nodeDying]['mutant']:
+				simGraph.node[nodeDying]['mutant'] = simGraph.node[nodeReproducing]['mutant']
+				if simGraph.node[nodeReproducing]['mutant'] == True:
 					numMutants += 1
 					numNonMutants -= 1
 					nonMutants.remove(nodeDying)
@@ -113,8 +112,7 @@ class Simulator():
 		activeMutants = [mutantStart]
 		activeNonMutants = [i for i in simGraph.neighbors(mutantStart)]
 
-		while numMutants!=0 and numNonMutants!=0:
-			print(activeMutants)
+		while numMutants != 0 and numNonMutants != 0:
 			#c is a random float from 0 - total fitness of all active nodes
 			c = random.uniform(0, (len(activeMutants) * fitness) + len(activeNonMutants))
 
@@ -127,9 +125,9 @@ class Simulator():
 			possibleDyingNodes = simGraph.neighbors(nodeReproducing)
 			nodeDying = possibleDyingNodes[random.randint(0, len(possibleDyingNodes)-1)]
 
-			if simGraph.node[nodeReproducing]['mutant']!=simGraph.node[nodeDying]['mutant']:
-				simGraph.node[nodeDying]['mutant']=simGraph.node[nodeReproducing]['mutant']
-				if simGraph.node[nodeReproducing]['mutant']==True:
+			if simGraph.node[nodeReproducing]['mutant'] != simGraph.node[nodeDying]['mutant']:
+				simGraph.node[nodeDying]['mutant'] = simGraph.node[nodeReproducing]['mutant']
+				if simGraph.node[nodeReproducing]['mutant'] == True:
 					#The new mutant must have been an activenonmutant before it died, so we move it from activeNonMutants to activeMutants
 					numMutants += 1
 					numNonMutants -= 1
@@ -202,7 +200,7 @@ class Simulator():
 		activeEdges = simGraph.edges(mutantStart)
 
 		#Until mutant has fixated or gone extinct, choose a node, choose a neighbour and reproduce
-		while numMutants!=0 and numNonMutants!=0:
+		while numMutants != 0 and numNonMutants != 0:
 			#The chance of selecting any given edge, (u,v), in the graph is (fitness of u/sum of all fitnesses) * (1/deg(u))
 			totalWeight = 0
 
@@ -218,7 +216,7 @@ class Simulator():
 
 			#Really hate this, huge code replication
 			#Start from top of list (cuts maximum number of edge check in half)
-			if c<totalWeight/float(2):
+			if c < totalWeight / float(2):
 				edgeChoice = -1
 				while c>0:
 					edgeChoice +=1
@@ -251,7 +249,7 @@ class Simulator():
 			#Start from bottom of list
 			else:
 				edgeChoice = len(activeEdges)
-				while c>totalWeight/2.0:
+				while c > totalWeight / 2.0:
 					edgeChoice -=1
 					u = activeEdges[edgeChoice][0]
 					v = activeEdges[edgeChoice][1]
