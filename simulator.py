@@ -345,7 +345,9 @@ class Simulator():
 				else:
 					fixated += 1
 				avTime += time.time() - tTime
-			print("TOOK {} SECONDS TOTAL\nAVERAGE TRIAL {} SECONDS".format((time.time() - sTime), avTime / trials))
+
+			if(self.printingOutput):
+				print("TOOK {} SECONDS TOTAL\nAVERAGE TRIAL {} SECONDS".format((time.time() - sTime), avTime / trials))
 			return fixated, extinct, totalIter
 		else:
 			print("Failed to run sim: No graph loaded")

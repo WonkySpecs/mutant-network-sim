@@ -43,7 +43,7 @@ def buildGraph(graphType, nodes, otherParams = None):
 	elif graphType == "clique-wheel":
 		n = nodes // 2
 		G = nx.complete_graph(n)
-		if nodes%2==0:
+		if nodes % 2==0:
 			for m in range(n):
 				G.add_edge(m, m + n)
 			for w in range(n - 1):
@@ -83,30 +83,35 @@ def setupAndRunSimulation(trialParams, graphParams, outputParams, metaTrial = Fa
 
 	nodes = graphParams['nodes']
 	graphType = graphParams['graphType']
+
 	if graphParams['otherParams']:
 		G = nx.Graph(buildGraph(graphType, nodes, graphParams['otherParams']))
 	else:
 		G = nx.Graph(buildGraph(graphType, nodes))
 
-	if outputParams['outputType'] == 'simple':
+	if outputParams['console']:
 		printOutput = True
 	else:
 		printOutput = False
 
-	graphSim = Simulator(printOutput)
-	graphSim.loadGraphStructure(G)
+	graphSim = Simulator(printOutput, G)
 	print("Running simulation for:")
 	print(graphParams)
 	print(trialParams)
+	print(outputParams)
 	
 	totalFixation = 0
 	for i in range(numBatches):
 		print("--- SIMULATION {} ---\n".format(i + 1))
 		fixated, extinct, iterations = graphSim.runSim(numTrials, r, mStart, simType)
-		print("{} fixated, {} extinct, {} fixation, {} average iterations\n".format(fixated, extinct, fixated / (fixated + extinct), iterations / (fixated + extinct)))
+		if printOutput:
+			print("{} fixated, {} extinct, {} fixation, {} average iterations\n".format(fixated, extinct, fixated / (fixated + extinct), iterations / (fixated + extinct)))
 		totalFixation += fixated / (fixated + extinct)
 
-	print("Average fixation over {} batches of {} trials was {}%".format(numBatches, numTrials, totalFixation * 100 / numBatches))
+	if printOutput:
+		print("Average fixation over {} batches of {} trials was {}%".format(numBatches, numTrials, totalFixation * 100 / numBatches))
+	else:
+		print("Done")
 
 if __name__ == "__main__":
 	nodes = 600

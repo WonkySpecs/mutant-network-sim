@@ -92,10 +92,10 @@ class SimSettingWindow:
 		self.numTrialBatchesEntry = tk.ttk.Entry(self.simSettingFrame)
 		self.numTrialBatchesEntry.insert(tk.END, '1')
 
-		outputToConsole = tk.IntVar(self.master)
-		self.consoleOutputCheck = tk.Checkbutton(self.simSettingFrame, text = "Console output", variable = outputToConsole)
-		outputToFile = tk.IntVar(self.master)
-		self.fileOutputCheck = tk.Checkbutton(self.simSettingFrame, text = "File output", variable = outputToFile)
+		self.outputToConsole = tk.IntVar(self.master)
+		self.consoleOutputCheck = tk.Checkbutton(self.simSettingFrame, text = "Console output", variable = self.outputToConsole)
+		self.outputToFile = tk.IntVar(self.master)
+		self.fileOutputCheck = tk.Checkbutton(self.simSettingFrame, text = "File output", variable = self.outputToFile)
 
 		self.startSimButton = tk.ttk.Button(self.simSettingFrame, text = "Start Simulation", command = self.validateInputAndRunSim)
 
@@ -246,8 +246,10 @@ class SimSettingWindow:
 						'simType'	: self.simTypeSelected.get() ,
 						'batches'	: batches
 						}
+
 		outputParams = {
-						'outputType':'simple'
+						'console'	: self.outputToConsole.get() ,
+						'file'		: self.outputToFile.get()
 						}
 
 		main.setupAndRunSimulation(trialParams, graphParams, outputParams)
