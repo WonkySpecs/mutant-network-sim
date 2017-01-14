@@ -92,6 +92,11 @@ class SimSettingWindow:
 		self.numTrialBatchesEntry = tk.ttk.Entry(self.simSettingFrame)
 		self.numTrialBatchesEntry.insert(tk.END, '1')
 
+		outputToConsole = tk.IntVar(self.master)
+		self.consoleOutputCheck = tk.Checkbutton(self.simSettingFrame, text = "Console output", variable = outputToConsole)
+		outputToFile = tk.IntVar(self.master)
+		self.fileOutputCheck = tk.Checkbutton(self.simSettingFrame, text = "File output", variable = outputToFile)
+
 		self.startSimButton = tk.ttk.Button(self.simSettingFrame, text = "Start Simulation", command = self.validateInputAndRunSim)
 
 	def hideAllWidgetsInFrame(self, frame):
@@ -153,6 +158,9 @@ class SimSettingWindow:
 
 		self.numTrialBatchesLabel.grid(in_ = self.simSettingFrame, column = 0, row = 4, sticky = tk.W)
 		self.numTrialBatchesEntry.grid(in_ = self.simSettingFrame, column = 1, row = 4)
+
+		self.consoleOutputCheck.grid(in_ = self.simSettingFrame, column = 0, row = 5)
+		self.fileOutputCheck.grid(in_ = self.simSettingFrame, column = 1, row = 5)
 
 		self.startSimButton.grid(in_ = self.simSettingFrame, column = 0, columnspan = 2)
 
