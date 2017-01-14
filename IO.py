@@ -2,9 +2,6 @@ import networkx as nx
 import os
 
 def saveGraph(G, graphName):
-	if not os.path.exists("results"):
-		os.makedirs("results")
-
 	graphsPath = os.path.join(os.curdir, "results", "graphs")
 
 	if not os.path.exists(graphsPath):
@@ -14,4 +11,17 @@ def saveGraph(G, graphName):
 
 	nx.write_gml(G, os.path.join(graphsPath, graphName))
 
+def saveResults(output):
+	experimentsPath = os.path.join(os.curdir, "results", "experiments")
+
+	if not os.path.exists(experimentsPath):
+		os.makedirs(experimentsPath)
+
+	#parse outputs
+	filename = output['filename']
+	content = output['content']
+	with open(os.path.join(experimentsPath, filename), "w") as outFile:
+		outFile.write(content)
+
 saveGraph(nx.path_graph(4), "path-4")
+saveResults({"filename":"r1.result", "content":"I'm so appalled"})
