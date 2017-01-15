@@ -94,6 +94,7 @@ class SimSettingWindow:
 		self.numTrialBatchesEntry.insert(tk.END, '1')
 
 		self.outputToConsole = tk.IntVar(self.master)
+		self.outputToConsole.set(1)
 		self.consoleOutputCheck = tk.Checkbutton(self.simSettingFrame, text = "Console output", variable = self.outputToConsole)
 		self.outputToFile = tk.IntVar(self.master)
 		self.fileOutputCheck = tk.Checkbutton(self.simSettingFrame, text = "File output", variable = self.outputToFile)
