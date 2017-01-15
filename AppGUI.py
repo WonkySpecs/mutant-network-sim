@@ -3,6 +3,7 @@ import main
 from tkinter import ttk
 
 #Map of graphType -> graphClass. Each class has a distinct set of input parameters.
+#Should move this top be initialized at beginning of program from a text file so we can add graphs dynamically
 graphTypeClassMap = {
 						"cycle"			:"simple" ,
 						"path"			:"simple" ,
@@ -131,7 +132,7 @@ class SimSettingWindow:
 				self.numNodesLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 1)
 				self.numNodesEntry.grid(in_ = self.graphSettingFrame, column = 1, row = 1)
 
-			else:
+			elif graphClass == "random":
 				self.numNodesLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 1)
 				self.numNodesEntry.grid(in_ = self.graphSettingFrame, column = 1, row = 1)
 				self.randomGraphAlgorithmLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 2)
@@ -165,7 +166,7 @@ class SimSettingWindow:
 		self.startSimButton.grid(in_ = self.simSettingFrame, column = 0, columnspan = 2)
 
 	#This is mostly to ignore the event for now, bit awkward
-	def graphSettingSetup(self, event):
+	def graphSettingSetup(self, event = None):
 		self.populateGraphSettingFrame()
 
 	def validateInputAndRunSim(self):
