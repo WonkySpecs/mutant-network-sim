@@ -69,7 +69,7 @@ class SimSettingWindow:
 		#---------------- graphSelectFrame widgets ------------------
 		self.graphSelectScrollbar = tk.ttk.Scrollbar(self.graphSelectFrame)
 		self.graphSelectListbox = tk.Listbox(self.graphSelectFrame, yscrollcommand = self.graphSelectScrollbar.set, selectmode = tk.SINGLE)
-		self.graphSelectListbox.bind("<<ListboxSelect>>", self.graphSettingSetup)
+		self.graphSelectListbox.bind("<<ListboxSelect>>", self.populateGraphSettingFrame)
 		self.graphSelectScrollbar.config(command=self.graphSelectListbox.yview)
 
 		#---------------- simSettingFrame widgets  ------------------
@@ -116,7 +116,7 @@ class SimSettingWindow:
 		else:
 			print("Tried to populate graphListbox before it exists in SimSettingWindow")
 
-	def populateGraphSettingFrame(self):
+	def populateGraphSettingFrame(self, event = None):
 		self.hideAllWidgetsInFrame(self.graphSettingFrame)
 		selectIndexTuple = self.graphSelectListbox.curselection()
 		if selectIndexTuple:
@@ -164,10 +164,6 @@ class SimSettingWindow:
 		self.fileOutputCheck.grid(in_ = self.simSettingFrame, column = 1, row = 5)
 
 		self.startSimButton.grid(in_ = self.simSettingFrame, column = 0, columnspan = 2)
-
-	#This is mostly to ignore the event for now, bit awkward
-	def graphSettingSetup(self, event = None):
-		self.populateGraphSettingFrame()
 
 	def validateInputAndRunSim(self):
 		''' Method called when run simulation button is clicked.
