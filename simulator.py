@@ -209,7 +209,7 @@ class Simulator():
 		iterations = 0
 
 		#Precalculating this as it takes little memory but a lookup is a lot faster than having to recalculate large bits of this every iteration
-		nodeStrength = [float(1)/len(simGraph.edges(n)) for n in simGraph.node]
+		nodeStrength = [float(1)/len(simGraph.edges(n)) for n in range(numNodes)]
 
 		#activeEdges tracks all the edges between mutants and non mutants
 		#To begin, this is all the edges to the initial mutant
