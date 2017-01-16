@@ -37,5 +37,6 @@ def saveResults(output):
 	with open(os.path.join(experimentsPath, filename), "w") as outFile:
 		outFile.write(content)
 
-saveGraph(nx.path_graph(4), "path-4")
-saveResults({"filename":"r1.result", "content":"I'm so appalled"})
+if __name__ == "__main__":
+	saveGraph(nx.path_graph(4), "path-4")
+	saveResults({"filename":"r1.result", "content":"I'm so appalled"})

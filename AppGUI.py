@@ -252,8 +252,8 @@ class SimSettingWindow:
 
 		main.setupAndRunSimulation(trialParams, graphParams, outputParams)
 
-		
-root = tk.Tk()
-root.resizable(width = False, height = False)
-window = SimSettingWindow(root)
-root.mainloop()
+if __name__ == "__main__":		
+	root = tk.Tk()
+	root.resizable(width = False, height = False)
+	window = SimSettingWindow(root)
+	root.mainloop()
