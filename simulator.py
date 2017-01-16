@@ -15,8 +15,8 @@ class Simulator():
 		if self.graphStructure == None:
 			print("Warning: loadGraphStructure called with None as argument, current graph in Simulator is None")
 
-	#At the moment, just sets 'mutant' to False for all nodes. Can extend in the future
 	def resetGraphStructure(self):
+	''' Resets 'mutant' and 'active' attributes for each node of the loaded graphStructure '''
 		if self.graphStructure == None:
 			print("Tried to resetGraphStructure with no graph loaded, exiting")
 			return -1
@@ -31,6 +31,7 @@ class Simulator():
 	#Basic implementation for running moran process on the graph stored in self.graphStructure
 	#Scales very poorly on graphs with a large number of ndoes as the algorithm often select 'useless' nodes to reproduce that will not change the state of the graph.
 	def runTrial(self, fitness, mStart = -1):
+	'''Naive implementation of the generalised Moran process'''
 		#Initialization
 		self.resetGraphStructure()
 		simGraph = self.graphStructure
@@ -92,11 +93,14 @@ class Simulator():
 			iterations += 1
 		return iterations, numMutants, numNonMutants
 
-	#To enable simulation on large graphs, we must convert to a different (equivalent) algorithm.
-	#This version only considers the 'useful' possibilities for selection of the reproducing node - this includes all mutant nodes and their direct neighbours.
-
 	#MAY MERGE THIS WITH THE ORIGINAL AS AN OPTION, A LOT OF CODE REPLICATION HERE
 	def runTrialV2(self, fitness, mStart = -1):
+	'''
+	This version of runTrial keeps track of nodes with at least one neighbour of a differnet kind to themsleves.
+	These nodes  are called 'active' nodes and are the only ones that ccan be selected for reproduction.
+	It is still possible to get useless iterations where a node selects a neighbour of the same type, but this is much less liekly than for the naive approach, particularly for sparse graphs
+	'''
+
 		#Initialization
 		self.resetGraphStructure()
 		simGraph = self.graphStructure
@@ -315,6 +319,10 @@ class Simulator():
 		return iterations, numMutants, numNonMutants
 
 	def runSim(self, trials, fitness = 2, mStart = -1, simType = 'active-nodes'):
+	'''	
+	Runs simulation of given type on the currently loaded graph type with the input mutant start node, fitness and number of trials.
+	Returns the number of trials where the mutant fixated/went extinct and the total number of iterations accross all trials 
+	'''
 		fixated = 0
 		extinct = 0
 		totIter = 0
@@ -340,7 +348,7 @@ class Simulator():
 					if self.printingOutput:
 						print("{}% done".format(i * 100 / trials))
 				totIter += trial[0]
-				if trial[1]==0:
+				if trial[1] == 0:
 					extinct += 1
 				else:
 					fixated += 1
