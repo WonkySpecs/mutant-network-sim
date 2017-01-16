@@ -9,7 +9,21 @@ def saveGraph(G, graphName):
 
 	graphName += ".gml"
 
-	nx.write_gml(G, os.path.join(graphsPath, graphName))
+	toSave = True
+
+	if os.path.isfile(os.path.join(graphsPath, graphName)):
+		i = ""
+		while i != "y" and i != "n":
+			print("File already exists - Overwrite? y/n")
+			i = input().lower()
+
+		if i == "n":
+			toSave = False
+			print("Aborting save")
+
+	if toSave:
+		print("Saving")
+		nx.write_gml(G, os.path.join(graphsPath, graphName))
 
 def saveResults(output):
 	experimentsPath = os.path.join(os.curdir, "results", "experiments")
