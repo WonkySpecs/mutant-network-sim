@@ -209,7 +209,7 @@ class Simulator():
 		iterations = 0
 
 		#Precalculating this as it takes little memory but a lookup is a lot faster than having to recalculate large bits of this every iteration
-		nodeStrength = [float(1)/len(simGraph.edges(n)) for n in range(numNodes)]
+		nodeStrength = [float(1) / len(simGraph.edges(n)) for n in range(numNodes)]
 
 		#activeEdges tracks all the edges between mutants and non mutants
 		#To begin, this is all the edges to the initial mutant
@@ -223,10 +223,10 @@ class Simulator():
 			for (u,v) in activeEdges:
 				#There will always be one mutant and one non mutant as this is the definition of an acitve edge
 				if simGraph.node[u]['mutant']:
-					totalWeight += nodeStrength[u]*fitness + nodeStrength[v]
+					totalWeight += (nodeStrength[u] * fitness) + nodeStrength[v]
 					
 				else:
-					totalWeight += nodeStrength[u] + nodeStrength[v]*fitness
+					totalWeight += nodeStrength[u] + (nodeStrength[v] * fitness)
 
 			c = random.uniform(0, totalWeight)
 
@@ -235,7 +235,7 @@ class Simulator():
 			if c < totalWeight / float(2):
 				edgeChoice = -1
 				while c>0:
-					edgeChoice +=1
+					edgeChoice += 1
 					u = activeEdges[edgeChoice][0]
 					v = activeEdges[edgeChoice][1]
 
@@ -244,7 +244,7 @@ class Simulator():
 					else:
 						c -= nodeStrength[u] + nodeStrength[v]*fitness
 
-					n = random.uniform(0,fitness+1)
+					n = random.uniform(0, fitness + 1)
 
 					if n<1:
 						#Choose non mutant
@@ -266,16 +266,16 @@ class Simulator():
 			else:
 				edgeChoice = len(activeEdges)
 				while c > totalWeight / 2.0:
-					edgeChoice -=1
+					edgeChoice -= 1
 					u = activeEdges[edgeChoice][0]
 					v = activeEdges[edgeChoice][1]
 
 					if simGraph.node[u]['mutant']:
-						c -= nodeStrength[u]*fitness + nodeStrength[v]
+						c -= (nodeStrength[u] * fitness) + nodeStrength[v]
 					else:
-						c -= nodeStrength[u] + nodeStrength[v]*fitness
+						c -= nodeStrength[u] + (nodeStrength[v] * fitness)
 
-					n = random.uniform(0,fitness+1)
+					n = random.uniform(0,fitness + 1)
 
 					if n<1:
 						#Choose non mutant
@@ -311,10 +311,10 @@ class Simulator():
 				else:
 					activeEdges.append((u, v))
 
-			iterations +=1
+			iterations += 1
 		return iterations, numMutants, numNonMutants
 
-	def runSim(self, trials, fitness = 2, mStart = -1, simType = 'naive'):
+	def runSim(self, trials, fitness = 2, mStart = -1, simType = 'active-nodes'):
 		fixated = 0
 		extinct = 0
 		totalIter = 0
@@ -336,7 +336,7 @@ class Simulator():
 				tTime = time.time()
 				trial = simFunction(fitness, mStart)
 
-				if i % (trials/100) == 0:
+				if i % (trials / 100) == 0:
 					if self.printingOutput:
 						print("{}% done".format(i * 100 / trials))
 				totalIter += trial[0]
