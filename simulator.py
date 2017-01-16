@@ -200,10 +200,10 @@ class Simulator():
 		simGraph = self.graphStructure
 		numNodes = len(simGraph.node)
 		if mStart == -1:
-			mutantStart = random.randint(0, numNodes-1)
+			mutantStart = random.randint(0, numNodes - 1)
 		else:
 			mutantStart = mStart
-		simGraph.node[mutantStart]['mutant']=True
+		simGraph.node[mutantStart]['mutant'] = True
 		numMutants = 1
 		numNonMutants = numNodes-1
 		iterations = 0
@@ -234,19 +234,19 @@ class Simulator():
 			#Start from top of list (cuts maximum number of edge check in half)
 			if c < totalWeight / float(2):
 				edgeChoice = -1
-				while c>0:
+				while c > 0:
 					edgeChoice += 1
 					u = activeEdges[edgeChoice][0]
 					v = activeEdges[edgeChoice][1]
 
 					if simGraph.node[u]['mutant']:
-						c -= nodeStrength[u]*fitness + nodeStrength[v]
+						c -= (nodeStrength[u] * fitness) + nodeStrength[v]
 					else:
-						c -= nodeStrength[u] + nodeStrength[v]*fitness
+						c -= nodeStrength[u] + (nodeStrength[v] * fitness)
 
 					n = random.uniform(0, fitness + 1)
 
-					if n<1:
+					if n < 1:
 						#Choose non mutant
 						if simGraph.node[u]['mutant']:
 							nodeReproducing = v
