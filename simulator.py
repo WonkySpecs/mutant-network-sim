@@ -317,7 +317,7 @@ class Simulator():
 	def runSim(self, trials, fitness = 2, mStart = -1, simType = 'active-nodes'):
 		fixated = 0
 		extinct = 0
-		totalIter = 0
+		totIter = 0
 
 		if simType == 'naive':
 			simFunction = self.runTrial
@@ -339,7 +339,7 @@ class Simulator():
 				if i % (trials / 100) == 0:
 					if self.printingOutput:
 						print("{}% done".format(i * 100 / trials))
-				totalIter += trial[0]
+				totIter += trial[0]
 				if trial[1]==0:
 					extinct += 1
 				else:
@@ -347,7 +347,8 @@ class Simulator():
 				avTime += time.time() - tTime
 
 			if(self.printingOutput):
-				print("TOOK {} SECONDS TOTAL\nAVERAGE TRIAL {} SECONDS".format((time.time() - sTime), avTime / trials))
-			return fixated, extinct, totalIter
+				totTime = time.time() - sTime
+				print("TOOK {} SECONDS TOTAL\nAVERAGE TRIAL {} SECONDS\nAVERAGE INTREATION {} SECONDS".format(totTime, avTime / trials, totTime / totIter))
+			return fixated, extinct, totIter
 		else:
 			print("Failed to run sim: No graph loaded")
