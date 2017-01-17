@@ -18,7 +18,7 @@ simTypes = [
 	"naive" ,
 	"active-nodes" ,
 	"active-edges"]
-	
+
 randomGraphAlgorithms = ["erdos-renyi"]
 
 class SimSettingWindow:
@@ -31,8 +31,8 @@ class SimSettingWindow:
 	def __init__(self, master):
 		self.master = master
 
-		self.master.grid_columnconfigure(1, minsize = 250)
-		self.master.grid_columnconfigure(2, minsize = 250)
+		self.master.grid_columnconfigure(1, minsize = 280)
+		self.master.grid_columnconfigure(2, minsize = 220)
 
 		#Set up frames
 		self.graphSelectFrame = tk.Frame(self.master)
@@ -69,6 +69,10 @@ class SimSettingWindow:
 		self.randomGraphPLabel = tk.Label(self.graphSettingFrame, text = "Connection probability:")
 		self.randomGraphPEntry = tk.ttk.Entry(self.graphSettingFrame)
 		self.randomGraphPEntry.insert(tk.END, '0.2')
+
+		self.graphDescriptionVar = tk.StringVar()
+		self.graphDescriptionVar.set("QWE")
+		self.graphDescriptionLabel = tk.Label(self.graphSettingFrame, anchor = tk.S, text = "", textvariable = self.graphDescriptionVar)
 
 		#---------------- graphSelectFrame widgets ------------------
 		self.graphSelectScrollbar = tk.ttk.Scrollbar(self.graphSelectFrame)
@@ -122,6 +126,7 @@ class SimSettingWindow:
 			print("Tried to populate graphListbox before it exists in SimSettingWindow")
 
 	def populateGraphSettingFrame(self, event = None):
+		rowNum = 0
 		self.hideAllWidgetsInFrame(self.graphSettingFrame)
 		selectIndexTuple = self.graphSelectListbox.curselection()
 		if selectIndexTuple:
@@ -131,19 +136,28 @@ class SimSettingWindow:
 			self.selectedGraphClass = graphClass
 
 			self.titleLabel["text"] = self.graphSelectListbox.get(selectIndexTuple)
-			self.titleLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 0)
+			self.titleLabel.grid(in_ = self.graphSettingFrame, column = 0, row = rowNum)
+
+			rowNum += 1
 
 			if graphClass == "simple":
-				self.numNodesLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 1)
-				self.numNodesEntry.grid(in_ = self.graphSettingFrame, column = 1, row = 1)
+				self.numNodesLabel.grid(in_ = self.graphSettingFrame, column = 0, row = rowNum)
+				self.numNodesEntry.grid(in_ = self.graphSettingFrame, column = 1, row = rowNum)
+				rowNum += 1
 
 			elif graphClass == "random":
-				self.numNodesLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 1)
-				self.numNodesEntry.grid(in_ = self.graphSettingFrame, column = 1, row = 1)
-				self.randomGraphAlgorithmLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 2)
-				self.randomGraphAlgorithmOptionMenu.grid(in_ = self.graphSettingFrame, column = 1, row = 2)
-				self.randomGraphPLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 3)
-				self.randomGraphPEntry.grid(in_ = self.graphSettingFrame, column = 1, row = 3)
+				self.numNodesLabel.grid(in_ = self.graphSettingFrame, column = 0, row = rowNum)
+				self.numNodesEntry.grid(in_ = self.graphSettingFrame, column = 1, row = rowNum)
+				rowNum += 1
+				self.randomGraphAlgorithmLabel.grid(in_ = self.graphSettingFrame, column = 0, row = rowNum)
+				self.randomGraphAlgorithmOptionMenu.grid(in_ = self.graphSettingFrame, column = 1, row = rowNum)
+				rowNum += 1
+				self.randomGraphPLabel.grid(in_ = self.graphSettingFrame, column = 0, row = rowNum)
+				self.randomGraphPEntry.grid(in_ = self.graphSettingFrame, column = 1, row = rowNum)
+				rowNum += 1
+
+			self.graphDescriptionVar.set("ASD")
+			self.graphDescriptionLabel.grid(in_ = self.graphSettingFrame, column = 0, row = rowNum, sticky = tk.S)
 		else:
 			self.emptyLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 0)
 			
