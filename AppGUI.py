@@ -71,8 +71,7 @@ class SimSettingWindow:
 		self.randomGraphPEntry.insert(tk.END, '0.2')
 
 		self.graphDescriptionVar = tk.StringVar()
-		self.graphDescriptionVar.set("QWE")
-		self.graphDescriptionLabel = tk.Label(self.graphSettingFrame, anchor = tk.S, text = "", textvariable = self.graphDescriptionVar)
+		self.graphDescriptionLabel = tk.Label(self.graphSettingFrame, anchor = tk.S, text = "", textvariable = self.graphDescriptionVar, wraplength = 280)
 
 		#---------------- graphSelectFrame widgets ------------------
 		self.graphSelectScrollbar = tk.ttk.Scrollbar(self.graphSelectFrame)
@@ -156,8 +155,8 @@ class SimSettingWindow:
 				self.randomGraphPEntry.grid(in_ = self.graphSettingFrame, column = 1, row = rowNum)
 				rowNum += 1
 
-			self.graphDescriptionVar.set("ASD")
-			self.graphDescriptionLabel.grid(in_ = self.graphSettingFrame, column = 0, row = rowNum, sticky = tk.S)
+			self.graphDescriptionVar.set("Description doesn't really go here")
+			self.graphDescriptionLabel.grid(in_ = self.graphSettingFrame, column = 0, row = rowNum, sticky = tk.S, columnspan = 2)
 		else:
 			self.emptyLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 0)
 			

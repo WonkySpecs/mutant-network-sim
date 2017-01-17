@@ -338,24 +338,26 @@ class Simulator():
 
 		if self.graphStructure != None:
 			sTime = time.time()
-			avTime = 0
 			for i in range(trials):
 				tTime = time.time()
-				trial = simFunction(fitness, mStart)
+				iterations, numMutants, numNonMutants = simFunction(fitness, mStart)
 
-				if i % (trials / 100) == 0:
-					if self.printingOutput:
-						print("{}% done".format(i * 100 / trials))
-				totIter += trial[0]
-				if trial[1] == 0:
+				if trials >99:
+					if i % (trials / 100) == 0:
+						if self.printingOutput:
+							print("{}% done".format(i * 100 / trials))
+				else:
+					print("Trial {}/{} done".format(i + 1, trials))
+
+				totIter += iterations
+				if numMutants == 0:
 					extinct += 1
 				else:
 					fixated += 1
-				avTime += time.time() - tTime
-
 			if(self.printingOutput):
 				totTime = time.time() - sTime
-				print("TOOK {} SECONDS TOTAL\nAVERAGE TRIAL {} SECONDS\nAVERAGE INTREATION {} SECONDS".format(totTime, avTime / trials, totTime / totIter))
+				
+				print("TOOK {} SECONDS TOTAL\nAVERAGE TRIAL {} SECONDS\nAVERAGE INTREATION {} SECONDS".format(totTime, totTime / trials, totTime / totIter))
 			return fixated, extinct, totIter
 		else:
 			print("Failed to run sim: No graph loaded")
