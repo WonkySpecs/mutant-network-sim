@@ -5,16 +5,20 @@ from tkinter import ttk
 #Map of graphType -> graphClass. Each class has a distinct set of input parameters.
 #Should move this top be initialized at beginning of program from a text file so we can add graphs dynamically
 graphTypeClassMap = {
-						"cycle"			:"simple" ,
-						"path"			:"simple" ,
-						"urchin"		:"simple" ,
-						"clique-wheel"	:"simple" ,
-						"complete"		:"simple" ,
-						"random"		:"random"
-						}
+	"cycle"			:	"simple" ,
+	"path"			:	"simple" ,
+	"urchin"		:	"simple" ,
+	"clique-wheel"	:	"simple" ,
+	"complete"		:	"simple" ,
+	"random"		:	"random"
+	}
 
 #Lists of options for optionMenus
-simTypes = ["naive", "active-nodes", "active-edges"]
+simTypes = [
+	"naive" ,
+	"active-nodes" ,
+	"active-edges"]
+	
 randomGraphAlgorithms = ["erdos-renyi"]
 
 class SimSettingWindow:
@@ -198,20 +202,21 @@ class SimSettingWindow:
 				print("Probability, p, must be 0<p<=1")
 				return
 
-			otherParams = { 'p'				: p ,
-							#Because random graphclass is selected and randomGraphAlgorithmSelected is linked to an option menu,
-							#it must be set to a valid option so needs no validation
-							'randomType'	: self.randomGraphAlgorithmSelected.get()
-							}
+			otherParams = { 
+				'p'				: p ,
+				#Because random graphclass is selected and randomGraphAlgorithmSelected is linked to an option menu,
+				#it must be set to a valid option so needs no validation
+				'randomType'	: self.randomGraphAlgorithmSelected.get()
+				}
 		else:
 			print("Invalid graphClass whilst running AppGUI.validateInputAndRunSim")
 			return
 
 		graphParams = {
-						'graphType' 	: self.selectedGraphType ,
-						'nodes'			: numNodes ,
-						'otherParams'	: otherParams
-						}
+			'graphType' 	: self.selectedGraphType ,
+			'nodes'			: numNodes ,
+			'otherParams'	: otherParams
+			}
 
 		#	-----------		Validate simulation settings 	--------------
 		try:
@@ -237,18 +242,18 @@ class SimSettingWindow:
 			return
 
 		trialParams = {
-						'numTrials' : numTrials ,
-						'fitness'	: fitness ,
-						'startNode' : mStart ,
-						#No validation needed, same as randomGraphAlgorithmSelected above
-						'simType'	: self.simTypeSelected.get() ,
-						'batches'	: batches
-						}
+			'numTrials' : numTrials ,
+			'fitness'	: fitness ,
+			'startNode' : mStart ,
+			#No validation needed, same as randomGraphAlgorithmSelected above
+			'simType'	: self.simTypeSelected.get() ,
+			'batches'	: batches
+			}
 
 		outputParams = {
-						'console'	: self.outputToConsole.get() ,
-						'file'		: self.outputToFile.get()
-						}
+			'console'	: self.outputToConsole.get() ,
+			'file'		: self.outputToFile.get()
+			}
 
 		main.setupAndRunSimulation(trialParams, graphParams, outputParams)
 

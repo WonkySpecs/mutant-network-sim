@@ -15,15 +15,15 @@ def buildGraph(graphType, nodes, otherParams = None):
 	elif graphType == "cycle":
 		for i in range(nodes - 1):
 			G.add_edge(i, i + 1)
-		G.add_edge(0,nodes - 1)
+		G.add_edge(0, nodes - 1)
 	elif graphType == "path":
 		for i in range(nodes):
 			G.add_edge(i, i + 1)
 
 	elif graphType == "chord-cycle":
 		for i in range(nodes - 1):
-			G.add_edge(i,i + 1)
-		G.add_edge(0,nodes - 1)
+			G.add_edge(i, i + 1)
+		G.add_edge(0, nodes - 1)
 		for n in range(nodes - 1):
 			for n2 in range(n + 1, nodes):
 				if random.random() > 0.9:
@@ -31,7 +31,7 @@ def buildGraph(graphType, nodes, otherParams = None):
 	elif graphType == "urchin":
 		G = nx.Graph()
 		n = nodes // 2
-		if nodes%2 == 0:
+		if nodes % 2 == 0:
 			for c in range(n - 1):
 				for c2 in range(c + 1, n):
 					G.add_edge(c, c2)
