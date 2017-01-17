@@ -16,7 +16,7 @@ class Simulator():
 			print("Warning: loadGraphStructure called with None as argument, current graph in Simulator is None")
 
 	def resetGraphStructure(self):
-	''' Resets 'mutant' and 'active' attributes for each node of the loaded graphStructure '''
+		""" Resets 'mutant' and 'active' attributes for each node of the loaded graphStructure """
 		if self.graphStructure == None:
 			print("Tried to resetGraphStructure with no graph loaded, exiting")
 			return -1
@@ -31,7 +31,7 @@ class Simulator():
 	#Basic implementation for running moran process on the graph stored in self.graphStructure
 	#Scales very poorly on graphs with a large number of ndoes as the algorithm often select 'useless' nodes to reproduce that will not change the state of the graph.
 	def runTrial(self, fitness, mStart = -1):
-	'''Naive implementation of the generalised Moran process'''
+		"""Naive implementation of the generalised Moran process"""
 		#Initialization
 		self.resetGraphStructure()
 		simGraph = self.graphStructure
@@ -95,11 +95,10 @@ class Simulator():
 
 	#MAY MERGE THIS WITH THE ORIGINAL AS AN OPTION, A LOT OF CODE REPLICATION HERE
 	def runTrialV2(self, fitness, mStart = -1):
-	'''
-	This version of runTrial keeps track of nodes with at least one neighbour of a differnet kind to themsleves.
-	These nodes  are called 'active' nodes and are the only ones that ccan be selected for reproduction.
-	It is still possible to get useless iterations where a node selects a neighbour of the same type, but this is much less liekly than for the naive approach, particularly for sparse graphs
-	'''
+		"""	This version of runTrial keeps track of nodes with at least one neighbour of a differnet kind to themsleves.
+			These nodes  are called 'active' nodes and are the only ones that ccan be selected for reproduction.
+			It is still possible to get useless iterations where a node selects a neighbour of the same type, but this is much less liekly than for the naive approach, particularly for sparse graphs
+		"""
 
 		#Initialization
 		self.resetGraphStructure()
@@ -197,9 +196,10 @@ class Simulator():
 		return iterations, numMutants, numNonMutants
 
 	def runTrialV3(self, fitness, mStart = -1):
-		''' Theorertically optimal way to run sim is to only pick useful edges - this function implements that.
+		""" Theorertically optimal way to run sim is to only pick useful edges - this function implements that.
 			Turns out selecting a mutant becomes hard, so there isnt really any time saving (and it seems to be slower)
-			on top of all that I've implemented it incorrectly and results are not valid '''
+			on top of all that I've implemented it incorrectly and results are not valid
+		"""
 		self.resetGraphStructure()
 		simGraph = self.graphStructure
 		numNodes = len(simGraph.node)
@@ -319,10 +319,9 @@ class Simulator():
 		return iterations, numMutants, numNonMutants
 
 	def runSim(self, trials, fitness = 2, mStart = -1, simType = 'active-nodes'):
-	'''	
-	Runs simulation of given type on the currently loaded graph type with the input mutant start node, fitness and number of trials.
-	Returns the number of trials where the mutant fixated/went extinct and the total number of iterations accross all trials 
-	'''
+		"""	Runs simulation of given type on the currently loaded graph type with the input mutant start node, fitness and number of trials.
+			Returns the number of trials where the mutant fixated/went extinct and the total number of iterations accross all trials 
+		"""
 		fixated = 0
 		extinct = 0
 		totIter = 0
