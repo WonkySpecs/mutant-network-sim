@@ -7,6 +7,10 @@ import random
 
 print("Initialized")
 
+def readGraphTypes():
+	with open(("./graphs/graphTypes.txt"), "r") as graphTypeText:
+		print(graphTypeText.read())
+
 def buildGraph(graphType, nodes, otherParams = None):
 	G = nx.Graph()
 
@@ -114,6 +118,7 @@ def setupAndRunSimulation(trialParams, graphParams, outputParams, metaTrial = Fa
 		print("Done")
 
 if __name__ == "__main__":
+	readGraphTypes()
 	nodes = 600
 	numTrials = 500
 	graphType = "complete"
@@ -129,3 +134,4 @@ if __name__ == "__main__":
 	fixated, extinct, iterations = graphSim.runSim(numTrials, 5, 70)
 
 	print("{} fixated, {} extinct, {} fixation\nTook {} seconds".format(fixated, extinct, fixated/(fixated+extinct), time.time() - startTime))
+
