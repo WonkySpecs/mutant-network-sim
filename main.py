@@ -100,17 +100,15 @@ def setupAndRunSimulation(trialParams, graphParams, outputParams, metaTrial = Fa
 	nodes = graphParams['nodes']
 	graphType = graphParams['graphType']
 
+	consoleOutput = outputParams['console']
+	fileOutput  = outputParams['file']
+
 	if graphParams['otherParams']:
 		G = nx.Graph(buildGraph(graphType, nodes, graphParams['otherParams']))
 	else:
 		G = nx.Graph(buildGraph(graphType, nodes))
 
-	if outputParams['console']:
-		printOutput = True
-	else:
-		printOutput = False
-
-	graphSim = Simulator(printOutput, G)
+	graphSim = Simulator(consoleOutput, G)
 	print("Running simulation for:")
 	print(graphParams)
 	print(trialParams)
@@ -120,11 +118,11 @@ def setupAndRunSimulation(trialParams, graphParams, outputParams, metaTrial = Fa
 	for i in range(numBatches):
 		print("--- SIMULATION {} ---\n".format(i + 1))
 		fixated, extinct, iterations = graphSim.runSim(numTrials, r, mStart, simType)
-		if printOutput:
+		if consoleOutput:
 			print("{} fixated, {} extinct, {} fixation, {} average iterations\n".format(fixated, extinct, fixated / (fixated + extinct), iterations / (fixated + extinct)))
 		totalFixation += fixated / (fixated + extinct)
 
-	if printOutput:
+	if consoleOutput:
 		print("Average fixation over {} batches of {} trials was {}%".format(numBatches, numTrials, totalFixation * 100 / numBatches))
 	else:
 		print("Done")
