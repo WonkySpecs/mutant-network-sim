@@ -1,15 +1,27 @@
 from simulator import Simulator
 import networkx as nx
-#import matplotlib.pyplot as plt
 import time
 import sys
 import random
+import os
 
 print("Initialized")
 
+graphTypes = []
+graphClasses = []
+
 def readGraphTypes():
-	with open(("./graphs/graphTypes.txt"), "r") as graphTypeText:
-		print(graphTypeText.read())
+	graphTypeTextPath = os.path.join(os.curdir, "graphs", "graphTypes.txt")
+	if os.path.isfile(graphTypeTextPath):
+		with open((graphTypeTextPath), "r") as graphTypeText:
+			for g in graphTypeText:
+				graphTypes.append(g.replace("\n", ""))
+		for filename in os.listdir("graphs"):
+			if filename.endswith(".py"):
+				className = filename[:3]
+	else: 
+		print("graphTypes.txt not found - quitting")
+		sys.exit()
 
 def buildGraph(graphType, nodes, otherParams = None):
 	G = nx.Graph()
