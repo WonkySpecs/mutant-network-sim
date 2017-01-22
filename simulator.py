@@ -326,6 +326,10 @@ class Simulator():
 		extinct = 0
 		totIter = 0
 
+		fixatedIterationHistogram = {}
+		extinctIterationHistogram = {}
+		iterationHistograms = {'extinct' : extinctIterationHistogram, 'fixated' : fixatedIterationHistogram}
+
 		if simType == 'naive':
 			simFunction = self.runTrial
 		elif simType == 'active-nodes':
@@ -342,7 +346,20 @@ class Simulator():
 				tTime = time.time()
 				iterations, numMutants, numNonMutants = simFunction(fitness, mStart)
 
-				if trials >99:
+				#Mutant went extinct
+				if numMutants == 0:
+					if iterations in extinctIterationHistogram:
+						extinctIterationHistogram[iterations] += 1
+					else:
+						extinctIterationHistogram[iterations] = 1
+				#Mutant fixated
+				else:
+					if iterations in fixatedIterationHistogram:
+						fixatedIterationHistogram[iterations] += 1
+					else:
+						fixatedIterationHistogram[iterations] = 1
+
+				if trials > 99:
 					if i % (trials / 100) == 0:
 						if self.printingOutput:
 							print("{}% done".format(i * 100 / trials))
@@ -358,6 +375,6 @@ class Simulator():
 				totTime = time.time() - sTime
 				
 				print("TOOK {} SECONDS TOTAL\nAVERAGE TRIAL {} SECONDS\nAVERAGE INTREATION {} SECONDS".format(totTime, totTime / trials, totTime / totIter))
-			return fixated, extinct, totIter
+			return fixated, extinct, totIter, iterationHistograms
 		else:
 			print("Failed to run sim: No graph loaded")

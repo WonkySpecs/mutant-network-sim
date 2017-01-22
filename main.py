@@ -117,10 +117,11 @@ def setupAndRunSimulation(trialParams, graphParams, outputParams, metaTrial = Fa
 	totalFixation = 0
 	for i in range(numBatches):
 		print("--- SIMULATION {} ---\n".format(i + 1))
-		fixated, extinct, iterations = graphSim.runSim(numTrials, r, mStart, simType)
+		fixated, extinct, totalIterations, iterationHistograms = graphSim.runSim(numTrials, r, mStart, simType)
 		if consoleOutput:
-			print("{} fixated, {} extinct, {} fixation, {} average iterations\n".format(fixated, extinct, fixated / (fixated + extinct), iterations / (fixated + extinct)))
+			print("{} fixated, {} extinct, {} fixation, {} average iterations\n".format(fixated, extinct, fixated / (fixated + extinct), totalIterations / (fixated + extinct)))
 		totalFixation += fixated / (fixated + extinct)
+		print(iterationHistograms)
 
 	if consoleOutput:
 		print("Average fixation over {} batches of {} trials was {}%".format(numBatches, numTrials, totalFixation * 100 / numBatches))
@@ -134,9 +135,6 @@ if __name__ == "__main__":
 	graphType = "complete"
 
 	G = nx.Graph(buildGraph(graphType, nodes))
-	# nx.draw(G)
-	# plt.draw()
-	# plt.show()
 	graphSim=Simulator(True)
 	graphSim.loadGraphStructure(G)
 
