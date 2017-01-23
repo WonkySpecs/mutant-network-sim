@@ -49,7 +49,6 @@ class SimSettingWindow:
 		self.populateGraphSelectFrame()
 		self.populateGraphSettingFrame()		
 		self.populateSimSettingFrame()
-		self.populateGraphSelectListbox()
 
 	#Create all widgets
 	def createWidgets(self):
@@ -117,9 +116,9 @@ class SimSettingWindow:
 		self.graphSelectScrollbar.grid(column = 1, row = 0, sticky = tk.N + tk.S)
 		self.graphSelectListbox.grid(column = 0, row = 0, sticky = tk.W + tk.N + tk.S, padx = 3, pady = 1)
 
-	def populateGraphSelectListbox(self):
+	def populateGraphSelectListbox(self, items):
 		if self.graphSelectListbox is not None:
-			for item in graphTypeClassMap.keys():
+			for item in items:
 			    self.graphSelectListbox.insert(tk.END, item)
 		else:
 			print("Tried to populate graphListbox before it exists in SimSettingWindow")
@@ -269,3 +268,10 @@ class SimSettingWindow:
 			}
 
 		main.setupAndRunSimulation(trialParams, graphParams, outputParams)
+
+if __name__ == "__main__":
+	metadata = main.readGraphClassMetadata()
+	root = tk.Tk()
+	root.resizable(width = False, height = False)
+	window = SimSettingWindow(root)
+	root.mainloop()

@@ -150,8 +150,14 @@ def setupAndRunSimulation(trialParams, graphParams, outputParams, metaTrial = Fa
 
 if __name__ == "__main__":
 	print("Initialized")
-	readGraphClassMetadata()
+
+	metadata = readGraphClassMetadata()
+	graphNames = [metadata[i]['display_name'] for i in range(len(metadata))]
+	
 	root = tk.Tk()
 	root.resizable(width = False, height = False)
 	window = GUI.SimSettingWindow(root)
+
+	window.populateGraphSelectListbox(graphNames)
 	root.mainloop()
+	print("Quitting")
