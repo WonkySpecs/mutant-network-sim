@@ -4,8 +4,8 @@ import time
 import sys
 import random
 import os
-
-print("Initialized")
+import AppGUI as GUI
+import tkinter as tk
 
 graphTypes = []
 graphClasses = []
@@ -149,4 +149,9 @@ def setupAndRunSimulation(trialParams, graphParams, outputParams, metaTrial = Fa
 		print("Done")
 
 if __name__ == "__main__":
+	print("Initialized")
 	readGraphClassMetadata()
+	root = tk.Tk()
+	root.resizable(width = False, height = False)
+	window = GUI.SimSettingWindow(root)
+	root.mainloop()

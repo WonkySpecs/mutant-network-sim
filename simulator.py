@@ -3,7 +3,6 @@ import random
 import time
 import sys
 
-
 class Simulator():
 	def __init__(self, printOutput = True, graph = None):
 		print("Simulator instance created")
