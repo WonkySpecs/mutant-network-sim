@@ -47,6 +47,7 @@ class SimSettingWindow:
 		self.createWidgets()
 
 		self.populateGraphSelectFrame()
+		self.populateGraphSettingFrame(None)
 		self.populateSimSettingFrame()
 
 	#Create all widgets
@@ -89,7 +90,7 @@ class SimSettingWindow:
 		self.outputToFile = tk.IntVar(self.master)
 		self.fileOutputCheck = tk.Checkbutton(self.simSettingFrame, text = "File output", variable = self.outputToFile)
 
-		self.startSimButton = tk.ttk.Button(self.simSettingFrame, text = "Start Simulation", command = self.validateInputAndRunSim)
+		self.startSimButton = tk.ttk.Button(self.simSettingFrame, text = "Start Simulation", command = self.collectInputsAndRunSim)
 
 	def hideAllWidgetsInFrame(self, frame):
 		for child in frame.winfo_children():
@@ -104,6 +105,7 @@ class SimSettingWindow:
 		self.graphSelectScrollbar.grid(column = 1, row = 0, sticky = tk.N + tk.S)
 		self.graphSelectListbox.grid(column = 0, row = 0, sticky = tk.W + tk.N + tk.S, padx = 3, pady = 1)
 
+	#Could generalise this to fill any arbitrary listbox/optionmenu/entry
 	def populateGraphSelectListbox(self, items):
 		if self.graphSelectListbox is not None:
 			for item in items:
@@ -112,29 +114,31 @@ class SimSettingWindow:
 			print("Tried to populate graphListbox before it exists in SimSettingWindow")
 
 	def populateGraphSettings(self, event):
+		#Gives the currently selected graph type to main.getSettingsData which finds the correct set of metadata
+		#for that graph class and returns the list of parameters needed to create one
 		elements = main.getSettingsData(self.graphSelectListbox.get(self.graphSelectListbox.curselection()))
 		self.populateGraphSettingFrame(elements)
 
 	def populateGraphSettingFrame(self, elements):
-		rowNum = 0
-		self.deleteAllWidgetsInFrame(self.graphSettingFrame)
-		graphDescriptionLabel = None
+		if elements:
+			rowNum = 0
+			self.deleteAllWidgetsInFrame(self.graphSettingFrame)
+			graphDescriptionLabel = None
 
-		for elementName, elementType in elements.items():
-			if elementName == "description":
-				graphDescriptionLabel = tk.Label(self.graphSettingFrame, anchor = tk.S, text = elementType, wraplength = 280)
-			else:
-				newLabel = tk.Label(self.graphSettingFrame, text = elementName)
-				newEntry = tk.ttk.Entry(self.graphSettingFrame)
-				newLabel.grid(in_ = self.graphSettingFrame, column = 0, row = rowNum)
-				newEntry.grid(in_ = self.graphSettingFrame, column = 1, row = rowNum)
-				rowNum +=1
+			for (elementName, elementType) in elements:
+				if elementName == "description":
+					graphDescriptionLabel = tk.Label(self.graphSettingFrame, anchor = tk.S, text = elementType, wraplength = 270)
+				else:
+					newLabel = tk.Label(self.graphSettingFrame, text = elementName)
+					newEntry = tk.ttk.Entry(self.graphSettingFrame)
+					newLabel.grid(in_ = self.graphSettingFrame, column = 0, row = rowNum)
+					newEntry.grid(in_ = self.graphSettingFrame, column = 1, row = rowNum)
+					rowNum += 1
 
 			if graphDescriptionLabel:
 				graphDescriptionLabel.grid(in_ = self.graphSettingFrame, column = 0, row = rowNum, columnspan = 2)
-
-
-		#self.emptyLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 0)
+		else:
+			self.emptyLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 0)
 			
 
 	def populateSimSettingFrame(self):
@@ -159,55 +163,23 @@ class SimSettingWindow:
 
 		self.startSimButton.grid(in_ = self.simSettingFrame, column = 0, columnspan = 2)
 
-	def validateInputAndRunSim(self):
+	def getGraphSettings(self):
+		graphSettings = {}
+		for child in self.graphSettingFrame.winfo_children():
+			if child.winfo_class() == "TEntry":
+				print(child.config())
+				#graphSettings['''Get the text of the attached label somehow'''] = child.get()
+
+		return graphSettings
+
+	def collectInputsAndRunSim(self):
 		''' Method called when run simulation button is clicked.
 			Validates the entries for both graphSettings and simSettings then passes dictionaries of the options to setupAndRunSimulation'''
 
-		#	-----------		Validate graph settings 	--------------
-		if not hasattr(self, 'selectedGraphType'):
-			print("Must select a graph type")
-			return
+		#	-----------		Get graph settings 	--------------
+		graphParams = self.getGraphSettings()
 
-		try:
-			numNodes = int(self.numNodesEntry.get())
-		except ValueError:
-			print("Number of nodes must be an integer >=2")
-			return
-
-		if numNodes < 2:
-			print("Must have at least 2 nodes")
-			return
-
-		#If graphType is defined, graphClass must be as well
-		if self.selectedGraphClass == "simple":
-			otherParams = {}
-		elif self.selectedGraphClass == "random":
-			try:
-				p = float(self.randomGraphPEntry.get())
-			except:
-				print("Probability, p, must be 0<p<=1")
-				return
-			if p<=0 or p>1:
-				print("Probability, p, must be 0<p<=1")
-				return
-
-			otherParams = { 
-				'p'				: p ,
-				#Because random graphclass is selected and randomGraphAlgorithmSelected is linked to an option menu,
-				#it must be set to a valid option so needs no validation
-				'randomType'	: self.randomGraphAlgorithmSelected.get()
-				}
-		else:
-			print("Invalid graphClass whilst running AppGUI.validateInputAndRunSim")
-			return
-
-		graphParams = {
-			'graphType' 	: self.selectedGraphType ,
-			'nodes'			: numNodes ,
-			'otherParams'	: otherParams
-			}
-
-		#	-----------		Validate simulation settings 	--------------
+		#	-----------		Get and validate simulation settings 	--------------
 		try:
 			numTrials = int(self.numTrialEntry.get())
 			fitness = float(self.mutantFitnessEntry.get())

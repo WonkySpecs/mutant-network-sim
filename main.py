@@ -116,12 +116,12 @@ def setupAndRunSimulation(trialParams, graphParams, outputParams, metaTrial = Fa
 		print("Done")
 
 def getSettingsData(graphName):
-	elements = {}
+	elements = []
 	for g in metadata:
 		if g["display_name"] == graphName:
 			for argument in g['argument_names']:
-				elements[argument] = ""
-			elements["description"] = g['description']
+				elements.append((argument,""))
+			elements.append(("description", g['description']))
 
 	return elements
 
