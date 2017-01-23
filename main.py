@@ -10,18 +10,38 @@ print("Initialized")
 graphTypes = []
 graphClasses = []
 
-def readGraphTypes():
-	graphTypeTextPath = os.path.join(os.curdir, "graphs", "graphTypes.txt")
-	if os.path.isfile(graphTypeTextPath):
-		with open((graphTypeTextPath), "r") as graphTypeText:
-			for g in graphTypeText:
-				graphTypes.append(g.replace("\n", ""))
-		for filename in os.listdir("graphs"):
-			if filename.endswith(".py"):
-				className = filename[:3]
-	else: 
-		print("graphTypes.txt not found - quitting")
-		sys.exit()
+def readGraphClassMetadata():
+	data = []
+	graphClassesPath = os.path.join(os.curdir, "graph_classes")
+
+	for subdir in os.listdir(graphClassesPath):
+		containsMetadata = False
+		containsBuildCode = False
+		containsRubbish = False
+
+		subpath = os.path.join(graphClassesPath, subdir)
+		for filename in os.listdir(subpath):
+			if filename == "metadata.txt":
+				containsMetadata = True
+				with open(os.path.join(subpath, "metadata.txt"), "r") as f:
+					s = f.read()
+					#metadata files assign a dictionary containing all meta data for a graphclass to a variable called 'metadata'
+					exec(s)
+					data.append(metadata)
+
+			elif filename == "build_code.py":
+				containsBuildCode = True
+			else:
+				containsRubbish = True
+
+		if containsRubbish:
+			print("{} contains unused file(s)".format(subpath))
+		if not containsMetadata:
+			print("Metadata not found in {}".format(subpath))
+		if not containsBuildCode:
+			#TODO: Add funcitonality to remove metadata if build code does not exist
+			print("Build code not found in {}".format(subpath))
+
 
 def buildGraph(graphType, nodes, otherParams = None):
 	G = nx.Graph()
@@ -129,17 +149,4 @@ def setupAndRunSimulation(trialParams, graphParams, outputParams, metaTrial = Fa
 		print("Done")
 
 if __name__ == "__main__":
-	readGraphTypes()
-	nodes = 600
-	numTrials = 500
-	graphType = "complete"
-
-	G = nx.Graph(buildGraph(graphType, nodes))
-	graphSim=Simulator(True)
-	graphSim.loadGraphStructure(G)
-
-	startTime=time.time()
-	fixated, extinct, iterations = graphSim.runSim(numTrials, 5, 70)
-
-	print("{} fixated, {} extinct, {} fixation\nTook {} seconds".format(fixated, extinct, fixated/(fixated+extinct), time.time() - startTime))
-
+	readGraphClassMetadata()

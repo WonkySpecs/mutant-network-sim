@@ -1,7 +1,8 @@
+global metadata
 metadata = {
 	"name"				: "cycle",
 	"display_name"		: "Cycle",
 	"argument_names"	: ["nodes",],
-	"description"		: ("Basic graph class - each node has 2 neighbours"
-							"nodes parameter is the number of nodes")
+	"description"		: ( "Basic graph class - each node has 2 neighbours"
+							"\nnodes parameter is the number of nodes")
 	}
