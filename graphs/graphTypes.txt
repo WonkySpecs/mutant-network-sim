@@ -1,6 +1,0 @@
-path
-cycle
-complete
-random
-urchin
-clique-wheel
