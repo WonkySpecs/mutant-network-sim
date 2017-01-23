@@ -47,7 +47,6 @@ class SimSettingWindow:
 		self.createWidgets()
 
 		self.populateGraphSelectFrame()
-		self.populateGraphSettingFrame()		
 		self.populateSimSettingFrame()
 
 	#Create all widgets
@@ -57,25 +56,10 @@ class SimSettingWindow:
 
 		self.titleLabel = tk.Label(self.graphSettingFrame, text = "", justify = 'left')
 
-		self.numNodesLabel = tk.Label(self.graphSettingFrame, text = "Number of nodes:")
-		self.numNodesEntry = tk.ttk.Entry(self.graphSettingFrame)
-		self.numNodesEntry.insert(tk.END, '100')
-
-		self.randomGraphAlgorithmLabel = tk.Label(self.graphSettingFrame, text = "Construction Algorithm:")
-		self.randomGraphAlgorithmSelected = tk.StringVar(self.master)
-		self.randomGraphAlgorithmOptionMenu = tk.ttk.OptionMenu(self.graphSettingFrame, self.randomGraphAlgorithmSelected, randomGraphAlgorithms[0], *randomGraphAlgorithms)
-
-		self.randomGraphPLabel = tk.Label(self.graphSettingFrame, text = "Connection probability:")
-		self.randomGraphPEntry = tk.ttk.Entry(self.graphSettingFrame)
-		self.randomGraphPEntry.insert(tk.END, '0.2')
-
-		self.graphDescriptionVar = tk.StringVar()
-		self.graphDescriptionLabel = tk.Label(self.graphSettingFrame, anchor = tk.S, text = "", textvariable = self.graphDescriptionVar, wraplength = 280)
-
 		#---------------- graphSelectFrame widgets ------------------
 		self.graphSelectScrollbar = tk.ttk.Scrollbar(self.graphSelectFrame)
 		self.graphSelectListbox = tk.Listbox(self.graphSelectFrame, yscrollcommand = self.graphSelectScrollbar.set, selectmode = tk.SINGLE)
-		self.graphSelectListbox.bind("<<ListboxSelect>>", self.populateGraphSettingFrame)
+		self.graphSelectListbox.bind("<<ListboxSelect>>", self.populateGraphSettings)
 		self.graphSelectScrollbar.config(command=self.graphSelectListbox.yview)
 
 		#---------------- simSettingFrame widgets  ------------------
@@ -111,6 +95,10 @@ class SimSettingWindow:
 		for child in frame.winfo_children():
 			child.grid_forget()
 
+	def deleteAllWidgetsInFrame(self, frame):
+		for child in frame.winfo_children():
+			child.destroy()
+
 	def populateGraphSelectFrame(self):
 		self.hideAllWidgetsInFrame(self.graphSelectFrame)
 		self.graphSelectScrollbar.grid(column = 1, row = 0, sticky = tk.N + tk.S)
@@ -123,41 +111,30 @@ class SimSettingWindow:
 		else:
 			print("Tried to populate graphListbox before it exists in SimSettingWindow")
 
-	def populateGraphSettingFrame(self, event = None):
+	def populateGraphSettings(self, event):
+		elements = main.getSettingsData(self.graphSelectListbox.get(self.graphSelectListbox.curselection()))
+		self.populateGraphSettingFrame(elements)
+
+	def populateGraphSettingFrame(self, elements):
 		rowNum = 0
-		self.hideAllWidgetsInFrame(self.graphSettingFrame)
-		selectIndexTuple = self.graphSelectListbox.curselection()
-		if selectIndexTuple:
-			graphType = self.graphSelectListbox.get(selectIndexTuple).lower()
-			graphClass = graphTypeClassMap.get(graphType,'NotInMap')
-			self.selectedGraphType = graphType
-			self.selectedGraphClass = graphClass
+		self.deleteAllWidgetsInFrame(self.graphSettingFrame)
+		graphDescriptionLabel = None
 
-			self.titleLabel["text"] = self.graphSelectListbox.get(selectIndexTuple)
-			self.titleLabel.grid(in_ = self.graphSettingFrame, column = 0, row = rowNum)
+		for elementName, elementType in elements.items():
+			if elementName == "description":
+				graphDescriptionLabel = tk.Label(self.graphSettingFrame, anchor = tk.S, text = elementType, wraplength = 280)
+			else:
+				newLabel = tk.Label(self.graphSettingFrame, text = elementName)
+				newEntry = tk.ttk.Entry(self.graphSettingFrame)
+				newLabel.grid(in_ = self.graphSettingFrame, column = 0, row = rowNum)
+				newEntry.grid(in_ = self.graphSettingFrame, column = 1, row = rowNum)
+				rowNum +=1
 
-			rowNum += 1
+			if graphDescriptionLabel:
+				graphDescriptionLabel.grid(in_ = self.graphSettingFrame, column = 0, row = rowNum, columnspan = 2)
 
-			if graphClass == "simple":
-				self.numNodesLabel.grid(in_ = self.graphSettingFrame, column = 0, row = rowNum)
-				self.numNodesEntry.grid(in_ = self.graphSettingFrame, column = 1, row = rowNum)
-				rowNum += 1
 
-			elif graphClass == "random":
-				self.numNodesLabel.grid(in_ = self.graphSettingFrame, column = 0, row = rowNum)
-				self.numNodesEntry.grid(in_ = self.graphSettingFrame, column = 1, row = rowNum)
-				rowNum += 1
-				self.randomGraphAlgorithmLabel.grid(in_ = self.graphSettingFrame, column = 0, row = rowNum)
-				self.randomGraphAlgorithmOptionMenu.grid(in_ = self.graphSettingFrame, column = 1, row = rowNum)
-				rowNum += 1
-				self.randomGraphPLabel.grid(in_ = self.graphSettingFrame, column = 0, row = rowNum)
-				self.randomGraphPEntry.grid(in_ = self.graphSettingFrame, column = 1, row = rowNum)
-				rowNum += 1
-
-			self.graphDescriptionVar.set("Description doesn't really go here")
-			self.graphDescriptionLabel.grid(in_ = self.graphSettingFrame, column = 0, row = rowNum, sticky = tk.S, columnspan = 2)
-		else:
-			self.emptyLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 0)
+		#self.emptyLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 0)
 			
 
 	def populateSimSettingFrame(self):
