@@ -41,7 +41,7 @@ def readGraphClassMetadata():
 		if not containsBuildCode:
 			#TODO: Add funcitonality to remove metadata if build code does not exist
 			print("Build code not found in {}".format(subpath))
-
+	return data
 
 def buildGraph(graphType, nodes, otherParams = None):
 	G = nx.Graph()
