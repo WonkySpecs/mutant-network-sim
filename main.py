@@ -9,7 +9,19 @@ import AppGUI as GUI
 import tkinter as tk
 import IO
 
-metadata = IO.readGraphClassMetadata()
+def readGraphClasses():
+	data = []
+	graphClassesPath = os.path.join(os.curdir, "graph_classes")
+
+	for filename in os.listdir(graphClassesPath):
+		if filename.startswith("GraphClass_") and filename.endswith(".py"):
+			#Module names are of the form graph_classes.GraphClass_graphtypename
+			m = importlib.import_module("graph_classes." + filename[:-3])
+			print(m)
+
+	return data
+
+metadata = readGraphClasses()
 
 def buildGraph(graphType, nodes, otherParams = None):
 	G = nx.Graph()
