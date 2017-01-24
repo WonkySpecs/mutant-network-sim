@@ -1,5 +1,21 @@
 import networkx as nx
 import os
+import importlib
+import inspect
+
+def readGraphClasses():
+	classes = []
+	graphClassesPath = os.path.join(os.curdir, "graph_classes")
+
+	for filename in os.listdir(graphClassesPath):
+		if filename.startswith("GraphClass_") and filename.endswith(".py"):
+			#Module names are of the form graph_classes.GraphClass_graphtypename
+			m = importlib.import_module("graph_classes." + filename[:-3])
+
+			#This pulls the class out of the module
+			for c in inspect.getmembers(m, inspect.isclass):
+				classes.append(c[1])
+	return classes
 
 def writeNewGraphClass(buildCode, metadata):
 	pass

@@ -4,24 +4,11 @@ import time
 import sys
 import random
 import os
-import importlib
 import AppGUI as GUI
 import tkinter as tk
 import IO
 
-def readGraphClasses():
-	data = []
-	graphClassesPath = os.path.join(os.curdir, "graph_classes")
-
-	for filename in os.listdir(graphClassesPath):
-		if filename.startswith("GraphClass_") and filename.endswith(".py"):
-			#Module names are of the form graph_classes.GraphClass_graphtypename
-			m = importlib.import_module("graph_classes." + filename[:-3])
-			print(m)
-
-	return data
-
-metadata = readGraphClasses()
+graphClasses = []
 
 def buildGraph(graphType, nodes, otherParams = None):
 	G = nx.Graph()
@@ -90,11 +77,13 @@ def buildGraph(graphType, nodes, otherParams = None):
 		G.node[i]['mutant'] = False
 	return G
 
-def getGraphMetadata(displayName):
-	for g in metadata:
-		if g["display_name"] == displayName:
+def getGraphMetadata(graphName):
+	global graphClasses
+	for g in graphClasses:
+		print(g)
+		if g.metadata["name"] == graphName:
 			return g
-	print("No graph has the display name {}".format(displayName))
+	print("No graph named '{}'".format(graphName))
 	return -1
 
 def setupAndRunSimulation(trialParams, graphParams, outputParams, metaTrial = False):
@@ -114,9 +103,7 @@ def setupAndRunSimulation(trialParams, graphParams, outputParams, metaTrial = Fa
 
 	print(graphParamDict)
 
-	buildCode = importlib.import_module('build_code')
-
-	G = buildCode.buildGraph(123)
+	gc = getGraphMetadata(graphType)
 
 	consoleOutput = outputParams['console']
 	fileOutput  = outputParams['file']
@@ -155,7 +142,10 @@ def getSettingsData(graphName):
 
 if __name__ == "__main__":
 	print("Initialized")
-	graphNames = [metadata[i]['display_name'] for i in range(len(metadata))]
+	global graphClasses
+	graphClasses = IO.readGraphClasses()
+
+	graphNames = [graphClasses[i].metadata['display_name'] for i in range(len(graphClasses))]
 
 	root = tk.Tk()
 	root.resizable(width = False, height = False)
