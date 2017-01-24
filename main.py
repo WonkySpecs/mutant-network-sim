@@ -4,6 +4,7 @@ import time
 import sys
 import random
 import os
+import importlib
 import AppGUI as GUI
 import tkinter as tk
 import IO
@@ -77,23 +78,38 @@ def buildGraph(graphType, nodes, otherParams = None):
 		G.node[i]['mutant'] = False
 	return G
 
+def getGraphMetadata(displayName):
+	for g in metadata:
+		if g["display_name"] == displayName:
+			return g
+	print("No graph has the display name {}".format(displayName))
+	return -1
+
 def setupAndRunSimulation(trialParams, graphParams, outputParams, metaTrial = False):
+	graphType = graphParams[-1]
+	graphMetadata = getGraphMetadata(graphType)
+
 	numTrials = trialParams['numTrials']
 	r = trialParams['fitness']
 	mStart = trialParams['startNode']
 	simType = trialParams['simType']
 	numBatches = trialParams['batches']
 
-	nodes = graphParams['nodes']
-	graphType = graphParams['graphType']
+	graphParamDict = {}
+
+	for i in range(len(graphParams) - 1):
+		graphParamDict[graphMetadata['argument_names'][i]] = int(graphParams[i])
+
+	print(graphParamDict)
+
+	buildCode = importlib.import_module('build_code')
+
+	G = buildCode.buildGraph(123)
 
 	consoleOutput = outputParams['console']
 	fileOutput  = outputParams['file']
 
-	if graphParams['otherParams']:
-		G = nx.Graph(buildGraph(graphType, nodes, graphParams['otherParams']))
-	else:
-		G = nx.Graph(buildGraph(graphType, nodes))
+	#Call build_code
 
 	graphSim = Simulator(consoleOutput, G)
 	print("Running simulation for:")
@@ -117,11 +133,11 @@ def setupAndRunSimulation(trialParams, graphParams, outputParams, metaTrial = Fa
 
 def getSettingsData(graphName):
 	elements = []
-	for g in metadata:
-		if g["display_name"] == graphName:
-			for argument in g['argument_names']:
-				elements.append((argument,""))
-			elements.append(("description", g['description']))
+	data = getGraphMetadata(graphName)
+	
+	for argument in data['argument_names']:
+		elements.append((argument,""))
+	elements.append(("description", data['description']))
 
 	return elements
 

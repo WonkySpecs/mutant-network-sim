@@ -1,11 +1,13 @@
 import networkx as nx
 import os
+import importlib
 
 def readGraphClassMetadata():
 	data = []
 	graphClassesPath = os.path.join(os.curdir, "graph_classes")
 
 	for subdir in os.listdir(graphClassesPath):
+		print(subdir)
 		containsMetadata = False
 		containsBuildCode = False
 		containsRubbish = False
@@ -33,6 +35,16 @@ def readGraphClassMetadata():
 			#TODO: Add funcitonality to remove metadata if build code does not exist
 			print("Build code not found in {}".format(subpath))
 	return data
+
+#This is a real ghetto way of importing things, I'll atone for my  sins one day
+def getBuildCode(graphType):
+	p = os.path.join(os.curdir, 'graph_classes', graphType)
+	if os.path.isfile(os.path.join(p,'build_code.py')):
+		with open(os.path.join(p,'build_code.py'), 'r') as f:
+			s = f.read()
+			print(s)
+			exec(s)
+			buildGraph
 
 def saveGraph(G, graphName):
 	graphsPath = os.path.join(os.curdir, "results", "graphs")
@@ -69,7 +81,3 @@ def saveResults(output):
 	content = output['content']
 	with open(os.path.join(experimentsPath, filename), "w") as outFile:
 		outFile.write(content)
-
-if __name__ == "__main__":
-	saveGraph(nx.path_graph(4), "path-4")
-	saveResults({"filename":"r1.result", "content":"I'm so appalled"})

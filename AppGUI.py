@@ -2,17 +2,6 @@ import tkinter as tk
 import main
 from tkinter import ttk
 
-#Map of graphType -> graphClass. Each class has a distinct set of input parameters.
-#Should move this top be initialized at beginning of program from a text file so we can add graphs dynamically
-graphTypeClassMap = {
-	"cycle"			:	"simple" ,
-	"path"			:	"simple" ,
-	"urchin"		:	"simple" ,
-	"clique-wheel"	:	"simple" ,
-	"complete"		:	"simple" ,
-	"random"		:	"random"
-	}
-
 #Lists of options for optionMenus
 simTypes = [
 	"naive" ,
@@ -164,12 +153,12 @@ class SimSettingWindow:
 		self.startSimButton.grid(in_ = self.simSettingFrame, column = 0, columnspan = 2)
 
 	def getGraphSettings(self):
-		graphSettings = {}
+		graphSettings = []
 		for child in self.graphSettingFrame.winfo_children():
 			if child.winfo_class() == "TEntry":
-				print(child.config())
-				#graphSettings['''Get the text of the attached label somehow'''] = child.get()
+				graphSettings.append(child.get())
 
+		graphSettings.append(self.graphSelectListbox.get(self.graphSelectListbox.curselection()))
 		return graphSettings
 
 	def collectInputsAndRunSim(self):
@@ -189,18 +178,6 @@ class SimSettingWindow:
 			#Should probably split these up 
 			print("Error with sim settings")
 			return
-		if numTrials < 1:
-			print("Must have at least 1 trial")
-			return
-		if fitness <= 0:
-			print("fitness cannot be zero or negative")
-			return
-		if mStart < -1 or mStart > numNodes - 1:
-			print("Mutant start node must be between 0 and number of nodes - 1, or -1 for random")
-			return
-		if batches <= 0:
-			print("Batches must be positive")
-			return
 
 		trialParams = {
 			'numTrials' : numTrials ,
@@ -217,10 +194,3 @@ class SimSettingWindow:
 			}
 
 		main.setupAndRunSimulation(trialParams, graphParams, outputParams)
-
-if __name__ == "__main__":
-	metadata = main.readGraphClassMetadata()
-	root = tk.Tk()
-	root.resizable(width = False, height = False)
-	window = SimSettingWindow(root)
-	root.mainloop()
