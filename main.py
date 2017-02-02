@@ -79,13 +79,22 @@ class Controller:
 	def __init__(self):
 		self.graphClasses = IO.readGraphClasses()
 
-	def getGraphMetadata(self, graphName):
+	def getGraphMetadata(self, graphDisplayName):
 		for g in self.graphClasses:
-			print(g)
-			if g.metadata["name"] == graphName:
-				return g
-		print("No graph named '{}'".format(graphName))
+			if g.metadata["display_name"] == graphDisplayName:
+				return g.metadata
+		print("No graph named '{}'".format(graphDisplayName))
 		return -1
+
+	def getSettingsData(self, graphName):
+		elements = []
+		data = self.getGraphMetadata(graphName)
+		
+		for argument in data['argument_names']:
+			elements.append((argument,""))
+		elements.append(("description", data['description']))
+
+		return elements
 
 	def setupAndRunSimulation(self, trialParams, graphParams, outputParams, metaTrial = False):
 		graphType = graphParams[-1]
@@ -130,18 +139,6 @@ class Controller:
 			print("Average fixation over {} batches of {} trials was {}%".format(numBatches, numTrials, totalFixation * 100 / numBatches))
 		else:
 			print("Done")
-
-	def getSettingsData(self, graphName):
-		elements = []
-		data = self.getGraphMetadata(graphName)
-
-		print(data)
-		
-		for argument in data['argument_names']:
-			elements.append((argument,""))
-		elements.append(("description", data['description']))
-
-		return elements
 
 if __name__ == "__main__":
 	controller = Controller()
