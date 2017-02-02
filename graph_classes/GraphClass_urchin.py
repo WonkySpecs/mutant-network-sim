@@ -20,13 +20,8 @@ class GraphClass_urchin:
 		"name"				: "urchin",
 		"display_name"		: "Urchin",
 		"argument_names"	: ["nodes",],
-		"description"		: ( "A graph with n nodes arranged with half"
-								" in a clique and the other half in an "
-								"independent set, with each"
-								" clique node connected to exactly one "
-								"node in the independent set"
-								"\nFor mutant start node, use -1 for random"
-								"start, in the range 0-(n/2 -2) for a node "
-								"in the clique and n/2 - (n-1) for a nose"
-								"\nMust have an even number of nodes")
+		"description"		: ( "nodes 0-(n/2 -1) form a clique,"
+								"(n/2 - [n-1]) are an independent"
+								"set, linked 1-1 with the nodes"
+								" in the clique")
 		}
