@@ -8,8 +8,6 @@ import AppGUI as GUI
 import tkinter as tk
 import IO
 
-graphClasses = []
-
 def buildGraph(graphType, nodes, otherParams = None):
 	G = nx.Graph()
 
@@ -77,79 +75,84 @@ def buildGraph(graphType, nodes, otherParams = None):
 		G.node[i]['mutant'] = False
 	return G
 
-def getGraphMetadata(graphName):
-	global graphClasses
-	for g in graphClasses:
-		print(g)
-		if g.metadata["name"] == graphName:
-			return g
-	print("No graph named '{}'".format(graphName))
-	return -1
+class Controller:
+	def __init__(self):
+		self.graphClasses = IO.readGraphClasses()
 
-def setupAndRunSimulation(trialParams, graphParams, outputParams, metaTrial = False):
-	graphType = graphParams[-1]
-	graphMetadata = getGraphMetadata(graphType)
+	def getGraphMetadata(self, graphName):
+		for g in self.graphClasses:
+			print(g)
+			if g.metadata["name"] == graphName:
+				return g
+		print("No graph named '{}'".format(graphName))
+		return -1
 
-	numTrials = trialParams['numTrials']
-	r = trialParams['fitness']
-	mStart = trialParams['startNode']
-	simType = trialParams['simType']
-	numBatches = trialParams['batches']
+	def setupAndRunSimulation(self, trialParams, graphParams, outputParams, metaTrial = False):
+		graphType = graphParams[-1]
+		graphMetadata = self.getGraphMetadata(graphType)
 
-	graphParamDict = {}
+		numTrials = trialParams['numTrials']
+		r = trialParams['fitness']
+		mStart = trialParams['startNode']
+		simType = trialParams['simType']
+		numBatches = trialParams['batches']
 
-	for i in range(len(graphParams) - 1):
-		graphParamDict[graphMetadata['argument_names'][i]] = int(graphParams[i])
+		graphParamDict = {}
 
-	print(graphParamDict)
+		for i in range(len(graphParams) - 1):
+			graphParamDict[graphMetadata['argument_names'][i]] = int(graphParams[i])
 
-	gc = getGraphMetadata(graphType)
+		print(graphParamDict)
 
-	consoleOutput = outputParams['console']
-	fileOutput  = outputParams['file']
+		gc = self.getGraphMetadata(graphType)
 
-	#Call build_code
+		consoleOutput = outputParams['console']
+		fileOutput  = outputParams['file']
 
-	graphSim = Simulator(consoleOutput, G)
-	print("Running simulation for:")
-	print(graphParams)
-	print(trialParams)
-	print(outputParams)
-	
-	totalFixation = 0
-	for i in range(numBatches):
-		print("--- SIMULATION {} ---\n".format(i + 1))
-		fixated, extinct, totalIterations, iterationHistograms = graphSim.runSim(numTrials, r, mStart, simType)
+		#Call build_code
+
+		graphSim = Simulator(consoleOutput, G)
+		print("Running simulation for:")
+		print(graphParams)
+		print(trialParams)
+		print(outputParams)
+		
+		totalFixation = 0
+		for i in range(numBatches):
+			print("--- SIMULATION {} ---\n".format(i + 1))
+			fixated, extinct, totalIterations, iterationHistograms = graphSim.runSim(numTrials, r, mStart, simType)
+			if consoleOutput:
+				print("{} fixated, {} extinct, {} fixation, {} average iterations\n".format(fixated, extinct, fixated / (fixated + extinct), totalIterations / (fixated + extinct)))
+			totalFixation += fixated / (fixated + extinct)
+			print(iterationHistograms)
+
 		if consoleOutput:
-			print("{} fixated, {} extinct, {} fixation, {} average iterations\n".format(fixated, extinct, fixated / (fixated + extinct), totalIterations / (fixated + extinct)))
-		totalFixation += fixated / (fixated + extinct)
-		print(iterationHistograms)
+			print("Average fixation over {} batches of {} trials was {}%".format(numBatches, numTrials, totalFixation * 100 / numBatches))
+		else:
+			print("Done")
 
-	if consoleOutput:
-		print("Average fixation over {} batches of {} trials was {}%".format(numBatches, numTrials, totalFixation * 100 / numBatches))
-	else:
-		print("Done")
+	def getSettingsData(self, graphName):
+		elements = []
+		data = self.getGraphMetadata(graphName)
 
-def getSettingsData(graphName):
-	elements = []
-	data = getGraphMetadata(graphName)
-	
-	for argument in data['argument_names']:
-		elements.append((argument,""))
-	elements.append(("description", data['description']))
+		print(data)
+		
+		for argument in data['argument_names']:
+			elements.append((argument,""))
+		elements.append(("description", data['description']))
 
-	return elements
+		return elements
 
 if __name__ == "__main__":
+	controller = Controller()
 	print("Initialized")
-	global graphClasses
-	graphClasses = IO.readGraphClasses()
 
-	graphNames = [graphClasses[i].metadata['display_name'] for i in range(len(graphClasses))]
+	graphNames = [controller.graphClasses[i].metadata['display_name'] for i in range(len(controller.graphClasses))]
+	print(graphNames)
 
 	root = tk.Tk()
 	root.resizable(width = False, height = False)
-	window = GUI.SimSettingWindow(root)
+	window = GUI.SimSettingWindow(root, controller)
 
 	window.populateGraphSelectListbox(graphNames)
 	root.mainloop()

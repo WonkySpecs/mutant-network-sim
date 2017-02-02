@@ -1,5 +1,4 @@
 import tkinter as tk
-import main
 from tkinter import ttk
 
 #Lists of options for optionMenus
@@ -17,7 +16,8 @@ class SimSettingWindow:
 		All widgets are created during initialization then hidden and shown as appropriate - as there are not very many of them it is unnecessary to destroy and recreate them.
 		The populate methods handle which widgets are visible'''
 
-	def __init__(self, master):
+	def __init__(self, master, controller):
+		self.controller = controller
 		self.master = master
 
 		self.master.grid_columnconfigure(1, minsize = 280)
@@ -105,7 +105,7 @@ class SimSettingWindow:
 	def populateGraphSettings(self, event):
 		#Gives the currently selected graph type to main.getSettingsData which finds the correct set of metadata
 		#for that graph class and returns the list of parameters needed to create one
-		elements = main.getSettingsData(self.graphSelectListbox.get(self.graphSelectListbox.curselection()))
+		elements = self.controller.getSettingsData(self.graphSelectListbox.get(self.graphSelectListbox.curselection()))
 		self.populateGraphSettingFrame(elements)
 
 	def populateGraphSettingFrame(self, elements):
@@ -193,4 +193,4 @@ class SimSettingWindow:
 			'file'		: self.outputToFile.get()
 			}
 
-		main.setupAndRunSimulation(trialParams, graphParams, outputParams)
+		self.controller.setupAndRunSimulation(trialParams, graphParams, outputParams)
