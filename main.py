@@ -79,6 +79,14 @@ class Controller:
 	def __init__(self):
 		self.graphClasses = IO.readGraphClasses()
 
+	def getGraphClass(self, searchParameter, searchTerm):
+		for g in self.graphClasses:
+			if g.metadata[searchParameter]:
+				if g.metadata[searchParameter] == searchTerm:
+					return g
+		print("Could not find graph with {} = {}".format(searchTerm, searchTerm))
+		return -1
+
 	def getGraphMetadata(self, graphDisplayName):
 		for g in self.graphClasses:
 			if g.metadata["display_name"] == graphDisplayName:
@@ -97,8 +105,8 @@ class Controller:
 		return elements
 
 	def setupAndRunSimulation(self, trialParams, graphParams, outputParams, metaTrial = False):
-		graphType = graphParams[-1]
-		graphMetadata = self.getGraphMetadata(graphType)
+		graphDisplayName = graphParams[-1]
+		graphClass = self.getGraphClass("display_name", graphDisplayName)
 
 		numTrials = trialParams['numTrials']
 		r = trialParams['fitness']
@@ -109,16 +117,14 @@ class Controller:
 		graphParamDict = {}
 
 		for i in range(len(graphParams) - 1):
-			graphParamDict[graphMetadata['argument_names'][i]] = int(graphParams[i])
+			graphParamDict[graphClass.metadata['argument_names'][i]] = int(graphParams[i])
 
 		print(graphParamDict)
-
-		gc = self.getGraphMetadata(graphType)
 
 		consoleOutput = outputParams['console']
 		fileOutput  = outputParams['file']
 
-		#Call build_code
+		G = graphClass.buildGraph()#PARAMETERS
 
 		graphSim = Simulator(consoleOutput, G)
 		print("Running simulation for:")
@@ -145,7 +151,6 @@ if __name__ == "__main__":
 	print("Initialized")
 
 	graphNames = [controller.graphClasses[i].metadata['display_name'] for i in range(len(controller.graphClasses))]
-	print(graphNames)
 
 	root = tk.Tk()
 	root.resizable(width = False, height = False)
