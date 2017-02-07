@@ -13,8 +13,9 @@ class SimSettingWindow:
 	'''	The GUI class for setting up a simulation. Allows user to select graph type and paramaters as well as trial parameters
 		Validates inputs then passes inputs to main.py to handle running simulation and providing output
 
-		All widgets are created during initialization then hidden and shown as appropriate - as there are not very many of them it is unnecessary to destroy and recreate them.
-		The populate methods handle which widgets are visible'''
+		All graphSelect and simSetting widgets are created during initialization then hidden and shown as appropriate
+		graphSetting widgets are created and destroyed dynamically when a graphClass is selected
+		'''
 
 	def __init__(self, master, controller):
 		self.controller = controller
@@ -34,6 +35,7 @@ class SimSettingWindow:
 		self.simSettingFrame.grid(column = 2, row = 0, sticky = tk.N + tk.E + tk.S + tk.W)
 
 		self.createWidgets()
+		self.selectedGraphClass = None
 
 		self.populateGraphSelectFrame()
 		self.populateGraphSettingFrame(None)
@@ -105,7 +107,8 @@ class SimSettingWindow:
 	def populateGraphSettings(self, event):
 		#Gives the currently selected graph type to main.getSettingsData which finds the correct set of metadata
 		#for that graph class and returns the list of parameters needed to create one
-		elements = self.controller.getSettingsData(self.graphSelectListbox.get(self.graphSelectListbox.curselection()))
+		self.selectedGraphClass = self.graphSelectListbox.get(self.graphSelectListbox.curselection())
+		elements = self.controller.getSettingsData(self.selectedGraphClass)
 		self.populateGraphSettingFrame(elements)
 
 	def populateGraphSettingFrame(self, elements):
@@ -163,7 +166,7 @@ class SimSettingWindow:
 			parameterValue = self.graphSettingParameterEntries[i].get()
 			graphSettings[parameterName] = parameterValue
 
-		graphSettings['display_name'] = (self.graphSelectListbox.get(self.graphSelectListbox.curselection()))
+		graphSettings['display_name'] = self.selectedGraphClass
 
 		return graphSettings
 
