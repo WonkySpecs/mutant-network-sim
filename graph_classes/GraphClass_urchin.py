@@ -1,6 +1,6 @@
 import networkx as nx
 
-class GraphClass_urchin:
+class GraphClass_urchin():
 	def checkParamsValid(self, params):
 		shouldHaveParams = [i for i in self.metadata['arguments'].keys()]
 		for k in params.keys():
@@ -39,7 +39,7 @@ class GraphClass_urchin:
 				convertedParams[k] = [v]
 
 		return convertedParams
-
+		
 	def buildGraph(self, parameters):
 		convertedParams = self.checkParamsValid(parameters)
 

@@ -2,6 +2,12 @@ import networkx as nx
 
 class GraphClass_cycle():
 	def checkParamsValid(self, params):
+		""" Takes the parameters and checks them against the expected
+			types and value ranges given in metadata
+			Really really need to find a way to put this into an external
+			place, atm have to put this in EVERY GraphClass which is
+			awful
+		"""
 		shouldHaveParams = [i for i in self.metadata['arguments'].keys()]
 		for k in params.keys():
 			if k in shouldHaveParams:

@@ -4,6 +4,11 @@ import importlib
 import inspect
 
 def readGraphClasses():
+	"""Reads all of the GraphClass_*.py files from the graph_classes
+		subdirectory into a list of modules which can be instantiated
+		when needed. This feels hacky, but I can't think of a better
+		way to do it
+	"""
 	classes = []
 	graphClassesPath = os.path.join(os.curdir, "graph_classes")
 
