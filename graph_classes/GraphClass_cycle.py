@@ -1,8 +1,8 @@
 import networkx as nx
 
 class GraphClass_cycle():
-	def checkParamsValid(params):
-		shouldHaveParams = [i for i in metadata[arguments].keys()]
+	def checkParamsValid(self, params):
+		shouldHaveParams = [i for i in self.metadata['arguments'].keys()]
 		for k in params.keys():
 			if k in shouldHaveParams:
 				shouldHaveParams.remove(k)
@@ -11,16 +11,43 @@ class GraphClass_cycle():
 				return
 
 		if shouldHaveParams:
-			print("Necessary parameter(s) missing from buildGraph for {} graph: {}".format(metadata['name'], shouldHaveParams))
-			return -1
-		else:
-			return 1
-
-	def buildGraph(parameters):
-		if checkParamsValid(parameters) == -1:
+			print("Necessary parameter(s) missing from buildGraph for {} graph: {}".format(self.metadata['name'], shouldHaveParams))
 			return -1
 
-		nodes = parameters['nodes']
+		convertedParams = dict()
+
+		for arg in params.items():
+			k = arg[0]
+			v = arg[1]
+			paramType = self.metadata['arguments'][k]['type']
+			
+			if paramType == 'int':
+				try:
+					convertedParams[k] = int(v)
+				except TypeError:
+					print("{} given as value for {} in urchin, must be an int".format(v,k))
+					return -1
+			elif paramType == 'float':
+				try:
+					convertedParams[k] = float(v)
+				except TypeError:
+					print("{} given as value for {} in urchin, must be a float".format(v,k))
+					return -1
+			else:
+				#For now assuming everything is an int, float or str
+				#Add more cases if necessary
+				convertedParams[k] = [v]
+
+		return convertedParams
+
+	def buildGraph(self, parameters):
+		convertedParams = self.checkParamsValid(parameters)
+
+		#An error occured whilst trying to sort out parameters
+		if convertedParams == -1:
+			return -1
+
+		nodes = convertedParams['nodes']
 
 		G = nx.Graph()
 

@@ -98,15 +98,17 @@ class Controller:
 		elements = []
 		data = self.getGraphMetadata(graphName)
 		
-		for argument in data['argument_names']:
+		for argument in data['arguments']:
 			elements.append((argument,""))
 		elements.append(("description", data['description']))
 
 		return elements
 
 	def setupAndRunSimulation(self, trialParams, graphParams, outputParams, metaTrial = False):
-		graphDisplayName = graphParams[-1]
+		graphDisplayName = graphParams['display_name']
 		graphClass = self.getGraphClass("display_name", graphDisplayName)
+		gc = graphClass()
+		del graphParams['display_name']
 
 		numTrials = trialParams['numTrials']
 		r = trialParams['fitness']
@@ -114,17 +116,10 @@ class Controller:
 		simType = trialParams['simType']
 		numBatches = trialParams['batches']
 
-		graphParamDict = {}
-
-		for i in range(len(graphParams) - 1):
-			graphParamDict[graphClass.metadata['argument_names'][i]] = int(graphParams[i])
-
-		print(graphParamDict)
-
 		consoleOutput = outputParams['console']
 		fileOutput  = outputParams['file']
 
-		G = graphClass.buildGraph()#PARAMETERS
+		G = gc.buildGraph(graphParams)#PARAMETERS
 
 		graphSim = Simulator(consoleOutput, G)
 		print("Running simulation for:")

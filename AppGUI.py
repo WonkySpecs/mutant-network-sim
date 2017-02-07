@@ -109,6 +109,8 @@ class SimSettingWindow:
 		self.populateGraphSettingFrame(elements)
 
 	def populateGraphSettingFrame(self, elements):
+		self.graphSettingParameterEntryLabelTexts = []
+		self.graphSettingParameterEntries = []
 		if elements:
 			rowNum = 0
 			self.deleteAllWidgetsInFrame(self.graphSettingFrame)
@@ -122,13 +124,14 @@ class SimSettingWindow:
 					newEntry = tk.ttk.Entry(self.graphSettingFrame)
 					newLabel.grid(in_ = self.graphSettingFrame, column = 0, row = rowNum)
 					newEntry.grid(in_ = self.graphSettingFrame, column = 1, row = rowNum)
+					self.graphSettingParameterEntryLabelTexts.append(elementName)
+					self.graphSettingParameterEntries.append(newEntry)
 					rowNum += 1
 
 			if graphDescriptionLabel:
 				graphDescriptionLabel.grid(in_ = self.graphSettingFrame, column = 0, row = rowNum, columnspan = 2)
 		else:
-			self.emptyLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 0)
-			
+			self.emptyLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 0)			
 
 	def populateSimSettingFrame(self):
 		self.hideAllWidgetsInFrame(self.simSettingFrame)
@@ -153,12 +156,15 @@ class SimSettingWindow:
 		self.startSimButton.grid(in_ = self.simSettingFrame, column = 0, columnspan = 2)
 
 	def getGraphSettings(self):
-		graphSettings = []
-		for child in self.graphSettingFrame.winfo_children():
-			if child.winfo_class() == "TEntry":
-				graphSettings.append(child.get())
+		graphSettings = dict()
+		
+		for i in range(len(self.graphSettingParameterEntryLabelTexts)):
+			parameterName = self.graphSettingParameterEntryLabelTexts[i]
+			parameterValue = self.graphSettingParameterEntries[i].get()
+			graphSettings[parameterName] = parameterValue
 
-		graphSettings.append(self.graphSelectListbox.get(self.graphSelectListbox.curselection()))
+		graphSettings['display_name'] = (self.graphSelectListbox.get(self.graphSelectListbox.curselection()))
+
 		return graphSettings
 
 	def collectInputsAndRunSim(self):
