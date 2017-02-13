@@ -35,7 +35,7 @@ class SimSettingWindow:
 		self.simSettingFrame.grid(column = 2, row = 0, sticky = tk.N + tk.E + tk.S + tk.W)
 
 		self.createWidgets()
-		self.selectedGraphClass = None
+		self.selectedGraphClassName = None
 
 		self.populateGraphSelectFrame()
 		self.populateGraphSettingFrame(None)
@@ -45,8 +45,6 @@ class SimSettingWindow:
 	def createWidgets(self):
 		#---------------- graphSettingFrame widgets------------------
 		self.emptyLabel = tk.Label(self.graphSettingFrame, text = "Select a graph type")
-
-		self.titleLabel = tk.Label(self.graphSettingFrame, text = "", justify = 'left')
 
 		#---------------- graphSelectFrame widgets ------------------
 		self.graphSelectScrollbar = tk.ttk.Scrollbar(self.graphSelectFrame)
@@ -107,17 +105,18 @@ class SimSettingWindow:
 	def populateGraphSettings(self, event):
 		#Gives the currently selected graph type to main.getSettingsData which finds the correct set of metadata
 		#for that graph class and returns the list of parameters needed to create one
-		self.selectedGraphClass = self.graphSelectListbox.get(self.graphSelectListbox.curselection())
-		elements = self.controller.getSettingsData(self.selectedGraphClass)
-		print(elements)
+		self.selectedGraphClassName = self.graphSelectListbox.get(self.graphSelectListbox.curselection())
+		elements = self.controller.getSettingsData(self.selectedGraphClassName)
 		self.populateGraphSettingFrame(elements)
 
 	def populateGraphSettingFrame(self, elements):
 		self.graphSettingParameterEntryLabelTexts = []
 		self.graphSettingParameterEntries = []
 		if elements:
-			rowNum = 0
 			self.deleteAllWidgetsInFrame(self.graphSettingFrame)
+			titleLabel = tk.Label(self.graphSettingFrame, text = self.selectedGraphClassName, justify = 'left')
+			titleLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 0, sticky = tk.W + tk.N)
+			rowNum = 1
 			graphDescriptionLabel = None
 
 			for (elementName, elementType) in elements:
@@ -167,7 +166,7 @@ class SimSettingWindow:
 			parameterValue = self.graphSettingParameterEntries[i].get()
 			graphSettings[parameterName] = parameterValue
 
-		graphSettings['display_name'] = self.selectedGraphClass
+		graphSettings['display_name'] = self.selectedGraphClassName
 
 		return graphSettings
 
