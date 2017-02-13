@@ -109,6 +109,7 @@ class SimSettingWindow:
 		#for that graph class and returns the list of parameters needed to create one
 		self.selectedGraphClass = self.graphSelectListbox.get(self.graphSelectListbox.curselection())
 		elements = self.controller.getSettingsData(self.selectedGraphClass)
+		print(elements)
 		self.populateGraphSettingFrame(elements)
 
 	def populateGraphSettingFrame(self, elements):

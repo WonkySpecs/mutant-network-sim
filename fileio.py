@@ -16,11 +16,9 @@ def readGraphClasses():
 		if filename.startswith("graphclass_") and filename.endswith(".py"):
 			#Module names are of the form graph_classes/graphclass_graphtypename
 			m = importlib.import_module("graph_classes." + filename[:-3])
-			print(m)
 
 			#This pulls the class out of the module
 			for c in inspect.getmembers(m, inspect.isclass):
-				print(c)
 				classes.append(c[1])
 
 	return classes
