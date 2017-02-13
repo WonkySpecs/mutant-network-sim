@@ -81,9 +81,13 @@ class Controller:
 
 	def getGraphClass(self, searchParameter, searchTerm):
 		for g in self.graphClasses:
-			if g.metadata[searchParameter]:
-				if g.metadata[searchParameter] == searchTerm:
-					return g
+			if searchParameter in g.metadata.keys():
+				if g.metadata[searchParameter]:
+					if g.metadata[searchParameter] == searchTerm:
+						return g
+			else:
+				print("{} is not a key in graphClasses".format(searchParameter))
+				return -1
 		print("Could not find graph with {} = {}".format(searchTerm, searchTerm))
 		return -1
 
@@ -149,7 +153,7 @@ if __name__ == "__main__":
 
 	root = tk.Tk()
 	root.resizable(width = False, height = False)
-	window = GUI.SimSettingWindow(root, controller)
+	window = gui.SimSettingWindow(root, controller)
 
 	window.populateGraphSelectListbox(graphNames)
 	root.mainloop()
