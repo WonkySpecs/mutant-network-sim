@@ -91,16 +91,23 @@ class Controller:
 		print("Could not find graph with {} = {}".format(searchTerm, searchTerm))
 		return -1
 
-	def getGraphMetadata(self, graphDisplayName):
-		for g in self.graphClasses:
-			if g.metadata["display_name"] == graphDisplayName:
-				return g.metadata
-		print("No graph named '{}'".format(graphDisplayName))
-		return -1
+	def getGraphMetadata(self, searchParameter, searchTerm):
+		gc = self.getGraphClass(searchParameter, searchTerm)
+		if gc != -1:
+			return gc.metadata
+		else:
+			return gc
+
+	# def getGraphMetadata(self, graphDisplayName):
+	# 	for g in self.graphClasses:
+	# 		if g.metadata["display_name"] == graphDisplayName:
+	# 			return g.metadata
+	# 	print("No graph named '{}'".format(graphDisplayName))
+	# 	return -1
 
 	def getSettingsData(self, graphName):
 		elements = []
-		data = self.getGraphMetadata(graphName)
+		data = self.getGraphMetadata("display_name", graphName)
 		
 		for argument in data['arguments']:
 			elements.append((argument,""))
