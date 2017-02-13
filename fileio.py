@@ -13,8 +13,8 @@ def readGraphClasses():
 	graphClassesPath = os.path.join(os.curdir, "graph_classes")
 
 	for filename in os.listdir(graphClassesPath):
-		if filename.startswith("GraphClass_") and filename.endswith(".py"):
-			#Module names are of the form graph_classes.GraphClass_graphtypename
+		if filename.startswith("graphclass_") and filename.endswith(".py"):
+			#Module names are of the form graph_classes/graphclass_graphtypename
 			m = importlib.import_module("graph_classes." + filename[:-3])
 
 			#This pulls the class out of the module

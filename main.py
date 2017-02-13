@@ -4,9 +4,9 @@ import time
 import sys
 import random
 import os
-import AppGUI as GUI
+import appgui as gui
 import tkinter as tk
-import IO
+import fileio
 
 def buildGraph(graphType, nodes, otherParams = None):
 	G = nx.Graph()
@@ -77,7 +77,7 @@ def buildGraph(graphType, nodes, otherParams = None):
 
 class Controller:
 	def __init__(self):
-		self.graphClasses = IO.readGraphClasses()
+		self.graphClasses = fileio.readGraphClasses()
 
 	def getGraphClass(self, searchParameter, searchTerm):
 		for g in self.graphClasses:
