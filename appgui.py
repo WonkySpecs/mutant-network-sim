@@ -240,6 +240,7 @@ class GraphClassCreateWindow:
 	def openHelp(self):
 		print("Help text")
 
-m = tk.Tk()
-w = GraphClassCreateWindow(m, "qwe")
-m.mainloop()
+if __name__ == "__main__":
+	m = tk.Tk()
+	w = GraphClassCreateWindow(m, "qwe")
+	m.mainloop()

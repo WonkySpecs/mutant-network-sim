@@ -3,7 +3,7 @@ class GraphClass:
 		""" Takes the parameters and checks them against the expected
 			types and value ranges given in metadata
 		"""
-		shouldHaveParams = [i for i in self.metadata['arguments'].keys()]
+		shouldHaveParams = [i for i in self.metadata['parameters'].keys()]
 		for k in params.keys():
 			if k in shouldHaveParams:
 				shouldHaveParams.remove(k)
@@ -20,7 +20,7 @@ class GraphClass:
 		for arg in params.items():
 			k = arg[0]
 			v = arg[1]
-			paramType = self.metadata['arguments'][k]['type']
+			paramType = self.metadata['parameters'][k]['type']
 			
 			if paramType == 'int':
 				try:

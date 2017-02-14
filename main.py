@@ -109,8 +109,8 @@ class Controller:
 		elements = []
 		data = self.getGraphMetadata("display_name", graphName)
 		
-		for argument in data['arguments']:
-			elements.append((argument,""))
+		for parameters in data['parameters']:
+			elements.append((parameters,""))
 		elements.append(("description", data['description']))
 
 		return elements
