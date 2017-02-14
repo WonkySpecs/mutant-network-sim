@@ -10,11 +10,8 @@ simTypes = [
 randomGraphAlgorithms = ["erdos-renyi"]
 
 class SimSettingWindow:
-	'''	The GUI class for setting up a simulation. Allows user to select graph type and paramaters as well as trial parameters
+	'''	The GUI class for setting up a simulation. Allows user to select graph type and parameters as well as trial parameters
 		Validates inputs then passes inputs to main.py to handle running simulation and providing output
-
-		All graphSelect and simSetting widgets are created during initialization then hidden and shown as appropriate
-		graphSetting widgets are created and destroyed dynamically when a graphClass is selected
 		'''
 
 	def __init__(self, master, controller):
@@ -203,3 +200,46 @@ class SimSettingWindow:
 			}
 
 		self.controller.setupAndRunSimulation(trialParams, graphParams, outputParams)
+
+class GraphClassCreateWindow:
+	def __init__(self, master, controller):
+		self.master = master
+		self.controller = controller
+
+		rowNum = 0
+
+		self.nameLabel = tk.Label(self.master, text = "Graph class name:")
+		self.nameEntry = tk.ttk.Entry(self.master, width = 40)
+		self.nameLabel.grid(in_ = self.master, row = rowNum, column = 0, sticky = tk.W)
+		self.nameEntry.grid(in_ = self.master, row = rowNum, column = 1, sticky = tk.W)
+		self.helpButton = tk.ttk.Button(self.master, text = "Help", command = self.openHelp)
+		self.helpButton.grid(in_ = self.master, row = rowNum, column = 2)
+		rowNum +=1
+
+		self.parameterLabel = tk.ttk.Label(self.master, text = "This is where the parameter stuff goes somehow")
+		self.parameterLabel.grid(in_ = self.master, row = rowNum, column = 0, sticky = tk.W)
+		rowNum +=1
+
+		self.buildCodeLabel = tk.Label(self.master, text = "Build function code:")
+		self.buildCodeLabel.grid(in_ = self.master, row = rowNum, sticky = tk.W)
+		rowNum +=1
+
+		self.buildCodeText = tk.Text(self.master, width = 70, height = 40)
+		self.buildCodeText.grid(in_ = self.master, row = rowNum, columnspan = 3)
+		rowNum +=1
+
+		self.submitButton = tk.ttk.Button(self.master, text = "Create class", command = self.createGraphClass)
+		self.submitButton.grid(in_ = self.master, row = rowNum, columnspan = 2)
+
+	def createGraphClass(self):
+		buildCode = self.buildCodeText.get(1.0, tk.END)
+
+		with open("qwe.py", "w") as file:
+			file.write(buildCode)
+
+	def openHelp(self):
+		print("Help text")
+
+m = tk.Tk()
+w = GraphClassCreateWindow(m, "qwe")
+m.mainloop()
