@@ -22,7 +22,7 @@ class GraphClass_Cycle(gc.GraphClass):
 	metadata = {
 	"name"				: "cycle",
 	"display_name"		: "Cycle",
-	"parameters"			: {"nodes" : {'type' : 'int'}},
+	"parameters"		: {"nodes" : {'type' : 'int'}},
 	"description"		: ( "Basic graph class - each node has 2 neighbours"
 							"\nnodes parameter is the number of nodes")
 	}

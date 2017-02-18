@@ -23,20 +23,20 @@ def readGraphClasses():
 
 	return classes
 
-def writeNewGraphClass(buildCode, metadata):
+def writeNewGraphClass(tabbedBuildCode, metadata):
 	filename = "graphclass_" + metadata["name"] + ".py"
 	path = os.path.join(os.curdir, "graph_classes", filename)
 	with open(path, "w") as file:
 		file.write("import networkx as nx\nimport graph_classes.graphclass as gc\n\n")
-		file.write("class GraphClass_{}:\n\t".format(metadata["name"].capitalize()))
+		file.write("class GraphClass_{}(gc.GraphClass):\n\t".format(metadata["name"].capitalize()))
 		file.write("def buildGraph(")
 		#for param in metadata["parameters"].keys():
 		#	write the parameter and comma
-		file.write("):\n\t\t")
-		file.write(buildCode)
+		file.write("):\n")
+		file.write(tabbedBuildCode)
 		file.write("\n\n\tmetadata = {")
 		for key, value in metadata.items():
-			file.write('\n\t\t"{}":"{}"'.format(key, value))
+			file.write('\n\t\t"{}":"{}",'.format(key, value))
 		file.write("\n\t}")
 
 

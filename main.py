@@ -123,7 +123,7 @@ class Controller:
 		consoleOutput = outputParams['console']
 		fileOutput  = outputParams['file']
 
-		G = gc.buildGraph(graphParams)#PARAMETERS
+		G = gc.buildGraph(graphParams)
 
 		graphSim = Simulator(consoleOutput, G)
 		print("Running simulation for:")
@@ -144,6 +144,13 @@ class Controller:
 			print("Average fixation over {} batches of {} trials was {}%".format(numBatches, numTrials, totalFixation * 100 / numBatches))
 		else:
 			print("Done")
+
+	def createNewGraphClass(self, buildCode, metadata):
+		#Validate inputs
+		tabbedBuildCode = ''
+		for line in buildCode.split('\n'):
+			tabbedBuildCode += "\n\t\t" + line
+		fileio.writeNewGraphClass(tabbedBuildCode, metadata)
 
 if __name__ == "__main__":
 	controller = Controller()

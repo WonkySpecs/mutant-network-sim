@@ -30,7 +30,7 @@ class GraphClass_Urchin(gc.GraphClass):
 	metadata = {
 		"name"				: "urchin",
 		"display_name"		: "Urchin",
-		"parameters"			: {"nodes" : {'type' : 'int'}},
+		"parameters"		: {"nodes" : {'type' : 'int'}},
 		"description"		: ( "nodes 0-(n/2 -1) form a clique,"
 								"(n/2 - [n-1]) are an independent"
 								"set, linked 1-1 with the nodes"

@@ -48,6 +48,7 @@ class SimSettingWindow:
 		self.graphSelectListbox = tk.Listbox(self.graphSelectFrame, yscrollcommand = self.graphSelectScrollbar.set, selectmode = tk.SINGLE)
 		self.graphSelectListbox.bind("<<ListboxSelect>>", self.populateGraphSettings)
 		self.graphSelectScrollbar.config(command=self.graphSelectListbox.yview)
+		self.createGraphClassButton = tk.ttk.Button(self.graphSelectFrame, text = "New graph class", command = self.newGraphClassWindow)
 
 		#---------------- simSettingFrame widgets  ------------------
 		self.numTrialLabel = tk.Label(self.simSettingFrame, text = "Number of trials:")
@@ -90,6 +91,7 @@ class SimSettingWindow:
 		self.hideAllWidgetsInFrame(self.graphSelectFrame)
 		self.graphSelectScrollbar.grid(column = 1, row = 0, sticky = tk.N + tk.S)
 		self.graphSelectListbox.grid(column = 0, row = 0, sticky = tk.W + tk.N + tk.S, padx = 3, pady = 1)
+		self.createGraphClassButton.grid(column = 0, row = 1, sticky = tk.E + tk.S + tk.W)
 
 	#Could generalise this to fill any arbitrary listbox/optionmenu/entry
 	def populateGraphSelectListbox(self, items):
@@ -167,6 +169,12 @@ class SimSettingWindow:
 
 		return graphSettings
 
+	def newGraphClassWindow(self):
+		root2 = tk.Tk()
+		root2.resizable(width = False, height = False)
+		gccw = GraphClassCreateWindow(root2, self.controller)
+		root2.mainloop()
+
 	def collectInputsAndRunSim(self):
 		''' Method called when run simulation button is clicked.
 			Validates the entries for both graphSettings and simSettings then passes dictionaries of the options to setupAndRunSimulation'''
@@ -224,18 +232,37 @@ class GraphClassCreateWindow:
 		self.buildCodeLabel.grid(in_ = self.master, row = rowNum, sticky = tk.W)
 		rowNum +=1
 
-		self.buildCodeText = tk.Text(self.master, width = 70, height = 40)
+		self.buildCodeText = tk.Text(self.master, width = 70, height = 28)
 		self.buildCodeText.grid(in_ = self.master, row = rowNum, columnspan = 3)
 		rowNum +=1
+
+		self.descriptionLabel = tk.Label(self.master, text = "Description:")
+		self.descriptionEntry = tk.ttk.Entry(self.master, width = 40)
+		self.descriptionLabel.grid(in_ = self.master, row = rowNum, column = 0, sticky = tk.W)
+		self.descriptionEntry.grid(in_ = self.master, row = rowNum, column = 1, sticky = tk.W)
+		rowNum += 1
 
 		self.submitButton = tk.ttk.Button(self.master, text = "Create class", command = self.createGraphClass)
 		self.submitButton.grid(in_ = self.master, row = rowNum, columnspan = 2)
 
 	def createGraphClass(self):
 		buildCode = self.buildCodeText.get(1.0, tk.END)
+		metadata = self.compileMetadata()
+		self.controller.createNewGraphClass(buildCode, metadata)
+		self.master.destroy()
 
-		with open("qwe.py", "w") as file:
-			file.write(buildCode)
+	def compileMetadata(self):
+		md = dict()
+		name = self.nameEntry.get()
+		desc = self.descriptionEntry.get()
+
+		#TODO: validate inputs, get parameter names
+
+		md['name'] = name
+		md['display_name'] = name.capitalize()
+		md['description'] = desc
+		
+		return md
 
 	def openHelp(self):
 		print("Help text")
