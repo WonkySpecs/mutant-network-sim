@@ -222,19 +222,27 @@ class GraphClassCreateWindow:
 		self.nameEntry.grid(in_ = self.master, row = rowNum, column = 1, sticky = tk.W)
 		self.helpButton = tk.ttk.Button(self.master, text = "Help", command = self.openHelp)
 		self.helpButton.grid(in_ = self.master, row = rowNum, column = 2)
-		rowNum +=1
+		rowNum += 1
 
-		self.parameterLabel = tk.ttk.Label(self.master, text = "This is where the parameter stuff goes somehow")
+		self.parameterLabel = tk.Label(self.master, text = "Parameters:")
 		self.parameterLabel.grid(in_ = self.master, row = rowNum, column = 0, sticky = tk.W)
-		rowNum +=1
+		self.newParameterButton = tk.ttk.Button(self.master, text = "+", command = self.addParamEntry)
+		self.newParameterButton.grid(in_ = self.master, row = rowNum, column = 1, sticky = tk.W)
+		rowNum += 1
+
+		self.parameterFrame = tk.Frame(self.master)
+		self.parameterFrame.grid(in_ = self.master, row = rowNum, column = 0, sticky = tk.W + tk.E + tk.S + tk.N)
+		self.parameterInputs = []
+		self.addParamEntry()
+		rowNum += 1
 
 		self.buildCodeLabel = tk.Label(self.master, text = "Build function code:")
 		self.buildCodeLabel.grid(in_ = self.master, row = rowNum, sticky = tk.W)
-		rowNum +=1
+		rowNum += 1
 
 		self.buildCodeText = tk.Text(self.master, width = 70, height = 28)
 		self.buildCodeText.grid(in_ = self.master, row = rowNum, columnspan = 3)
-		rowNum +=1
+		rowNum += 1
 
 		self.descriptionLabel = tk.Label(self.master, text = "Description:")
 		self.descriptionEntry = tk.ttk.Entry(self.master, width = 40)
@@ -244,6 +252,29 @@ class GraphClassCreateWindow:
 
 		self.submitButton = tk.ttk.Button(self.master, text = "Create class", command = self.createGraphClass)
 		self.submitButton.grid(in_ = self.master, row = rowNum, columnspan = 2)
+
+	def refreshParamFrame(self):
+		i = 0
+		for child in self.parameterFrame.winfo_children():
+			i += 1
+			child.grid_forget()
+		print(str(i) + " children forgotten")
+		
+		colNum = 0
+		for (nameEntry, typeEntry) in self.parameterInputs:
+			nameLabel = tk.Label(self.parameterFrame, text = "Name: ")
+			typeLabel = tk.Label(self.parameterFrame, text = "Type: ")
+			nameLabel.grid(in_ = self.parameterFrame, row = 0, column = colNum)
+			typeLabel.grid(in_ = self.parameterFrame, row = 1, column = colNum)
+			colNum +=1
+			nameEntry.grid(in_ = self.parameterFrame, row = 0, column = colNum)
+			typeEntry.grid(in_ = self.parameterFrame, row = 1, column = colNum)
+			print("4 added")
+		colNum += 1
+
+	def addParamEntry(self):
+		self.parameterInputs.append((tk.ttk.Entry(self.parameterFrame, width = 12), tk.ttk.Entry(self.parameterFrame, width = 12)))
+		self.refreshParamFrame()
 
 	def createGraphClass(self):
 		buildCode = self.buildCodeText.get(1.0, tk.END)
@@ -255,6 +286,12 @@ class GraphClassCreateWindow:
 		md = dict()
 		name = self.nameEntry.get()
 		desc = self.descriptionEntry.get()
+
+		params = dict()
+
+		for (pName, pType) in self.parameterInputs:
+			params[pName] = {'type':pType}
+			print(params)
 
 		#TODO: validate inputs, get parameter names
 
