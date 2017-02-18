@@ -98,13 +98,6 @@ class Controller:
 		else:
 			return gc
 
-	# def getGraphMetadata(self, graphDisplayName):
-	# 	for g in self.graphClasses:
-	# 		if g.metadata["display_name"] == graphDisplayName:
-	# 			return g.metadata
-	# 	print("No graph named '{}'".format(graphDisplayName))
-	# 	return -1
-
 	def getSettingsData(self, graphName):
 		elements = []
 		data = self.getGraphMetadata("display_name", graphName)
