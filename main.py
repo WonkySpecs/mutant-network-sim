@@ -79,6 +79,15 @@ class Controller:
 	def __init__(self):
 		self.graphClasses = fileio.readGraphClasses()
 
+		self.root = tk.Tk()
+		self.root.resizable(width = False, height = False)
+		self.window = gui.SimSettingWindow(self.root, self)
+
+		self.loadGraphClasses()
+		print("Initialized")
+		self.root.mainloop()
+		print("Quitting")
+
 	def getGraphClass(self, searchParameter, searchTerm):
 		for g in self.graphClasses:
 			if searchParameter in g.metadata.keys():
@@ -146,22 +155,25 @@ class Controller:
 			print("Done")
 
 	def createNewGraphClass(self, buildCode, metadata):
-		#Validate inputs
+		#TODO: Validate inputs
+
+		#All lines of build code need to be tabbed in twice
 		tabbedBuildCode = ''
 		for line in buildCode.split('\n'):
 			tabbedBuildCode += "\n\t\t" + line
 		fileio.writeNewGraphClass(tabbedBuildCode, metadata)
 
+		try:
+			reloadedGraphClasses = fileio.readGraphClasses()
+			self.graphClasses = reloadedGraphClasses
+			self.loadGraphClasses()
+		except:
+			print("Error in new graph class")
+			#TODO: Handle this properly
+
+	def loadGraphClasses(self):
+		graphNames = [self.graphClasses[i].metadata['display_name'] for i in range(len(self.graphClasses))]
+		self.window.populateGraphSelectListbox(graphNames)
+
 if __name__ == "__main__":
 	controller = Controller()
-	print("Initialized")
-
-	graphNames = [controller.graphClasses[i].metadata['display_name'] for i in range(len(controller.graphClasses))]
-
-	root = tk.Tk()
-	root.resizable(width = False, height = False)
-	window = gui.SimSettingWindow(root, controller)
-
-	window.populateGraphSelectListbox(graphNames)
-	root.mainloop()
-	print("Quitting")

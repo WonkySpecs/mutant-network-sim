@@ -95,6 +95,7 @@ class SimSettingWindow:
 
 	#Could generalise this to fill any arbitrary listbox/optionmenu/entry
 	def populateGraphSelectListbox(self, items):
+		self.graphSelectListbox.delete(0, tk.END)
 		if self.graphSelectListbox is not None:
 			for item in items:
 			    self.graphSelectListbox.insert(tk.END, item)
@@ -292,7 +293,6 @@ class GraphClassCreateWindow:
 
 		for (pName, _, pType) in self.parameterInputs:
 			params[pName.get()] = {'type':pType.get()}
-			print(params)
 
 		#TODO: validate inputs, get parameter names
 
@@ -300,8 +300,6 @@ class GraphClassCreateWindow:
 		md['display_name'] = name.capitalize()
 		md['description'] = desc
 		md['parameters'] = params
-
-		print(md)
 
 		return md
 
