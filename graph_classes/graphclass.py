@@ -26,13 +26,13 @@ class GraphClass:
 				try:
 					convertedParams[k] = int(v)
 				except TypeError:
-					print("{} given as value for {} in urchin, must be an int".format(v,k))
+					print("{} given as value for {}, must be an int".format(v,k))
 					return -1
 			elif paramType == 'float':
 				try:
 					convertedParams[k] = float(v)
 				except TypeError:
-					print("{} given as value for {} in urchin, must be a float".format(v,k))
+					print("{} given as value for {}, must be a float".format(v,k))
 					return -1
 			else:
 				#For now assuming everything is an int, float or str

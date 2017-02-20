@@ -254,32 +254,33 @@ class GraphClassCreateWindow:
 		self.submitButton.grid(in_ = self.master, row = rowNum, columnspan = 2)
 
 	def refreshParamFrame(self):
-		i = 0
 		for child in self.parameterFrame.winfo_children():
-			i += 1
 			child.grid_forget()
-		print(str(i) + " children forgotten")
-		
+
 		colNum = 0
-		for (nameEntry, typeEntry) in self.parameterInputs:
+		for (nameEntry, typeMenu, _) in self.parameterInputs:
 			nameLabel = tk.Label(self.parameterFrame, text = "Name: ")
 			typeLabel = tk.Label(self.parameterFrame, text = "Type: ")
 			nameLabel.grid(in_ = self.parameterFrame, row = 0, column = colNum)
 			typeLabel.grid(in_ = self.parameterFrame, row = 1, column = colNum)
 			colNum +=1
 			nameEntry.grid(in_ = self.parameterFrame, row = 0, column = colNum)
-			typeEntry.grid(in_ = self.parameterFrame, row = 1, column = colNum)
-			print("4 added")
+			typeMenu.grid(in_ = self.parameterFrame, row = 1, column = colNum)
+			colNum +=1
 		colNum += 1
 
 	def addParamEntry(self):
-		self.parameterInputs.append((tk.ttk.Entry(self.parameterFrame, width = 12), tk.ttk.Entry(self.parameterFrame, width = 12)))
+		paramType = tk.StringVar(self.master)
+		paramTypes = ["int", "float", "str"]
+		paramOptionMenu = tk.ttk.OptionMenu(self.parameterFrame, paramType, paramTypes[0], *paramTypes)
+		self.parameterInputs.append((tk.ttk.Entry(self.parameterFrame), paramOptionMenu, paramType))
 		self.refreshParamFrame()
 
 	def createGraphClass(self):
 		buildCode = self.buildCodeText.get(1.0, tk.END)
 		metadata = self.compileMetadata()
 		self.controller.createNewGraphClass(buildCode, metadata)
+		print("graphclass_{} created".format(metadata['name']))
 		self.master.destroy()
 
 	def compileMetadata(self):
@@ -289,8 +290,8 @@ class GraphClassCreateWindow:
 
 		params = dict()
 
-		for (pName, pType) in self.parameterInputs:
-			params[pName] = {'type':pType}
+		for (pName, _, pType) in self.parameterInputs:
+			params[pName.get()] = {'type':pType.get()}
 			print(params)
 
 		#TODO: validate inputs, get parameter names
@@ -298,7 +299,10 @@ class GraphClassCreateWindow:
 		md['name'] = name
 		md['display_name'] = name.capitalize()
 		md['description'] = desc
-		
+		md['parameters'] = params
+
+		print(md)
+
 		return md
 
 	def openHelp(self):

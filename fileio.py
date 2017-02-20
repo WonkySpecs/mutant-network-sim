@@ -28,15 +28,20 @@ def writeNewGraphClass(tabbedBuildCode, metadata):
 	path = os.path.join(os.curdir, "graph_classes", filename)
 	with open(path, "w") as file:
 		file.write("import networkx as nx\nimport graph_classes.graphclass as gc\n\n")
-		file.write("class GraphClass_{}(gc.GraphClass):\n\t".format(metadata["name"].capitalize()))
-		file.write("def buildGraph(")
-		#for param in metadata["parameters"].keys():
-		#	write the parameter and comma
-		file.write("):\n")
+		file.write("class GraphClass_{}(gc.GraphClass):\n".format(metadata["name"].capitalize()))
+		file.write("\tdef buildGraph(self,parameters):\n")
+		file.write("\t\tconvertedParams = self.checkParamsValid(parameters)\n")
+		file.write("\t\tif convertedParams == -1:\n\t\t\treturn -1\n")
+		for param in metadata['parameters'].keys():
+			file.write("\t\t{} = convertedParams['{}']\n".format(param, param))
 		file.write(tabbedBuildCode)
 		file.write("\n\n\tmetadata = {")
 		for key, value in metadata.items():
-			file.write('\n\t\t"{}":"{}",'.format(key, value))
+			#Arguments are all written as strings except for parameters which is a dictionary
+			if key == "parameters":
+				file.write('\n\t\t"{}":{},'.format(key, value))
+			else:
+				file.write('\n\t\t"{}":"{}",'.format(key, value))
 		file.write("\n\t}")
 
 
