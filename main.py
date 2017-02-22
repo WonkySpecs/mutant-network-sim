@@ -7,6 +7,7 @@ import os
 import appgui as gui
 import tkinter as tk
 import fileio
+import prettyoutput
 
 def buildGraph(graphType, nodes, otherParams = None):
 	G = nx.Graph()
@@ -148,6 +149,7 @@ class Controller:
 				print("{} fixated, {} extinct, {} fixation, {} average iterations\n".format(fixated, extinct, fixated / (fixated + extinct), totalIterations / (fixated + extinct)))
 			totalFixation += fixated / (fixated + extinct)
 			print(iterationHistograms)
+			prettyoutput.freqHistogram(iterationHistograms['fixated'])
 
 		if consoleOutput:
 			print("Average fixation over {} batches of {} trials was {}%".format(numBatches, numTrials, totalFixation * 100 / numBatches))
