@@ -29,7 +29,7 @@ class Simulator():
 
 	#Basic implementation for running moran process on the graph stored in self.graphStructure
 	#Scales very poorly on graphs with a large number of ndoes as the algorithm often select 'useless' nodes to reproduce that will not change the state of the graph.
-	def runTrial(self, fitness, mStart = -1):
+	def runTrialBasic(self, fitness, mStart = -1):
 		"""Naive implementation of the generalised Moran process"""
 		#Initialization
 		self.resetGraphStructure()
@@ -93,7 +93,7 @@ class Simulator():
 		return iterations, numMutants, numNonMutants
 
 	#MAY MERGE THIS WITH THE ORIGINAL AS AN OPTION, A LOT OF CODE REPLICATION HERE
-	def runTrialV2(self, fitness, mStart = -1):
+	def runTrialNodes(self, fitness, mStart = -1):
 		"""	This version of runTrial keeps track of nodes with at least one neighbour of a differnet kind to themsleves.
 			These nodes  are called 'active' nodes and are the only ones that ccan be selected for reproduction.
 			It is still possible to get useless iterations where a node selects a neighbour of the same type, but this is much less liekly than for the naive approach, particularly for sparse graphs
@@ -194,7 +194,7 @@ class Simulator():
 			iterations += 1
 		return iterations, numMutants, numNonMutants
 
-	def runTrialV3(self, fitness, mStart = -1):
+	def runTrialEdges(self, fitness, mStart = -1):
 		""" Theorertically optimal way to run sim is to only pick useful edges - this function implements that.
 			Turns out selecting a mutant becomes hard, so there isnt really any time saving (and it seems to be slower)
 			on top of all that I've implemented it incorrectly and results are not valid
@@ -213,7 +213,7 @@ class Simulator():
 
 		#Precalculating this as it takes little memory but a lookup is a lot faster than having to recalculate large bits of this every iteration
 		nodeStrength = [float(1) / len(simGraph.edges(n)) for n in range(numNodes)]
-
+		
 		#activeEdges tracks all the edges between mutants and non mutants
 		#To begin, this is all the edges to the initial mutant
 		activeEdges = simGraph.edges(mutantStart)
@@ -222,80 +222,31 @@ class Simulator():
 		while numMutants != 0 and numNonMutants != 0:
 			#The chance of selecting any given edge, (u,v), in the graph is (fitness of u/sum of all fitnesses) * (1/deg(u))
 			totalWeight = 0
+			edgeWeights = []
 
 			for (u,v) in activeEdges:
-				#There will always be one mutant and one non mutant as this is the definition of an acitve edge
 				if simGraph.node[u]['mutant']:
-					totalWeight += (nodeStrength[u] * fitness) + nodeStrength[v]
-					
+					edgeWeightU = fitness * nodeStrength[u]
+					edgeWeightV = nodeStrength[v]
 				else:
-					totalWeight += nodeStrength[u] + (nodeStrength[v] * fitness)
+					edgeWeightU = nodeStrength[u]
+					edgeWeightV = fitness * nodeStrength[v]
 
-			c = random.uniform(0, totalWeight)
+				totalWeight += edgeWeightU + edgeWeightV
 
-			#Really hate this, huge code replication
-			#Start from top of list (cuts maximum number of edge check in half)
-			if c < totalWeight / float(2):
-				edgeChoice = -1
-				while c > 0:
-					edgeChoice += 1
-					u = activeEdges[edgeChoice][0]
-					v = activeEdges[edgeChoice][1]
+				edgeWeights.append(((u,v), edgeWeightU))
+				edgeWeights.append(((v,u), edgeWeightV))
 
-					if simGraph.node[u]['mutant']:
-						c -= (nodeStrength[u] * fitness) + nodeStrength[v]
-					else:
-						c -= nodeStrength[u] + (nodeStrength[v] * fitness)
+			c = random.random() * totalWeight
 
-					n = random.uniform(0, fitness + 1)
+			for ((u, v), w) in edgeWeights:
+				c -= w
 
-					if n < 1:
-						#Choose non mutant
-						if simGraph.node[u]['mutant']:
-							nodeReproducing = v
-							nodeDying = u
-						else:
-							nodeReproducing = u
-							nodeDying = v
-					else:
-						#Choose mutant
-						if simGraph.node[u]['mutant']:
-							nodeReproducing = u
-							nodeDying = v
-						else:
-							nodeReproducing = v
-							nodeDying = u
-			#Start from bottom of list
-			else:
-				edgeChoice = len(activeEdges)
-				while c > totalWeight / 2.0:
-					edgeChoice -= 1
-					u = activeEdges[edgeChoice][0]
-					v = activeEdges[edgeChoice][1]
+				if c < 0:
+					nodeReproducing = u
+					nodeDying = v
+					break
 
-					if simGraph.node[u]['mutant']:
-						c -= (nodeStrength[u] * fitness) + nodeStrength[v]
-					else:
-						c -= nodeStrength[u] + (nodeStrength[v] * fitness)
-
-					n = random.uniform(0,fitness + 1)
-
-					if n<1:
-						#Choose non mutant
-						if simGraph.node[u]['mutant']:
-							nodeReproducing = v
-							nodeDying = u
-						else:
-							nodeReproducing = u
-							nodeDying = v
-					else:
-						#Choose mutant
-						if simGraph.node[u]['mutant']:
-							nodeReproducing = u
-							nodeDying = v
-						else:
-							nodeReproducing = v
-							nodeDying = u
 			simGraph.node[nodeDying]['mutant'] = simGraph.node[nodeReproducing]['mutant']
 
 			if simGraph.node[nodeReproducing]['mutant']:
@@ -330,11 +281,11 @@ class Simulator():
 		iterationHistograms = {'extinct' : extinctIterationHistogram, 'fixated' : fixatedIterationHistogram}
 
 		if simType == 'naive':
-			simFunction = self.runTrial
+			simFunction = self.runTrialBasic
 		elif simType == 'active-nodes':
-			simFunction = self.runTrialV2
+			simFunction = self.runTrialNodes
 		elif simType == 'active-edges':
-			simFunction = self.runTrialV3
+			simFunction = self.runTrialEdges
 		else:
 			print("Invalid simType passed to simulator.runSim")
 			return
