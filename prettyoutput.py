@@ -3,9 +3,6 @@ import matplotlib.pyplot as plt
 import matplotlib.mlab as mlab
 import numpy as np
 
-d = {1:12, 2:3, 4:5, 5:1, 6:10, 10:24, 11:15, 15:1, 20:15}
-
-
 def freqHistogram(frequencyDict):
 	maxIterKey = max(frequencyDict.keys())
 	maxIterValue = max(frequencyDict.values())
@@ -17,15 +14,16 @@ def freqHistogram(frequencyDict):
 	for k,v in frequencyDict.items():
 		paddedIter[k] = v
 
+	numElements = len(paddedIter)
 	fig, ax = plt.subplots()
 
-	plt.bar(range(len(paddedIter)), paddedIter, align="center", facecolor = "green", alpha = 0.8)
+	plt.bar(range(numElements), paddedIter, align="center", facecolor = "green", alpha = 0.8)
 
-	plt.xticks(range(len(paddedIter)), [i for i in range(len(paddedIter))])
+	plt.xticks(range(0, numElements, numElements//20), [(numElements//20) * i for i in range(numElements)])
 
 	plt.xlabel("Iterations")
 	plt.ylabel("Frequency")
-	plt.title("Number of iterations until fixation")
+	plt.title("Number of iterations until fixation/extinction")
 	
 	plt.xlim([-1, maxIterKey + 1])
 
