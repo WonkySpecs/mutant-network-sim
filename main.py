@@ -155,6 +155,22 @@ class Controller:
 			fixated, extinct, totalIterations, iterationHistograms = graphSim.runSim(numTrials, r, mStart, simType)
 			if consoleOutput:
 				print("{} fixated, {} extinct, {} fixation, {} average iterations\n".format(fixated, extinct, fixated / (fixated + extinct), totalIterations / (fixated + extinct)))
+
+			if fileOutput:
+				fOut = {
+					'gcname'	: graphClass.metadata['name'],
+					'time'		: time.gmtime(),
+					'edges'		: [edge for edge in G.edges()],
+					'simType'	: simType,
+					'r'			: r,
+					'mStart'	: mStart,
+					'results'	: {	
+									'fixated'				: fixated,
+									'extinct'				: extinct,
+									'iterationHistograms'	: iterationHistograms,
+								}
+				}
+				fileio.writeResultFile(fOut)
 			totalFixation += fixated / (fixated + extinct)
 
 			if verboseOutput:
@@ -168,8 +184,7 @@ class Controller:
 		else:
 			print("Done")
 
-		if fileOutput:
-			print("Outputting to file")
+
 
 
 	def createNewGraphClass(self, buildCode, metadata):

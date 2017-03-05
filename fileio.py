@@ -69,14 +69,18 @@ def saveGraph(G, graphName):
 		print("Saving")
 		nx.write_gml(G, os.path.join(graphsPath, graphName))
 
-def saveResults(output):
-	experimentsPath = os.path.join(os.curdir, "results", "experiments")
+def writeResultFile(output):
+	resultsPath = os.path.join(os.curdir, "results", output['gcname'])
 
-	if not os.path.exists(experimentsPath):
-		os.makedirs(experimentsPath)
+	if not os.path.exists(resultsPath):
+		os.makedirs(resultsPath)
 
 	#parse outputs
-	filename = output['filename']
-	content = output['content']
-	with open(os.path.join(experimentsPath, filename), "w") as outFile:
-		outFile.write(content)
+	filename = output['gcname'] + str(len([f for f in os.listdir(resultsPath)]))
+	print("Writing " + filename)
+	
+	with open(os.path.join(resultsPath, filename), "w") as outFile:
+		for key, value in output.items():
+			outFile.write(key + ",")
+			outFile.write(repr(value) +"\n")
+
