@@ -74,6 +74,14 @@ class SimSettingWindow:
 		self.outputToConsole = tk.IntVar(self.master)
 		self.outputToConsole.set(1)
 		self.consoleOutputCheck = tk.Checkbutton(self.simSettingFrame, text = "Console output", variable = self.outputToConsole)
+
+		self.consoleOutputVerbose = tk.IntVar(self.master)
+		self.consoleOutputVerbose.set(1)
+		self.consoleOutputVerboseCheck = tk.Checkbutton(self.simSettingFrame, text = "Verbose", variable = self.consoleOutputVerbose)
+
+		self.outputGraphs = tk.IntVar(self.master)
+		self.outputGraphsCheck = tk.Checkbutton(self.simSettingFrame, text = "Graph output", variable = self.outputGraphs)
+
 		self.outputToFile = tk.IntVar(self.master)
 		self.fileOutputCheck = tk.Checkbutton(self.simSettingFrame, text = "File output", variable = self.outputToFile)
 
@@ -153,8 +161,10 @@ class SimSettingWindow:
 		self.numTrialBatchesLabel.grid(in_ = self.simSettingFrame, column = 0, row = 4, sticky = tk.W)
 		self.numTrialBatchesEntry.grid(in_ = self.simSettingFrame, column = 1, row = 4)
 
-		self.consoleOutputCheck.grid(in_ = self.simSettingFrame, column = 0, row = 5)
-		self.fileOutputCheck.grid(in_ = self.simSettingFrame, column = 1, row = 5)
+		self.consoleOutputCheck.grid(in_ = self.simSettingFrame, column = 0, row = 5, sticky = tk.W)
+		self.fileOutputCheck.grid(in_ = self.simSettingFrame, column = 1, row = 5, sticky = tk.W)
+		self.consoleOutputVerboseCheck.grid(in_ = self.simSettingFrame, column = 0, row = 6, sticky = tk.W)
+		self.outputGraphsCheck.grid(in_ = self.simSettingFrame, column = 1, row = 6, sticky = tk.W)
 
 		self.startSimButton.grid(in_ = self.simSettingFrame, column = 0, columnspan = 2)
 
@@ -205,7 +215,9 @@ class SimSettingWindow:
 
 		outputParams = {
 			'console'	: self.outputToConsole.get() ,
-			'file'		: self.outputToFile.get()
+			'file'		: self.outputToFile.get(),
+			'verbose'	: self.consoleOutputVerbose.get(),
+			'graph'		: self.outputGraphs.get()
 			}
 
 		self.controller.setupAndRunSimulation(trialParams, graphParams, outputParams)

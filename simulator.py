@@ -321,7 +321,7 @@ class Simulator():
 					extinct += 1
 				else:
 					fixated += 1
-			if(self.printingOutput):
+			if self.printingOutput:
 				totTime = time.time() - sTime
 				
 				print("TOOK {} SECONDS TOTAL\nAVERAGE TRIAL {} SECONDS\nAVERAGE INTREATION {} SECONDS".format(totTime, totTime / trials, totTime / totIter))

@@ -132,14 +132,22 @@ class Controller:
 
 		consoleOutput = outputParams['console']
 		fileOutput  = outputParams['file']
+		graphOutput = outputParams['graph']
+
+		if consoleOutput:
+			verboseOutput = outputParams['verbose']
+		else:
+			verboseOutput = False
 
 		G = gc.buildGraph(graphParams)
 
 		graphSim = Simulator(consoleOutput, G)
-		print("Running simulation for:")
-		print(graphParams)
-		print(trialParams)
-		print(outputParams)
+
+		if verboseOutput:
+			print("Running simulation for:")
+			print(graphParams)
+			print(trialParams)
+			print(outputParams)
 		
 		totalFixation = 0
 		for i in range(numBatches):
@@ -148,13 +156,21 @@ class Controller:
 			if consoleOutput:
 				print("{} fixated, {} extinct, {} fixation, {} average iterations\n".format(fixated, extinct, fixated / (fixated + extinct), totalIterations / (fixated + extinct)))
 			totalFixation += fixated / (fixated + extinct)
-			print(iterationHistograms)
-			prettyoutput.freqHistogram(iterationHistograms['fixated'])
+
+			if verboseOutput:
+				print(iterationHistograms)
+
+			if graphOutput:
+				prettyoutput.freqHistogram(iterationHistograms['fixated'])
 
 		if consoleOutput:
 			print("Average fixation over {} batches of {} trials was {}%".format(numBatches, numTrials, totalFixation * 100 / numBatches))
 		else:
 			print("Done")
+
+		if fileOutput:
+			print("Outputting to file")
+
 
 	def createNewGraphClass(self, buildCode, metadata):
 		#TODO: Validate inputs
