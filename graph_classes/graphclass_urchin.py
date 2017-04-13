@@ -5,9 +5,9 @@ class GraphClass_Urchin(gc.GraphClass):
 	def buildGraph(self, parameters):
 		convertedParams = self.checkParamsValid(parameters)
 
-		#An error occured whilst trying to sort out parameters
-		if convertedParams == -1:
-			return -1
+		#Check if error (Will return an error message)
+		if type(convertedParams) == str:
+			return convertedParams
 
 		nodes = convertedParams['nodes']
 

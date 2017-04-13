@@ -8,12 +8,11 @@ class GraphClass:
 			if k in shouldHaveParams:
 				shouldHaveParams.remove(k)
 			else:
-				print("buildGraph given a parameter called {} which it should not have".format(k))
-				return
+				return "buildGraph given a parameter called {} which it should not have".format(k)
+				
 
 		if shouldHaveParams:
-			print("Necessary parameter(s) missing from buildGraph for {} graph: {}".format(self.metadata['name'], shouldHaveParams))
-			return -1
+			return "Necessary parameter(s) missing from buildGraph for {} graph: {}".format(self.metadata['name'], shouldHaveParams)
 
 		convertedParams = dict()
 
@@ -25,15 +24,14 @@ class GraphClass:
 			if paramType == 'int':
 				try:
 					convertedParams[k] = int(v)
-				except TypeError:
-					print("{} given as value for {}, must be an int".format(v,k))
-					return -1
+				except:
+					return "{} given as value for {}, must be an int".format(v,k)
+
 			elif paramType == 'float':
 				try:
 					convertedParams[k] = float(v)
-				except TypeError:
-					print("{} given as value for {}, must be a float".format(v,k))
-					return -1
+				except:
+					return "{} given as value for {}, must be a float".format(v,k)
 			else:
 				#For now assuming everything is an int, float or str
 				#Add more cases if necessary
