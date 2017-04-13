@@ -7,8 +7,6 @@ simTypes = [
 	"active-nodes" ,
 	"active-edges"]
 
-randomGraphAlgorithms = ["erdos-renyi"]
-
 class SimSettingWindow:
 	'''	The GUI class for setting up a simulation. Allows user to select graph type and parameters as well as trial parameters
 		Validates inputs then passes inputs to main.py to handle running simulation and providing output
@@ -47,7 +45,7 @@ class SimSettingWindow:
 		self.graphSelectScrollbar = tk.ttk.Scrollbar(self.graphSelectFrame)
 		self.graphSelectListbox = tk.Listbox(self.graphSelectFrame, yscrollcommand = self.graphSelectScrollbar.set, selectmode = tk.SINGLE)
 		self.graphSelectListbox.bind("<<ListboxSelect>>", self.populateGraphSettings)
-		self.graphSelectScrollbar.config(command=self.graphSelectListbox.yview)
+		self.graphSelectScrollbar.config(command = self.graphSelectListbox.yview)
 		self.createGraphClassButton = tk.ttk.Button(self.graphSelectFrame, text = "New graph class", command = self.newGraphClassWindow)
 
 		#---------------- simSettingFrame widgets  ------------------

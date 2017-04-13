@@ -36,12 +36,12 @@ class Simulator():
 		simGraph = self.graphStructure
 		numNodes = len(simGraph.node)
 		if mStart == -1:
-			mutantStart = random.randint(0, numNodes-1)
+			mutantStart = random.randint(0, numNodes - 1)
 		else:
 			mutantStart = mStart
-		simGraph.node[mutantStart]['mutant']=True
+		simGraph.node[mutantStart]['mutant'] = True
 		numMutants = 1
-		numNonMutants = numNodes-1
+		numNonMutants = numNodes - 1
 		iterations = 0
 		uselessIterations = 0
 
@@ -57,22 +57,22 @@ class Simulator():
 
 			if nodeChoice > numNonMutants:
 				#Pick a mutant
-				nodeReproducing = mutants[random.randint(0,len(mutants) - 1)]
+				nodeReproducing = mutants[random.randint(0, len(mutants) - 1)]
 			else:
 				#Pick a non-mutant
-				nodeReproducing = nonMutants[random.randint(0,len(nonMutants) - 1)]
+				nodeReproducing = nonMutants[random.randint(0, len(nonMutants) - 1)]
 
 			n = -1
 			while nodeChoice > 0:
 				n += 1
-				if simGraph.node[n]['mutant']==True:
+				if simGraph.node[n]['mutant'] == True:
 					nodeChoice -= fitness
 				else:
 					nodeChoice -= 1
 			nodeReproducing = n
 
 			#If the reproducing node has at least one neighbour, choose one at random (uniform probability)
-			if len(simGraph.neighbors(nodeReproducing))>0:
+			if len(simGraph.neighbors(nodeReproducing)) > 0:
 				nodeDying = random.sample(simGraph.neighbors(nodeReproducing), 1)[0]
 			
 			if simGraph.node[nodeReproducing]['mutant'] != simGraph.node[nodeDying]['mutant']:
@@ -131,7 +131,7 @@ class Simulator():
 				nodeReproducing = activeNonMutants[random.randint(0, len(activeNonMutants) - 1)]
 
 			possibleDyingNodes = simGraph.neighbors(nodeReproducing)
-			nodeDying = possibleDyingNodes[random.randint(0, len(possibleDyingNodes)-1)]
+			nodeDying = possibleDyingNodes[random.randint(0, len(possibleDyingNodes) - 1)]
 
 			if simGraph.node[nodeReproducing]['mutant'] != simGraph.node[nodeDying]['mutant']:
 				simGraph.node[nodeDying]['mutant'] = simGraph.node[nodeReproducing]['mutant']
@@ -208,7 +208,7 @@ class Simulator():
 			mutantStart = mStart
 		simGraph.node[mutantStart]['mutant'] = True
 		numMutants = 1
-		numNonMutants = numNodes-1
+		numNonMutants = numNodes - 1
 		iterations = 0
 
 		#Precalculating this as it takes little memory but a lookup is a lot faster than having to recalculate large bits of this every iteration
