@@ -29,9 +29,9 @@ class Controller:
 					if g.metadata[searchParameter] == searchTerm:
 						return g
 			else:
-				print("{} is not a key in graphClasses".format(searchParameter))
+				self.errorOutput("{} is not a key in graphClasses".format(searchParameter))
 				return -1
-		print("Could not find graph with {} = {}".format(searchTerm, searchTerm))
+		self.errorOutput("Could not find graph with {} = {}".format(searchTerm, searchTerm))
 		return -1
 
 	def getGraphMetadata(self, searchParameter, searchTerm):
@@ -74,51 +74,52 @@ class Controller:
 
 		G = gc.buildGraph(graphParams)
 
-		graphSim = Simulator(consoleOutput, G)
-
-		if verboseOutput:
-			print("Running simulation for:")
-			print(graphParams)
-			print(trialParams)
-			print(outputParams)
-		
-		totalFixation = 0
-		for i in range(numBatches):
-			print("--- SIMULATION {} ---\n".format(i + 1))
-			fixated, extinct, totalIterations, iterationHistograms = graphSim.runSim(numTrials, r, mStart, simType)
-			if consoleOutput:
-				print("{} fixated, {} extinct, {} fixation, {} average iterations\n".format(fixated, extinct, fixated / (fixated + extinct), totalIterations / (fixated + extinct)))
-
-			if fileOutput:
-				fOut = {
-					'gcname'	: graphClass.metadata['name'],
-					'time'		: time.gmtime(),
-					'edges'		: [edge for edge in G.edges()],
-					'simType'	: simType,
-					'r'			: r,
-					'mStart'	: mStart,
-					'results'	: {	
-									'fixated'				: fixated,
-									'extinct'				: extinct,
-									'iterationHistograms'	: iterationHistograms,
-								}
-				}
-				fileio.writeResultFile(fOut)
-			totalFixation += fixated / (fixated + extinct)
+		#check for error in constructing graph
+		if type(G) == str:
+			self.errorOutput(G)
+		else:
+			graphSim = Simulator(consoleOutput, G)
 
 			if verboseOutput:
-				print(iterationHistograms)
+				print("Running simulation for:")
+				print(graphParams)
+				print(trialParams)
+				print(outputParams)
+			
+			totalFixation = 0
+			for i in range(numBatches):
+				print("--- SIMULATION {} ---\n".format(i + 1))
+				fixated, extinct, totalIterations, iterationHistograms = graphSim.runSim(numTrials, r, mStart, simType)
+				if consoleOutput:
+					print("{} fixated, {} extinct, {} fixation, {} average iterations\n".format(fixated, extinct, fixated / (fixated + extinct), totalIterations / (fixated + extinct)))
 
-			if graphOutput:
-				prettyoutput.freqHistogram(iterationHistograms['fixated'])
+				if fileOutput:
+					fOut = {
+						'gcname'	: graphClass.metadata['name'],
+						'time'		: time.gmtime(),
+						'edges'		: [edge for edge in G.edges()],
+						'simType'	: simType,
+						'r'			: r,
+						'mStart'	: mStart,
+						'results'	: {	
+										'fixated'				: fixated,
+										'extinct'				: extinct,
+										'iterationHistograms'	: iterationHistograms,
+									}
+					}
+					fileio.writeResultFile(fOut)
+				totalFixation += fixated / (fixated + extinct)
 
-		if consoleOutput:
-			print("Average fixation over {} batches of {} trials was {}%".format(numBatches, numTrials, totalFixation * 100 / numBatches))
-		else:
-			print("Done")
+				if verboseOutput:
+					print(iterationHistograms)
 
+				if graphOutput:
+					prettyoutput.freqHistogram(iterationHistograms['fixated'])
 
-
+			if consoleOutput:
+				print("Average fixation over {} batches of {} trials was {}%".format(numBatches, numTrials, totalFixation * 100 / numBatches))
+			else:
+				print("Done")
 
 	def createNewGraphClass(self, buildCode, metadata):
 		#TODO: Validate inputs
@@ -134,12 +135,16 @@ class Controller:
 			self.graphClasses = reloadedGraphClasses
 			self.loadGraphClasses()
 		except:
-			print("Error in new graph class")
+			self.errorOutput("Error in new graph class")
 			#TODO: Handle this properly
 
 	def loadGraphClasses(self):
 		graphNames = [self.graphClasses[i].metadata['display_name'] for i in range(len(self.graphClasses))]
 		self.window.populateGraphSelectListbox(graphNames)
+
+	def errorOutput(self, errMessage):
+		print(errMessage)
+		self.window.errorOutput(errMessage)
 
 if __name__ == "__main__":
 	controller = Controller()

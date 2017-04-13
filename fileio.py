@@ -31,7 +31,7 @@ def writeNewGraphClass(tabbedBuildCode, metadata):
 		file.write("class GraphClass_{}(gc.GraphClass):\n".format(metadata["name"].capitalize()))
 		file.write("\tdef buildGraph(self,parameters):\n")
 		file.write("\t\tconvertedParams = self.checkParamsValid(parameters)\n")
-		file.write("\t\tif convertedParams == -1:\n\t\t\treturn -1\n")
+		file.write("\t\tif type(convertedParams) == str:\n\t\t\treturn convertedParams\n")
 		for param in metadata['parameters'].keys():
 			file.write("\t\t{} = convertedParams['{}']\n".format(param, param))
 		file.write(tabbedBuildCode)

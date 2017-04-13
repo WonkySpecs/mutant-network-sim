@@ -30,6 +30,9 @@ class SimSettingWindow:
 		self.simSettingFrame.grid(column = 2, row = 0, sticky = tk.N + tk.E + tk.S + tk.W)
 
 		self.createWidgets()
+
+		self.errorMessageLabel.grid(column = 1, row  = 1)
+
 		self.selectedGraphClassName = None
 
 		self.populateGraphSelectFrame()
@@ -38,6 +41,11 @@ class SimSettingWindow:
 
 	#Create all widgets
 	def createWidgets(self):
+		#---------------- Error message label -----------------------
+		self.errorMessageTextVar = tk.StringVar()
+		self.errorMessageTextVar.set("")
+		self.errorMessageLabel = tk.Label(self.master, textvariable = self.errorMessageTextVar)
+
 		#---------------- graphSettingFrame widgets------------------
 		self.emptyLabel = tk.Label(self.graphSettingFrame, text = "Select a graph type")
 
@@ -116,6 +124,7 @@ class SimSettingWindow:
 		self.populateGraphSettingFrame(elements)
 
 	def populateGraphSettingFrame(self, elements):
+		self.errorMessageTextVar.set("")
 		self.graphSettingParameterEntryLabelTexts = []
 		self.graphSettingParameterEntries = []
 		if elements:
@@ -140,7 +149,7 @@ class SimSettingWindow:
 			if graphDescriptionLabel:
 				graphDescriptionLabel.grid(in_ = self.graphSettingFrame, column = 0, row = rowNum, columnspan = 2)
 		else:
-			self.emptyLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 0)			
+			self.emptyLabel.grid(in_ = self.graphSettingFrame, column = 0, row = 0)
 
 	def populateSimSettingFrame(self):
 		self.hideAllWidgetsInFrame(self.simSettingFrame)
@@ -199,7 +208,7 @@ class SimSettingWindow:
 			batches = int(self.numTrialBatchesEntry.get())
 		except:
 			#Should probably split these up 
-			print("Error with sim settings")
+			self.controller.errorOutput("Error with sim settings")
 			return
 
 		trialParams = {
@@ -219,6 +228,9 @@ class SimSettingWindow:
 			}
 
 		self.controller.setupAndRunSimulation(trialParams, graphParams, outputParams)
+
+	def errorOutput(self, errMessage):
+		self.errorMessageTextVar.set("ERROR: " + errMessage)
 
 class GraphClassCreateWindow:
 	def __init__(self, master, controller):
