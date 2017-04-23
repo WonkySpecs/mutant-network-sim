@@ -15,13 +15,46 @@ def readGraphClasses():
 	for filename in os.listdir(graphClassesPath):
 		if filename.startswith("graphclass_") and filename.endswith(".py"):
 			#Module names are of the form graph_classes/graphclass_graphtypename
-			m = importlib.import_module("graph_classes." + filename[:-3])
-
+			try:
+				m = importlib.import_module("graph_classes." + filename[:-3])
+				for c in inspect.getmembers(m, inspect.isclass):
+					if testBuildGraph(c[1]):
+						classes.append(c[1])
+					else:
+						print("Failed to load {} graphClass, error in buildGraph function (may not be returning a graph object)".format(c[1].metadata['name']))
+			except:
+				print("Failed to load {}, invalid syntax in code".format(filename[:-3]))
 			#This pulls the class out of the module
-			for c in inspect.getmembers(m, inspect.isclass):
-				classes.append(c[1])
+			
 
 	return classes
+
+#This is a pretty bad hacky way of doing this, will need changing if value domains for parameters are implemented
+#Could add a 'test set' of parameters to metadata to use in this method
+#Also nede to hondle error emssages better
+def testBuildGraph(graphClass):
+	""" Tries to build a graph using the given graphClasses buildGraph
+		method using test parameters
+		If the graph succesfully builds, returns True, otherwise False
+	"""
+	try:
+		gc = graphClass()
+		md = gc.metadata['parameters']
+		testParams = {}
+		for param in md.keys():
+			if md[param]['type'] == 'int':
+				testParams[param] = '2'
+			elif md[param]['type'] == 'float':
+				testParams[param] = '0.5'
+			elif md[param]['type'] == 'string':
+				testParams[param] = '1'
+		G = gc.buildGraph(testParams)
+		if type(G) == nx.classes.graph.Graph:
+			return True
+		else:
+			return False
+	except:
+		return False
 
 def writeNewGraphClass(tabbedBuildCode, metadata):
 	filename = "graphclass_" + metadata["name"] + ".py"
