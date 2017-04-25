@@ -94,7 +94,7 @@ class Simulator():
 
 	#MAY MERGE THIS WITH THE ORIGINAL AS AN OPTION, A LOT OF CODE REPLICATION HERE
 	def runTrialNodes(self, fitness, mStart = -1):
-		"""	This version of runTrial keeps track of nodes with at least one neighbour of a differnet kind to themsleves.
+		"""	This version of runTrial keeps track of nodes with at least one neighbour of a different kind to themsleves.
 			These nodes  are called 'active' nodes and are the only ones that ccan be selected for reproduction.
 			It is still possible to get useless iterations where a node selects a neighbour of the same type, but this is much less liekly than for the naive approach, particularly for sparse graphs
 		"""
@@ -324,7 +324,7 @@ class Simulator():
 			if self.printingOutput:
 				totTime = time.time() - sTime
 				
-				print("TOOK {} SECONDS TOTAL\nAVERAGE TRIAL {} SECONDS\nAVERAGE INTREATION {} SECONDS".format(totTime, totTime / trials, totTime / totIter))
+				print("TOOK {} SECONDS TOTAL\nAVERAGE TRIAL {} SECONDS\nAVERAGE ITERATION {} SECONDS".format(totTime, totTime / trials, totTime / totIter))
 			return fixated, extinct, totIter, iterationHistograms
 		else:
 			print("Failed to run sim: No graph loaded")

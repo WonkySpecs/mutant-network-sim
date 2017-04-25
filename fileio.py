@@ -19,14 +19,12 @@ def readGraphClasses():
 				m = importlib.import_module("graph_classes." + filename[:-3])
 				for c in inspect.getmembers(m, inspect.isclass):
 					if testBuildGraph(c[1]):
+						#This pulls the class out of the module
 						classes.append(c[1])
 					else:
 						print("Failed to load {} graphClass, error in buildGraph function (may not be returning a graph object)".format(c[1].metadata['name']))
 			except:
 				print("Failed to load {}, invalid syntax in code".format(filename[:-3]))
-			#This pulls the class out of the module
-			
-
 	return classes
 
 #This is a pretty bad hacky way of doing this, will need changing if value domains for parameters are implemented
