@@ -15,7 +15,7 @@ class Simulator():
 			print("Warning: loadGraphStructure called with None as argument, current graph in Simulator is None")
 
 	def resetGraphStructure(self):
-		""" Resets 'mutant' and 'active' attributes for each node of the loaded graphStructure """
+		""" Resets 'mutant' and 'active' attributes to false for each node of the loaded graphStructure """
 		if self.graphStructure == None:
 			print("Tried to resetGraphStructure with no graph loaded, exiting")
 			return -1
@@ -96,7 +96,10 @@ class Simulator():
 	def runTrialNodes(self, fitness, mStart = -1):
 		"""	This version of runTrial keeps track of nodes with at least one neighbour of a different kind to themsleves.
 			These nodes  are called 'active' nodes and are the only ones that ccan be selected for reproduction.
-			It is still possible to get useless iterations where a node selects a neighbour of the same type, but this is much less liekly than for the naive approach, particularly for sparse graphs
+			It is still possible to get useless iterations where a node selects a neighbour of the same type, but this 
+			is much less liekly than for the naive approach, particularly for sparse graphs, leading to much faster runtime
+			The additionaly computation required for tracking nodes makes highly connected graphs slower than the naive
+			implementaiton, however.
 		"""
 
 		#Initialization
@@ -196,8 +199,9 @@ class Simulator():
 
 	def runTrialEdges(self, fitness, mStart = -1):
 		""" Theorertically optimal way to run sim is to only pick useful edges - this function implements that.
-			Turns out selecting a mutant becomes hard, so there isnt really any time saving (and it seems to be slower)
-			on top of all that I've implemented it incorrectly and results are not valid
+			The additional computation required for selecting which edge is used aand tracking which edges
+			are active makes this implementation slower for highly connected graphs, but the useless iterations
+			removed make it excellent for lightly connected graphs
 		"""
 		self.resetGraphStructure()
 		simGraph = self.graphStructure
