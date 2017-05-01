@@ -138,6 +138,7 @@ class Simulator():
 
 			if simGraph.node[nodeReproducing]['mutant'] != simGraph.node[nodeDying]['mutant']:
 				simGraph.node[nodeDying]['mutant'] = simGraph.node[nodeReproducing]['mutant']
+				simGraph.node[nodeDying]['active'] = False
 				if simGraph.node[nodeReproducing]['mutant'] == True:
 					#The new mutant must have been an activenonmutant before it died, so we move it from activeNonMutants to activeMutants
 					numMutants += 1
@@ -145,7 +146,6 @@ class Simulator():
 					activeNonMutants.remove(nodeDying)
 
 					#Check if new mutant has any non mutant neighbours - if so, isActive is true, otherwise not
-					simGraph.node[nodeDying]['active'] = False
 					for n in simGraph.neighbors(nodeDying):
 						#If any non mutant neighbours of the new mutant were not active, they are now
 						if not simGraph.node[n]['mutant']:
@@ -169,7 +169,6 @@ class Simulator():
 					numNonMutants += 1
 
 					activeMutants.remove(nodeDying)
-					simGraph.node[nodeDying]['active'] = False
 
 					for i in simGraph.neighbors(nodeDying):
 						#All non-mutant neighbours used to be active - Check if they still are by checking whether they still have at least one non-mutant neighbour
