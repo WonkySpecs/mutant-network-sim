@@ -232,6 +232,9 @@ class SimSettingWindow:
 	def errorOutput(self, errMessage):
 		self.errorMessageTextVar.set("ERROR: " + errMessage)
 
+	def disableGraphOutput(self):
+		self.outputGraphsCheck.config(state = tk.DISABLED)
+
 class GraphClassCreateWindow:
 	def __init__(self, master, controller):
 		self.master = master

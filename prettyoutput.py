@@ -1,6 +1,9 @@
-#import matplotlib.pyplot as plt
-import matplotlib.pyplot as plt
-import matplotlib.mlab as mlab
+try:
+	import matplotlib.pyplot as plt
+	import matplotlib.mlab as mlab
+except:
+	raise ImportError("pretty output import failed, matplotlib not available")
+	
 import numpy as np
 
 def freqHistogram(frequencyDict):

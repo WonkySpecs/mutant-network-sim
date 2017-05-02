@@ -7,7 +7,10 @@ import os
 import appgui as gui
 import tkinter as tk
 import fileio
-import prettyoutput
+try:
+	import prettyoutput
+except ImportError as e:
+	print(e)
 
 class Controller:
 	def __init__(self):
@@ -16,7 +19,8 @@ class Controller:
 		self.root = tk.Tk()
 		self.root.resizable(width = False, height = False)
 		self.window = gui.SimSettingWindow(self.root, self)
-
+		if "prettyoutput" not in sys.modules:
+			self.window.disableGraphOutput()
 		self.loadGraphClasses()
 		print("Initialized")
 		self.root.mainloop()
