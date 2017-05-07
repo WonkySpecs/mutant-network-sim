@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+import tkinter.messagebox
 
 #Lists of options for optionMenus
 simTypes = [
@@ -329,7 +330,19 @@ class GraphClassCreateWindow:
 		return md
 
 	def openHelp(self):
-		print("Help text")
+		tk.messagebox.showinfo("New graph class help", 
+			"1. Enter the name of the new graph class. Must be a valid"
+			" python object name.\n\n"
+			"2. Enter the name and type of each parameter required for "
+			"creating a graph. Names must be valid python variable names.\n\n"
+			"3. Enter the function for creating a graph using those parameters."
+			" The NetworkX module should be accessed with the alias nx.\n\n"
+			"4. Function must return a networkx Graph object"
+			"5. If there is a syntax error in the code, a warning will "
+			"be displayed when the program is loaded and the class will"
+			"not be loaded. Code files can be found in the graph_classes subdir.\n\n"
+			"6. Enter the description of the graph class. This is displayed"
+			"Whenever the class is selected on the main window.")
 
 if __name__ == "__main__":
 	m = tk.Tk()
